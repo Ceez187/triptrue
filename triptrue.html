@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0c0c14">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TripTrue</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -16,14 +13,12 @@
   --text:#f2f2fc;--sub:#9090b0;--muted:#55556a;--r:14px;--nav:64px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-button,select,input,[onclick]{touch-action:manipulation;}
-a{-webkit-tap-highlight-color:transparent;}
-html{scroll-behavior:smooth;overscroll-behavior:none;}
-body{overscroll-behavior-y:none;}
+button,select,input{touch-action:manipulation;}
+html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.5;min-height:100vh;max-width:600px;margin:0 auto;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 16px);-webkit-text-size-adjust:100%;}
 
 /* ── HEADER ── */
-.hdr{position:sticky;top:0;z-index:50;background:rgba(12,12,20,0.97);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;transition:transform 0.25s ease;}
+.hdr{position:sticky;top:0;z-index:50;background:rgba(12,12,20,0.97);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;color:var(--accent);line-height:1;}
 .hdr-mod{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);}
 .hdr-tag{font-size:10px;color:var(--muted);}
@@ -36,7 +31,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .nav-ico{font-size:20px;}
 .nav-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);transition:color 0.2s;}
 .nav-btn.active .nav-label{color:var(--accent);}
-.nav-btn:active{opacity:0.7;}
 
 /* ── PAGES ── */
 .page{display:none;padding:20px 16px 0;}
@@ -73,18 +67,18 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 
 .row{display:grid;gap:10px;margin-bottom:10px;}
 .row.c2{grid-template-columns:1fr 1fr;}
-.row.c3{grid-template-columns:1fr 1fr 1fr;}@media(max-width:360px){.row.c3{grid-template-columns:1fr 1fr;}}
+.row.c3{grid-template-columns:1fr 1fr 1fr;}
 .row:last-child{margin-bottom:0;}
 .fld{display:flex;flex-direction:column;gap:5px;}
 .fld label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);}
-.fld input,.fld select,.fld textarea{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:16px;font-weight:500;outline:none;width:100%;-webkit-appearance:none;-webkit-text-size-adjust:100%;transition:border-color 0.2s;resize:none;}
+.fld input,.fld select,.fld textarea{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;outline:none;width:100%;-webkit-appearance:none;transition:border-color 0.2s;resize:none;}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,196,24,0.1);}
 .fld input::placeholder,.fld textarea::placeholder{color:var(--muted);font-weight:400;}
 .fld select option{background:#1a1a2e;}
 
 .tog-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:9px;cursor:pointer;gap:12px;transition:border-color 0.2s;}
 .tog-row:last-child{margin-bottom:0;}
-.tog-row:active{border-color:rgba(245,196,24,0.4);}@media(hover:hover){.tog-row:hover{border-color:rgba(245,196,24,0.3);}}
+.tog-row:hover{border-color:rgba(245,196,24,0.3);}
 .tog-info{flex:1;}
 .tog-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
 .tog-desc{font-size:11px;color:var(--sub);line-height:1.4;}
@@ -96,9 +90,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .sub-fld.show{display:block;}
 
 .big-btn{display:block;width:100%;background:var(--accent);color:#000;border:none;border-radius:14px;padding:18px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(245,196,24,0.2);margin-top:4px;}
-.big-btn:active{transform:scale(0.98);box-shadow:0 2px 10px rgba(245,196,24,0.2);}@media(hover:hover){.big-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(245,196,24,0.3);}}
+.big-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(245,196,24,0.3);}
 .save-btn{display:block;width:100%;background:var(--green);color:#000;border:none;border-radius:12px;padding:15px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;cursor:pointer;transition:all 0.2s;margin-top:4px;}
-.save-btn:active{transform:scale(0.98);}@media(hover:hover){.save-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(61,214,140,0.25);}}
+.save-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(61,214,140,0.25);}
 
 .divider{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
 .div-line{flex:1;height:1px;background:var(--border);}
@@ -155,7 +149,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 
 .act-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
 .act-btn{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all 0.2s;}
-.act-btn:active{border-color:var(--accent);color:var(--accent);}@media(hover:hover){.act-btn:hover{border-color:var(--accent);color:var(--accent);}}
+.act-btn:hover{border-color:var(--accent);color:var(--accent);}
 
 /* ── MODULE 1 SPECIFIC ── */
 .airline-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
@@ -165,16 +159,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .al-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--sub);margin-bottom:4px;}
 .al-card.on .al-name{color:var(--accent);}
 .al-price{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--accent);line-height:1;margin-bottom:3px;}
-.al-note{font-size:10px;color:var(--muted);}
-.al-check-live{display:block;margin-top:6px;font-size:10px;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.3px;touch-action:manipulation;}
-.al-check-live:active{opacity:0.7;}
-@media(hover:hover){.al-check-live:hover{text-decoration:underline;}}
+.al-note{font-size:10px;color:var(--muted);}.al-check-live{display:block;margin-top:6px;font-size:10px;font-weight:700;color:var(--accent);text-decoration:none;touch-action:manipulation;}
 .mil-banner{display:none;background:rgba(91,142,240,0.1);border:1.5px solid rgba(91,142,240,0.3);border-radius:12px;padding:11px 14px;font-size:13px;font-weight:600;color:var(--blue);margin-bottom:12px;text-align:center;}
 
 /* ── MODULE 2 SPECIFIC ── */
 .airline-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .al-check{display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;cursor:pointer;transition:border-color 0.2s;}
-.al-check:active{border-color:rgba(245,196,24,0.4);}@media(hover:hover){.al-check:hover{border-color:rgba(245,196,24,0.3);}}
+.al-check:hover{border-color:rgba(245,196,24,0.3);}
 .al-check.on{border-color:var(--accent);background:rgba(245,196,24,0.05);}
 .al-check input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--accent);}
 .al-check-name{font-size:12px;font-weight:600;color:var(--text);flex:1;}
@@ -200,7 +191,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* ── MODULE 3 SPECIFIC ── */
 .dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .dest-card{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:13px;cursor:pointer;text-align:center;transition:all 0.2s;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.dest-card:active{border-color:rgba(245,196,24,0.5);}@media(hover:hover){.dest-card:hover{border-color:rgba(245,196,24,0.35);}}
+.dest-card:hover{border-color:rgba(245,196,24,0.35);}
 .dest-card.on{border-color:var(--accent);background:rgba(245,196,24,0.06);}
 .dest-card.custom-city{border-style:dashed;}
 .dest-card.custom-city.on{border-style:solid;}
@@ -236,7 +227,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .entry-del-btn{font-size:11px;color:var(--muted);cursor:pointer;font-weight:600;padding:3px 8px;border:1px solid var(--border);border-radius:6px;background:none;}
 .entry-del-btn:hover{color:var(--red);border-color:var(--red);}
 .add-entry-btn{display:block;width:100%;background:none;border:1.5px dashed var(--border);border-radius:10px;padding:11px;color:var(--sub);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:10px;transition:all 0.2s;}
-.add-entry-btn:active{border-color:var(--accent);color:var(--accent);}@media(hover:hover){.add-entry-btn:hover{border-color:var(--accent);color:var(--accent);}}
+.add-entry-btn:hover{border-color:var(--accent);color:var(--accent);}
 
 /* ── MODULE 4 SPECIFIC ── */
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:20px;}
@@ -246,7 +237,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .stat-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--sub);}
 .fare-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
 .fare-pill{display:flex;align-items:center;gap:5px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:5px 11px;cursor:pointer;transition:all 0.2s;font-size:11px;font-weight:600;color:var(--sub);}
-.fare-pill:active{border-color:var(--accent);}@media(hover:hover){.fare-pill:hover{border-color:var(--accent);}}
+.fare-pill:hover{border-color:var(--accent);}
 .fare-pill.on{border-color:var(--accent);background:rgba(245,196,24,0.07);color:var(--text);}
 .fare-pill .pill-price{color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:15px;line-height:1;}
 .no-fares{font-size:12px;color:var(--muted);padding:6px 0;}
@@ -316,13 +307,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .book-card-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:12px;}
 .book-links{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .book-link{display:block;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:11px 12px;font-size:12px;font-weight:700;color:var(--text);text-decoration:none;text-align:center;transition:all 0.2s;}
-.book-link:active{border-color:var(--accent);color:var(--accent);}@media(hover:hover){.book-link:hover{border-color:var(--accent);color:var(--accent);}}
+.book-link:hover{border-color:var(--accent);color:var(--accent);}
 .book-link .bl-ico{font-size:18px;display:block;margin-bottom:3px;}
 .crowd-btn{display:block;width:100%;background:none;border:1.5px dashed var(--border);border-radius:10px;padding:11px;color:var(--sub);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-align:center;margin-top:12px;transition:all 0.2s;}
-.crowd-btn:active{border-color:var(--accent);color:var(--accent);}@media(hover:hover){.crowd-btn:hover{border-color:var(--accent);color:var(--accent);}}
+.crowd-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-.sdot{width:5px;height:5px;border-radius:50%;background:var(--muted);transition:all 0.2s;}
-.sdot.active{width:16px;border-radius:3px;background:var(--accent);}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--muted);transition:all 0.2s;}.sdot.active{width:16px;border-radius:3px;background:var(--accent);}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--green);color:#000;font-size:12px;font-weight:700;padding:9px 18px;border-radius:18px;transition:transform 0.3s ease;z-index:999;pointer-events:none;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
@@ -406,26 +396,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="sec-hdr"><span class="sec-num">02</span><span class="sec-title">Flight</span><span class="sec-ico">✈️</span></div>
     <div class="sec-body">
       <div class="airline-grid">
-        <div class="al-card on" onclick="calcPickAirline(this,'allegiant',140)">
-          <div class="al-name">Allegiant</div><div class="al-price">$140</div>
-          <div class="al-note">Nonstop · RT · Sample</div>
-          <a class="al-check-live" href="https://www.allegiantair.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a>
-        </div>
-        <div class="al-card" onclick="calcPickAirline(this,'southwest',378)">
-          <div class="al-name">Southwest</div><div class="al-price">$378</div>
-          <div class="al-note">Nonstop · RT · Sample</div>
-          <a class="al-check-live" href="https://www.southwest.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a>
-        </div>
-        <div class="al-card" onclick="calcPickAirline(this,'split',260)">
-          <div class="al-name">Split Fare ✦</div><div class="al-price">$260</div>
-          <div class="al-note">Allegiant out · SW back</div>
-          <a class="al-check-live" href="https://www.google.com/flights" target="_blank" onclick="event.stopPropagation()">Check both →</a>
-        </div>
-        <div class="al-card" onclick="calcPickAirline(this,'custom',0)">
-          <div class="al-name">My Price</div><div class="al-price" id="c-custom-disp">$—</div>
-          <div class="al-note">Enter your real fare</div>
-          <a class="al-check-live" href="https://www.google.com/flights" target="_blank" onclick="event.stopPropagation()">Find it on Google →</a>
-        </div>
+        <div class="al-card on" onclick="calcPickAirline(this,'allegiant',140)"><div class="al-name">Allegiant</div><div class="al-price">$140</div><div class="al-note">Sample · Nonstop RT</div><a class="al-check-live" href="https://www.allegiantair.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a></div>
+        <div class="al-card" onclick="calcPickAirline(this,'southwest',378)"><div class="al-name">Southwest</div><div class="al-price">$378</div><div class="al-note">Sample · Nonstop RT</div><a class="al-check-live" href="https://www.southwest.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a></div>
+        <div class="al-card" onclick="calcPickAirline(this,'split',260)"><div class="al-name">Split Fare ✦</div><div class="al-price">$260</div><div class="al-note">Allegiant out · SW back</div></div>
+        <div class="al-card" onclick="calcPickAirline(this,'custom',0)"><div class="al-name">My Price</div><div class="al-price" id="c-custom-disp">$—</div><div class="al-note">Enter your real fare</div><a class="al-check-live" href="https://www.google.com/flights" target="_blank" onclick="event.stopPropagation()">Find it →</a></div>
       </div>
       <div class="sub-fld" id="c-custom-fld"><div class="fld"><label>Your Round Trip Price ($)</label><input type="number" id="c-custom-price" placeholder="e.g. 220" oninput="calcSetCustom(this.value)"></div></div>
       <div class="price-disc">⚠️ Prices above are <strong>sample estimates only</strong> — not live fares. Look up your actual price first, then select "My Price" and enter it. <strong>Check live:</strong> <a href="https://www.allegiantair.com" target="_blank" style="color:var(--accent)">Allegiant</a> · <a href="https://www.southwest.com" target="_blank" style="color:var(--accent)">Southwest</a> · <a href="https://www.google.com/flights" target="_blank" style="color:var(--accent)">Google Flights</a> · <a href="https://www.kayak.com" target="_blank" style="color:var(--accent)">Kayak</a></div>
@@ -457,7 +431,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="sec-hdr"><span class="sec-num">04</span><span class="sec-title">Ground Transport</span><span class="sec-ico">🚕</span></div>
     <div class="sec-body">
       <div class="row c2">
-        <div class="fld"><label>Transfer Type</label><select id="c-transport-type"><option>Uber</option><option>Lyft</option><option>Rideshare</option><option>Taxi</option><option>Shuttle</option><option>Rental Car</option><option>Transit</option><option>Hotel Shuttle</option><option>Friend/Family Pickup</option></select></div>
+        <div class="fld"><label>Transfer Type</label><select id="c-transport-type"><option>Rideshare</option><option>Taxi</option><option>Shuttle</option><option>Rental Car</option><option>Transit</option></select></div>
         <div class="fld"><label>Cost Each Way ($)</label><input type="number" id="c-transport-cost" value="35"></div>
       </div>
       <div class="row c2">
@@ -654,7 +628,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="sec-hdr"><span class="sec-num">01</span><span class="sec-title">Where Are You Going?</span><span class="sec-ico">🌍</span></div>
     <div class="sec-body"><div class="dest-grid" id="sc-dest-grid"></div></div>
   </div>
-  <button class="big-btn" id="sc-show-btn" onclick="scamShow()">SHOW SCAMS & FAIR PRICES</button>
+  <button class="big-btn" onclick="scamShow()">SHOW SCAMS & FAIR PRICES</button>
   <div id="sc-results" style="display:none;">
     <div class="divider"><div class="div-line"></div><div class="div-text" id="sc-dest-display">—</div><div class="div-line"></div></div>
     <div class="alert-banner fade d1"><div class="alert-title">⚠️ Risk Level</div><div class="alert-text" id="sc-alert-text"></div></div>
@@ -738,12 +712,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 </div>
 
 <!-- BOTTOM NAV -->
-<div id="swipe-dots" style="position:fixed;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 6px);left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:101;pointer-events:none;">
-  <div class="sdot active" data-page="calc"></div>
-  <div class="sdot" data-page="split"></div>
-  <div class="sdot" data-page="scam"></div>
-  <div class="sdot" data-page="war"></div>
-</div>
+<div id="swipe-dots" style="position:fixed;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 6px);left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:101;pointer-events:none;"><div class="sdot active" data-page="calc"></div><div class="sdot" data-page="split"></div><div class="sdot" data-page="scam"></div><div class="sdot" data-page="war"></div></div>
 <nav class="nav">
   <button class="nav-btn active" onclick="goPage('calc',this)"><span class="nav-ico">💰</span><span class="nav-label">Real Cost</span></button>
   <button class="nav-btn" onclick="goPage('split',this)"><span class="nav-ico">⚡</span><span class="nav-label">Split Fare</span></button>
@@ -754,62 +723,16 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════
-//  SAFE STORAGE — wraps localStorage with try/catch for sandboxed environments
-// ══════════════════════════════════════
-const Store = {
-  _mem: {},
-  get(k){ try{ return localStorage.getItem(k); }catch{ return this._mem[k]||null; } },
-  set(k,v){ try{ localStorage.setItem(k,v); }catch{ this._mem[k]=v; } },
-  remove(k){ try{ localStorage.removeItem(k); }catch{ delete this._mem[k]; } }
-};
 
-// ══════════════════════════════════════
-//  CONFIG — all tunable values in one place
-// ══════════════════════════════════════
-const CONFIG = {
-  hotelTaxRate:       0.13,
-  airbnbPlatformFee:  0.14,
-  defaultPlatformFee: 0.12,
-  milHotelDiscount:   0.12,
-  milBagCredit:       60,
-  allegiantCarryOn:   30,
-  allegiantChecked:   40,
-  insurancePerPerson: 55,
-  rentalCarPerDay:    75,
-  defaultNights:      4,
-  maxCityNameLen:     50,
-  maxScamTitleLen:    80,
-  maxScamDescLen:     200,
-  maxTipTextLen:      150,
-};
+// ── SAFE STORAGE ──
+const Store={_m:{},get:function(k){try{return localStorage.getItem(k);}catch(e){return this._m[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){this._m[k]=v;}},remove:function(k){try{localStorage.removeItem(k);}catch(e){delete this._m[k];}}};
 
-// ══════════════════════════════════════
-//  SECURITY — sanitize user input before innerHTML injection
-// ══════════════════════════════════════
-function sanitize(str) {
-  if(typeof str !== 'string') return '';
-  return str
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#x27;')
-    .slice(0, 300);
-}
+// ── CONFIG ──
+const CONFIG={hotelTaxRate:0.13,airbnbPlatformFee:0.14,defaultPlatformFee:0.12,milHotelDiscount:0.12,milBagCredit:60,allegiantCarryOn:30,allegiantChecked:40,insurancePerPerson:55,rentalCarPerDay:75,defaultNights:4};
 
-function sanitizeKey(str) {
-  // Safe for use in onclick attributes and localStorage keys
-  return (str||'').toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,40);
-}
-
-// ══════════════════════════════════════
-//  SHARED ROUTE LOOKUP — single definition
-// ══════════════════════════════════════
-function getRouteKey(o,d){
-  const k1=`${o}-${d}`,k2=`${d}-${o}`;
-  return sharedRouteFares[k1]?k1:sharedRouteFares[k2]?k2:null;
-}
+// ── SANITIZE ──
+function sanitize(str){if(typeof str!=='string')return '';return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;').slice(0,300);}
+function sanitizeKey(str){return (str||'').toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,40);}
 
 // ══════════════════════════════════════
 //  SHARED UTILITIES
@@ -819,23 +742,12 @@ const modNames = {calc:'Real Cost',split:'Split Fare',scam:'Scam Shield',war:'Wa
 function goPage(id, btn) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const pg=document.getElementById('page-'+id);
-  pg.classList.add('active');
+  document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
   document.getElementById('hdr-mod').textContent = modNames[id];
-  // iOS-safe scroll reset
   try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}
-  // Show header on page switch
-  const hdr=document.getElementById('main-hdr');
-  if(hdr) hdr.style.transform='translateY(0)';
-  // Update swipe dots
-  updateDots(id);
-}
-
-function updateDots(pageId){
-  document.querySelectorAll('.sdot').forEach(d=>{
-    d.classList.toggle('active', d.dataset.page===pageId);
-  });
+  var hdr=document.getElementById('main-hdr');if(hdr)hdr.style.transform='translateY(0)';
+  if(typeof updateDots==='function')updateDots(id);
 }
 
 function toggleSOP(id) {
@@ -864,60 +776,32 @@ function showToast(msg) {
 }
 
 function closeOnboard(){
-  const el=document.getElementById('onboard');
+  var el=document.getElementById('onboard');
   el.style.opacity='0';el.style.transition='opacity 0.3s';
-  setTimeout(()=>el.style.display='none',300);
+  setTimeout(function(){el.style.display='none';},300);
   Store.set('tt_onboarded','1');
 }
 
-// ── SWIPE NAVIGATION ──
-(function initSwipe(){
-  try {
-    const pages=['calc','split','scam','war'];
-    let touchStartX=0,touchStartY=0,touchStartTime=0;
-    document.addEventListener('touchstart',e=>{
-      try {
-        touchStartX=e.touches[0].clientX;
-        touchStartY=e.touches[0].clientY;
-        touchStartTime=Date.now();
-      } catch(e){}
-    },{passive:true});
-    document.addEventListener('touchend',e=>{
-      try {
-        const dx=e.changedTouches[0].clientX-touchStartX;
-        const dy=e.changedTouches[0].clientY-touchStartY;
-        const dt=Date.now()-touchStartTime;
-        if(dt>500||Math.abs(dy)>Math.abs(dx)*0.7||Math.abs(dx)<55)return;
-        const activePage=document.querySelector('.page.active');
-        if(!activePage)return;
-        const currentId=activePage.id.replace('page-','');
-        const idx=pages.indexOf(currentId);
-        if(dx<0&&idx<pages.length-1){
-          goPage(pages[idx+1],document.querySelectorAll('.nav-btn')[idx+1]);
-        } else if(dx>0&&idx>0){
-          goPage(pages[idx-1],document.querySelectorAll('.nav-btn')[idx-1]);
-        }
-      } catch(e){}
-    },{passive:true});
-  } catch(e){}
-})();
+function updateDots(pid){document.querySelectorAll('.sdot').forEach(function(d){d.classList.toggle('active',d.dataset.page===pid);});}
 
-// ── SCROLL-AWARE HEADER ──
-(function initScrollHeader(){
-  try {
-    let lastY=0;
-    const hdr=document.getElementById('main-hdr');
-    if(!hdr) return;
-    window.addEventListener('scroll',()=>{
-      try {
-        const y=window.scrollY||window.pageYOffset||0;
-        if(y>lastY&&y>80){ hdr.style.transform='translateY(-100%)'; }
-        else { hdr.style.transform='translateY(0)'; }
-        lastY=y;
-      } catch(e){}
-    },{passive:true});
-  } catch(e){}
-})();
+(function(){try{
+  var pages=['calc','split','scam','war'],tx=0,ty=0,tt=0;
+  document.addEventListener('touchstart',function(e){try{tx=e.touches[0].clientX;ty=e.touches[0].clientY;tt=Date.now();}catch(x){}},{passive:true});
+  document.addEventListener('touchend',function(e){
+    try{
+      var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty,dt=Date.now()-tt;
+      if(dt>500||Math.abs(dy)>Math.abs(dx)*0.7||Math.abs(dx)<55)return;
+      var ap=document.querySelector('.page.active');if(!ap)return;
+      var idx=pages.indexOf(ap.id.replace('page-',''));
+      if(dx<0&&idx<pages.length-1)goPage(pages[idx+1],document.querySelectorAll('.nav-btn')[idx+1]);
+      else if(dx>0&&idx>0)goPage(pages[idx-1],document.querySelectorAll('.nav-btn')[idx-1]);
+    }catch(x){}
+  },{passive:true});
+  var lastY=0,hdr=document.getElementById('main-hdr');
+  if(hdr)window.addEventListener('scroll',function(){
+    try{var y=window.scrollY||window.pageYOffset||0;if(y>lastY&&y>80)hdr.style.transform='translateY(-100%)';else hdr.style.transform='translateY(0)';lastY=y;}catch(x){}
+  },{passive:true});
+}catch(x){}})();
 
 // ══════════════════════════════════════
 //  MODULE 1 — REAL COST CALCULATOR
@@ -945,10 +829,8 @@ function calcSetCustom(val) {
 }
 
 function calcRun() {
-  // INPUT VALIDATION
-  const travelers=Math.max(1,parseInt(document.getElementById('c-travelers').value)||1);
-  const nights=Math.max(1,parseInt(document.getElementById('c-nights').value)||CONFIG.defaultNights);
-  if(calcAirline==='custom'&&(!calcPrices.custom||calcPrices.custom<=0)){showToast('Enter your flight price first');return;}
+  const travelers=parseInt(document.getElementById('c-travelers').value);
+  const nights=parseInt(document.getElementById('c-nights').value)||4;
   const milOn=document.getElementById('c-mil-tog').classList.contains('on');
   const insOn=document.getElementById('c-ins-tog').classList.contains('on');
   const resortOn=document.getElementById('c-resort-tog').classList.contains('on');
@@ -963,7 +845,7 @@ function calcRun() {
   const checked=parseInt(document.getElementById('c-checked').value);
   const seat=parseInt(document.getElementById('c-seat').value);
   let bagPP=0;
-  if(calcAirline==='allegiant'||calcAirline==='split'){bagPP+=carryon*CONFIG.allegiantCarryOn*2;bagPP+=checked*CONFIG.allegiantChecked*2;if(milOn)bagPP=Math.max(0,bagPP-CONFIG.milBagCredit);}
+  if(calcAirline==='allegiant'||calcAirline==='split'){bagPP+=carryon*30*2;bagPP+=checked*40*2;if(milOn)bagPP=Math.max(0,bagPP-60);}
   const bagTotal=bagPP*travelers;
   const seatTotal=seat*travelers*2;
 
@@ -971,13 +853,13 @@ function calcRun() {
   const resortFee=resortOn?(parseFloat(document.getElementById('c-resort-fee').value)||0):0;
   const cleanFee=cleanOn?(parseFloat(document.getElementById('c-clean-fee').value)||0):0;
   const parkFee=parkOn?(parseFloat(document.getElementById('c-park-fee').value)||0):0;
-  const platPct=document.getElementById('c-platform').value==='airbnb'?CONFIG.airbnbPlatformFee:CONFIG.defaultPlatformFee;
+  const platPct=document.getElementById('c-platform').value==='airbnb'?0.14:0.12;
   const hotelBase=rate*nights;
   const resortTot=resortFee*nights;
   const parkTot=parkFee*nights;
-  const taxes=hotelBase*CONFIG.hotelTaxRate;
+  const taxes=hotelBase*0.13;
   const platFee=hotelBase*platPct;
-  const milDisc=milOn?hotelBase*CONFIG.milHotelDiscount:0;
+  const milDisc=milOn?hotelBase*0.12:0;
   const hotelTotal=hotelBase+resortTot+cleanFee+parkTot+taxes+platFee-milDisc;
 
   const xfer=parseFloat(document.getElementById('c-transport-cost').value)||0;
@@ -986,12 +868,12 @@ function calcRun() {
   const parkDays=parseInt(document.getElementById('c-park-days').value)||0;
   const parkRate=parseFloat(document.getElementById('c-park-rate').value)||0;
   const airportPark=parkDays*parkRate;
-  const transTot=(xfer*2*travelers)+(daily*nights)+(renDays*CONFIG.rentalCarPerDay)+airportPark;
+  const transTot=(xfer*2*travelers)+(daily*nights)+(renDays*75)+airportPark;
 
   const foodDay=parseInt(document.getElementById('c-food').value);
   const foodTot=foodDay*(nights+1)*travelers;
   const acts=parseFloat(document.getElementById('c-activities').value)||0;
-  const ins=insOn?CONFIG.insurancePerPerson*travelers:0;
+  const ins=insOn?55*travelers:0;
 
   // Cruise
   const cruiseOn=document.getElementById('c-cruise-tog').classList.contains('on');
@@ -1006,7 +888,7 @@ function calcRun() {
   const accommodationTotal=cruiseOn?cruiseTotal:hotelTotal;
 
   const grand=flightTotal+bagTotal+seatTotal+accommodationTotal+transTot+foodTot+acts+ins;
-  const perP=travelers>0?Math.round(grand/travelers):grand;
+  const perP=Math.round(grand/travelers);
 
   // Package comparison
   const pkgPrice=parseFloat(document.getElementById('c-pkg-price').value)||0;
@@ -1082,7 +964,7 @@ function calcRun() {
   if(cleanFee>0) warns.push(`Cleaning fee of $${cleanFee} hidden until final checkout`);
   if(calcAirline==='allegiant'&&carryon>0) warns.push('Allegiant carry-on — add at booking NOT gate (2× cost at gate)');
   if(platFee>50) warns.push(`Platform fee $${Math.round(platFee)} — call hotel direct to skip it`);
-  document.getElementById('c-warn-list').innerHTML=warns.map(w=>`<div class="warn-item">⚠️ ${sanitize(w)}</div>`).join('');
+  document.getElementById('c-warn-list').innerHTML=warns.map(w=>`<div class="warn-item">⚠️ ${w}</div>`).join('');
   document.getElementById('c-warn-card').style.display=warns.length?'block':'none';
 
   if(milOn){
@@ -1095,7 +977,7 @@ function calcRun() {
     document.getElementById('c-tip5').textContent='Find hotel on Booking.com then call direct — ask for price match, no resort fee';
   }
 
-  document.getElementById('c-results').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('c-results').scrollIntoView({behavior:'smooth'});
 }
 
 function cruiseLineChange(){
@@ -1125,7 +1007,7 @@ function cruiseManualGrat(){
 function calcCopy(){
   const t=document.getElementById('c-total').textContent;
   const s=document.getElementById('c-sub').textContent;
-  try{navigator.clipboard.writeText(`TripTrue Cost: ${t} — ${s}`).then(()=>showToast('Copied!')).catch(()=>showToast('Copy not supported'));}catch(e){showToast('Copy not supported');}
+  navigator.clipboard.writeText(`TripTrue Cost: ${t} — ${s}`).then(()=>showToast('Copied!'));
 }
 function calcReset(){document.getElementById('c-results').style.display='none';window.scrollTo({top:0,behavior:'smooth'});}
 
@@ -1205,29 +1087,19 @@ const sharedRouteFares = {
 
 const airlineBookUrls={AA:'https://www.aa.com',DL:'https://www.delta.com',UA:'https://www.united.com',WN:'https://www.southwest.com',B6:'https://www.jetblue.com',AS:'https://www.alaskaair.com',F9:'https://www.flyfrontier.com',NK:'https://www.spirit.com',G4:'https://www.allegiantair.com',SY:'https://www.suncountry.com',HA:'https://www.hawaiianairlines.com',OO:'https://www.skywest.com'};
 
-
+function getRouteKey(o,d){const k1=`${o}-${d}`,k2=`${d}-${o}`;return sharedRouteFares[k1]?k1:sharedRouteFares[k2]?k2:null;}
 
 function populateBothAirportDropdowns(){
   const sorted=[...sharedAirports].sort((a,b)=>a.name.localeCompare(b.name));
-  ['s-origin','s-dest','w-origin','w-dest'].forEach(function(id){
+  ['s-origin','s-dest','w-origin','w-dest'].forEach(id=>{
     const el=document.getElementById(id);
     if(!el)return;
-    sorted.forEach(function(a){
-      const opt=document.createElement('option');
-      opt.value=a.code;
-      opt.textContent=a.name;
-      el.appendChild(opt);
-    });
+    sorted.forEach(a=>{el.innerHTML+=`<option value="${a.code}">${a.name}</option>`;});
   });
-  // Set VPS → MDW defaults
-  const so=document.getElementById('s-origin');
-  const sd=document.getElementById('s-dest');
-  const wo=document.getElementById('w-origin');
-  const wd=document.getElementById('w-dest');
-  if(so)so.value='VPS';
-  if(sd)sd.value='MDW';
-  if(wo)wo.value='VPS';
-  if(wd)wd.value='MDW';
+  document.getElementById('s-origin').value='VPS';
+  document.getElementById('s-dest').value='MDW';
+  document.getElementById('w-origin').value='VPS';
+  document.getElementById('w-dest').value='MDW';
   splitLoadFares();
   warLoadFares();
 }
@@ -1295,10 +1167,10 @@ function splitRun(){
   bdHtml+=`<div class="bd-row"><div class="bd-left"><span class="bd-ico">✈️</span><div><div class="bd-name">Return — ${best.retName}</div><div class="bd-note">× ${travelers} traveler(s)</div></div></div><div class="bd-amt gold">$${Math.round(best.retT).toLocaleString()}</div></div>`;
   bdHtml+=`<div class="bd-total"><div class="bd-total-label">Total All-In</div><div class="bd-total-amt">$${Math.round(best.total).toLocaleString()}</div></div>`;
   document.getElementById('s-bd').innerHTML=bdHtml;
-  document.getElementById('s-results').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('s-results').scrollIntoView({behavior:'smooth'});
 }
 
-function splitCopy(){try{navigator.clipboard.writeText(`TripTrue Split Fare: ${document.getElementById('s-best-price').textContent} — ${document.getElementById('s-best-desc').textContent}`).then(()=>showToast('Copied!')).catch(()=>showToast('Copy not supported'));}catch(e){showToast('Copy not supported');}}
+function splitCopy(){navigator.clipboard.writeText(`TripTrue Split Fare: ${document.getElementById('s-best-price').textContent} — ${document.getElementById('s-best-desc').textContent}`).then(()=>showToast('Copied!'));}
 function splitReset(){document.getElementById('s-results').style.display='none';window.scrollTo({top:0,behavior:'smooth'});}
 
 // ══════════════════════════════════════
@@ -1326,61 +1198,53 @@ const scamBuiltIn={
 
 function scamGetCustom(){try{return JSON.parse(Store.get('triptrue_cities')||'{}');}catch{return {};}}
 function scamSaveCustom(obj){Store.set('triptrue_cities',JSON.stringify(obj));}
-function scamAllCities(){return{...scamBuiltIn,...(typeof extraCities!=="undefined"?extraCities:{}),...scamGetCustom()};}
+function scamAllCities(){return Object.assign({},scamBuiltIn,typeof extraCities!=="undefined"?extraCities:{},scamGetCustom());}
 
 function scamRenderGrid(){
-  const custom=scamGetCustom();
-  const cities=Object.assign({},scamBuiltIn,typeof extraCities!=='undefined'?extraCities:{},custom);
-  const grid=document.getElementById('sc-dest-grid');
+  var custom=scamGetCustom();
+  var allC=Object.assign({},scamBuiltIn,typeof extraCities!=="undefined"?extraCities:{},custom);
+  var grid=document.getElementById('sc-dest-grid');
   if(!grid)return;
-  window._sp=function(k){
-    scSelectedDest=k;
-    scamRenderGrid();
-    var b=document.getElementById('sc-show-btn');
-    if(b){b.style.transform='scale(1.03)';setTimeout(function(){b.style.transform='';},180);}
-  };
-  window._sd=function(k){
-    var c=scamGetCustom();
-    delete c[k];
-    scamSaveCustom(c);
-    if(scSelectedDest===k)scSelectedDest='chicago';
-    scamRenderGrid();
-    showToast('City removed');
-  };
-  var html='';
-  Object.entries(cities).forEach(function(entry){
-    var key=entry[0],c=entry[1];
-    var sk=sanitizeKey(key);
+  while(grid.firstChild)grid.removeChild(grid.firstChild);
+  Object.keys(allC).forEach(function(key){
+    var c=allC[key];
+    var sk=(key||'').toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,40);
     var isCustom=!!custom[key];
     var riskCls=c.risk==='High'?'risk-high':c.risk==='Medium'?'risk-medium':'risk-low';
-    var sel=scSelectedDest===key?'on':'';
-    var cust=isCustom?'custom-city':'';
-    var del=isCustom?'<span class="dest-del" onclick="event.stopPropagation();window._sd(\''+sk+'\')">&times;</span>':'';
-    html+='<div class="dest-card '+sel+' '+cust+'" onclick="window._sp(\''+sk+'\')">'
-      +del
-      +'<div class="dest-ico">'+sanitize(c.ico||'🌍')+'</div>'
-      +'<div class="dest-name">'+sanitize(c.name)+'</div>'
-      +'<div class="dest-risk '+riskCls+'">'+sanitize(c.risk)+' Risk</div>'
-      +'</div>';
+    var card=document.createElement('div');
+    card.className='dest-card'+(scSelectedDest===key?' on':'')+(isCustom?' custom-city':'');
+    if(isCustom){
+      var del=document.createElement('span');
+      del.className='dest-del';
+      del.textContent='x';
+      del.addEventListener('click',function(e){
+        e.stopPropagation();
+        var c2=scamGetCustom();delete c2[sk];scamSaveCustom(c2);
+        if(scSelectedDest===sk)scSelectedDest='chicago';
+        scamRenderGrid();showToast('City removed');
+      });
+      card.appendChild(del);
+    }
+    var ico=document.createElement('div');ico.className='dest-ico';ico.textContent=c.ico||'';card.appendChild(ico);
+    var nm=document.createElement('div');nm.className='dest-name';nm.textContent=c.name||key;card.appendChild(nm);
+    var rsk=document.createElement('div');rsk.className='dest-risk '+riskCls;rsk.textContent=(c.risk||'Medium')+' Risk';card.appendChild(rsk);
+    (function(ck){
+      card.addEventListener('click',function(){
+        scSelectedDest=ck;scamRenderGrid();
+        var btn=document.getElementById('sc-show-btn');
+        if(btn){btn.style.transform='scale(1.03)';setTimeout(function(){btn.style.transform='';},180);}
+      });
+    })(sk);
+    grid.appendChild(card);
   });
-  grid.innerHTML=html;
 }
 
-function scamPickDest(key){
-  scSelectedDest=key;
-  scamRenderGrid();
-  // Pulse the Show Scams button so user knows next step
-  const btn=document.getElementById('sc-show-btn');
-  if(btn){
-    btn.style.transform='scale(1.03)';
-    setTimeout(()=>btn.style.transform='',200);
-  }
-}
+function scamPickDest(key){scSelectedDest=key;scamRenderGrid();}
 
 function scamDeleteCity(key){
-  if(!key)return;
+  e.stopPropagation();
   const custom=scamGetCustom();
-  delete custom[sanitizeKey(key)];
+  delete custom[key];
   scamSaveCustom(custom);
   if(scSelectedDest===key)scSelectedDest='chicago';
   scamRenderGrid();
@@ -1396,18 +1260,18 @@ function scamShow(){
 
   let html='<div class="scam-hdr">⚠️ Tourist Traps & Fair Prices</div>';
   (data.scams||[]).forEach(s=>{
-    html+=`<div class="scam-item"><div class="scam-title">${sanitize(s.title)}</div><div class="scam-desc">${sanitize(s.desc)}</div><div class="price-row"><div class="price-item"><span class="price-label">Tourist:</span><span class="tourist-price">${sanitize(s.touristPrice)}</span></div><div class="price-item"><span class="price-label">Local:</span><span class="local-price">${sanitize(s.localPrice)}</span></div></div><div class="scam-tip-box">✓ ${sanitize(s.tip)}</div></div>`;
+    html+=`<div class="scam-item"><div class="scam-title">${s.title}</div><div class="scam-desc">${s.desc}</div><div class="price-row"><div class="price-item"><span class="price-label">Tourist:</span><span class="tourist-price">${s.touristPrice}</span></div><div class="price-item"><span class="price-label">Local:</span><span class="local-price">${s.localPrice}</span></div></div><div class="scam-tip-box">✓ ${s.tip}</div></div>`;
   });
   document.getElementById('sc-scam-list').innerHTML=html;
   document.getElementById('sc-tips-grid').innerHTML=(data.tips||[]).map(t=>`<div class="tip-mini"><div class="tip-ico">${t.ico||'💡'}</div><div class="tip-title-sm">${t.title}</div><div class="tip-text-sm">${t.text}</div></div>`).join('');
-  try{document.getElementById('sc-results').scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}
+  document.getElementById('sc-results').scrollIntoView({behavior:'smooth'});
 }
 
 function scamCopy(){
   const data=scamAllCities()[scSelectedDest];
   if(!data)return;
   const text=`SCAM SHIELD — ${data.name}\nRisk: ${data.risk}\n\n`+(data.scams||[]).map(s=>`${s.title}\nTourist: ${s.touristPrice} | Local: ${s.localPrice}\nAvoid: ${s.tip}`).join('\n\n');
-  try{navigator.clipboard.writeText(text).then(()=>showToast('Copied!')).catch(()=>showToast('Copy not supported'));}catch(e){showToast('Copy not supported');}
+  navigator.clipboard.writeText(text).then(()=>showToast('Copied!'));
 }
 function scamReset(){document.getElementById('sc-results').style.display='none';window.scrollTo({top:0,behavior:'smooth'});}
 
@@ -1416,12 +1280,8 @@ function ncAddScam(){
   if(c.querySelectorAll('.scam-entry').length>=5){showToast('Max 5 scam entries');return;}
   ncScamCount++;const n=ncScamCount;
   const div=document.createElement('div');div.className='scam-entry';div.id=`ncs-${n}`;
-  div.innerHTML=`<div class="scam-entry-hdr"><span class="scam-entry-title">Scam #${c.querySelectorAll('.scam-entry').length+1}</span><button class="entry-del-btn" data-rmid="ncs-${n}">Remove</button></div><div class="row" style="margin-bottom:9px"><div class="fld"><label>Title (include emoji)</label><input type="text" id="ncs${n}-title" placeholder="e.g. 🚕 Airport Taxi Overcharge"></div></div><div class="row" style="margin-bottom:9px"><div class="fld"><label>Description</label><textarea id="ncs${n}-desc" rows="2" placeholder="What happens and why it's a problem"></textarea></div></div><div class="row c2" style="margin-bottom:9px"><div class="fld"><label>Tourist Price</label><input type="text" id="ncs${n}-tourist" placeholder="e.g. $50–$80"></div><div class="fld"><label>Local Price</label><input type="text" id="ncs${n}-local" placeholder="e.g. $15–$20"></div></div><div class="row"><div class="fld"><label>How to Avoid</label><input type="text" id="ncs${n}-tip" placeholder="e.g. Use Grab app"></div></div>`;
+  div.innerHTML=`<div class="scam-entry-hdr"><span class="scam-entry-title">Scam #${c.querySelectorAll('.scam-entry').length+1}</span><button class="entry-del-btn" onclick="document.getElementById('ncs-${n}').remove()">Remove</button></div><div class="row" style="margin-bottom:9px"><div class="fld"><label>Title (include emoji)</label><input type="text" id="ncs${n}-title" placeholder="e.g. 🚕 Airport Taxi Overcharge"></div></div><div class="row" style="margin-bottom:9px"><div class="fld"><label>Description</label><textarea id="ncs${n}-desc" rows="2" placeholder="What happens and why it's a problem"></textarea></div></div><div class="row c2" style="margin-bottom:9px"><div class="fld"><label>Tourist Price</label><input type="text" id="ncs${n}-tourist" placeholder="e.g. $50–$80"></div><div class="fld"><label>Local Price</label><input type="text" id="ncs${n}-local" placeholder="e.g. $15–$20"></div></div><div class="row"><div class="fld"><label>How to Avoid</label><input type="text" id="ncs${n}-tip" placeholder="e.g. Use Grab app"></div></div>`;
   c.appendChild(div);
-  // Attach remove listener directly
-  div.querySelector('[data-rmid]').addEventListener('click',function(){
-    document.getElementById(this.dataset.rmid)?.remove();
-  });
 }
 
 function ncAddTip(){
@@ -1429,19 +1289,16 @@ function ncAddTip(){
   if(c.querySelectorAll('.scam-entry').length>=4){showToast('Max 4 tips');return;}
   ncTipCount++;const n=ncTipCount;
   const div=document.createElement('div');div.className='scam-entry';div.id=`nct-${n}`;
-  div.innerHTML=`<div class="scam-entry-hdr"><span class="scam-entry-title">Tip #${c.querySelectorAll('.scam-entry').length+1}</span><button class="entry-del-btn" data-rmid="nct-${n}">Remove</button></div><div class="row c3" style="margin-bottom:9px"><div class="fld"><label>Emoji</label><input type="text" id="nct${n}-ico" placeholder="🚗" maxlength="4"></div><div class="fld" style="grid-column:span 2"><label>Title</label><input type="text" id="nct${n}-title" placeholder="e.g. Use Grab App"></div></div><div class="row"><div class="fld"><label>Detail</label><input type="text" id="nct${n}-text" placeholder="e.g. Pre-set pricing, avoids all taxi scams"></div></div>`;
+  div.innerHTML=`<div class="scam-entry-hdr"><span class="scam-entry-title">Tip #${c.querySelectorAll('.scam-entry').length+1}</span><button class="entry-del-btn" onclick="document.getElementById('nct-${n}').remove()">Remove</button></div><div class="row c3" style="margin-bottom:9px"><div class="fld"><label>Emoji</label><input type="text" id="nct${n}-ico" placeholder="🚗" maxlength="4"></div><div class="fld" style="grid-column:span 2"><label>Title</label><input type="text" id="nct${n}-title" placeholder="e.g. Use Grab App"></div></div><div class="row"><div class="fld"><label>Detail</label><input type="text" id="nct${n}-text" placeholder="e.g. Pre-set pricing, avoids all taxi scams"></div></div>`;
   c.appendChild(div);
-  div.querySelector('[data-rmid]').addEventListener('click',function(){
-    document.getElementById(this.dataset.rmid)?.remove();
-  });
 }
 
 function ncSave(){
-  const name=document.getElementById('nc-name').value.trim().slice(0,CONFIG.maxCityNameLen);
-  const emoji=document.getElementById('nc-emoji').value.trim().slice(0,4)||'🌍';
+  const name=document.getElementById('nc-name').value.trim();
+  const emoji=document.getElementById('nc-emoji').value.trim()||'🌍';
   const risk=document.getElementById('nc-risk').value;
-  const riskDesc=document.getElementById('nc-riskdesc').value.trim().slice(0,200);
-  if(!name||name.length<2){showToast('Enter a valid city name (2+ characters)');return;}
+  const riskDesc=document.getElementById('nc-riskdesc').value.trim();
+  if(!name){showToast('Enter a city name');return;}
 
   const scams=[];
   document.querySelectorAll('#nc-scam-entries .scam-entry').forEach(el=>{
@@ -1451,7 +1308,7 @@ function ncSave(){
     const tourist=(document.getElementById(`ncs${n}-tourist`)?.value||'').trim();
     const local=(document.getElementById(`ncs${n}-local`)?.value||'').trim();
     const tip=(document.getElementById(`ncs${n}-tip`)?.value||'').trim();
-    if(title)scams.push({title:title.slice(0,CONFIG.maxScamTitleLen),desc:desc.slice(0,CONFIG.maxScamDescLen),touristPrice:tourist.slice(0,50),localPrice:local.slice(0,50),tip:tip.slice(0,CONFIG.maxTipTextLen)});
+    if(title)scams.push({title,desc,touristPrice:tourist,localPrice:local,tip});
   });
 
   const tips=[];
@@ -1463,7 +1320,7 @@ function ncSave(){
     if(title)tips.push({ico,title,text});
   });
 
-  const key=sanitizeKey(name);
+  const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
   const custom=scamGetCustom();
   custom[key]={name,ico:emoji,risk,alertText:riskDesc||`${risk} risk — stay alert and verify prices before paying.`,scams,tips};
   scamSaveCustom(custom);
@@ -1478,12 +1335,6 @@ function ncSave(){
 
   scamRenderGrid();
   showToast(`${name} saved ✓`);
-  // Auto-show the newly saved city scams
-  setTimeout(()=>{
-    scamShow();
-    const results=document.getElementById('sc-results');
-    if(results) results.scrollIntoView({behavior:'smooth',block:'start'});
-  },100);
 }
 
 // ══════════════════════════════════════
@@ -1507,14 +1358,8 @@ function warLoadFares(){
   container.innerHTML=sorted.map(([code,price])=>{
     const rt=price*2;
     const isCheap=price===sorted[0][1];
-    return `<div class="fare-pill ${isCheap?'on':''}" id="wp-${code}" data-wcode="${code}" data-wrt="${rt}"><span>${splitAirlines[code]?.name||code}</span><span class="pill-price">$${rt}</span><span style="font-size:8px;color:var(--muted)">RT</span></div>`;
+    return `<div class="fare-pill ${isCheap?'on':''}" id="wp-${code}" onclick="warSelectPill('${code}',${rt})"><span>${splitAirlines[code]?.name||code}</span><span class="pill-price">$${rt}</span><span style="font-size:8px;color:var(--muted)">RT</span></div>`;
   }).join('');
-  // Attach listeners directly - no inline onclick
-  container.querySelectorAll('.fare-pill').forEach(function(pill){
-    pill.addEventListener('click',function(){
-      warSelectPill(pill.dataset.wcode, parseFloat(pill.dataset.wrt));
-    });
-  });
   if(sorted.length>0){warSelectedPill={code:sorted[0][0],price:sorted[0][1]*2};}
 }
 
@@ -1531,7 +1376,7 @@ function warAdd(){
   const travelers=parseInt(document.getElementById('w-travelers').value);
   if(!o||!d||o===d){showToast('Select valid route');return;}
   if(!warSelectedPill){showToast('Select an airline fare pill');return;}
-  if(!target||target<=0){showToast('Enter a target price greater than $0');return;}
+  if(!target){showToast('Enter your target price');return;}
 
   const key=getRouteKey(o,d);
   const allFares=key?sharedRouteFares[key]:{};
@@ -1556,31 +1401,29 @@ function warAdd(){
 function warRemove(id){warRoutes=warRoutes.filter(r=>r.id!==id);warRenderAll();}
 
 function warUpdate(id){
-  const r=warRoutes.find(function(x){return x.id===id;});
+  var r=warRoutes.find(function(x){return x.id===id;});
   if(!r)return;
-  const existingWrap=document.getElementById('wup-'+id);
-  if(existingWrap){existingWrap.remove();return;}
-  const wrap=document.createElement('div');
-  wrap.id='wup-'+id;
-  wrap.style.cssText='display:flex;gap:8px;margin-top:10px;';
-  const inp=document.createElement('input');
+  var ex=document.getElementById('wup-'+id);
+  if(ex){ex.remove();return;}
+  var wrap=document.createElement('div');
+  wrap.id='wup-'+id;wrap.style.cssText='display:flex;gap:8px;margin-top:10px;';
+  var inp=document.createElement('input');
   inp.type='number';inp.placeholder='New price $';
   inp.style.cssText='flex:1;background:var(--card);border:1.5px solid var(--accent);border-radius:8px;padding:9px 12px;color:var(--text);font-size:16px;outline:none;';
-  const btn=document.createElement('button');
-  btn.textContent='Save';
-  btn.style.cssText='background:var(--accent);color:#000;border:none;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer;font-size:13px;touch-action:manipulation;';
-  btn.addEventListener('click',function(){
-    const p=parseFloat(inp.value);
+  var sb=document.createElement('button');
+  sb.textContent='Save';
+  sb.style.cssText='background:var(--accent);color:#000;border:none;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer;font-size:13px;touch-action:manipulation;';
+  sb.addEventListener('click',function(){
+    var p=parseFloat(inp.value);
     if(!p||isNaN(p)||p<=0){showToast('Enter a valid price');return;}
-    const old=r.current;
-    r.current=p;r.history.shift();r.history.push(p);
-    if(p<old)warPushAlert('green','📉','Price Drop — '+r.origin+'→'+r.dest+' '+r.airlineName,'Dropped from $'+old+' to $'+p+'.'+(p<=r.target?' AT TARGET — BOOK NOW.':''));
-    else warPushAlert('orange','📈','Price Up — '+r.origin+'→'+r.dest,'Rose from $'+old+' to $'+p+'.');
+    var prev=r.current;r.current=p;r.history.shift();r.history.push(p);
+    if(p<prev)warPushAlert('green','drop','Price Drop','Dropped from $'+prev+' to $'+p+(p<=r.target?' - AT TARGET':''));
+    else warPushAlert('orange','up','Price Up','Rose from $'+prev+' to $'+p+'.');
     warRenderAll();
   });
-  wrap.appendChild(inp);wrap.appendChild(btn);
-  const updBtn=document.querySelector('[data-wupdate="'+id+'"]');
-  if(updBtn)updBtn.closest('.track-card').appendChild(wrap);
+  wrap.appendChild(inp);wrap.appendChild(sb);
+  var ub=document.querySelector('[data-wupdate="'+id+'"]');
+  if(ub)ub.closest('.track-card').appendChild(wrap);
   setTimeout(function(){inp.focus();},50);
 }
 
@@ -1607,7 +1450,7 @@ function warRenderAll(){
         <div class="track-bar-wrap"><div class="track-bar-labels"><span>To target</span><span>${pct}%</span></div><div class="track-bar-bg"><div class="track-bar-fill" style="width:${pct}%;background:${bc}"></div></div></div>
         <div class="history-wrap"><div class="history-title">7-Day Trend</div><div class="history-chart">${histHtml}</div></div>
         ${Object.keys(r.allFares).length>1?`<div style="margin-bottom:9px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:5px;">All Airlines This Route</div><div class="fares-table">${faresHtml}</div></div>`:''}
-        <div class="track-actions"><button class="track-btn book" data-bookurl="${bookUrl}">🔗 Book</button><button class="track-btn" data-wupdate="${r.id}">🔄 Update</button><button class="track-btn remove" data-wremove="${r.id}">✕ Remove</button></div>
+        <div class="track-actions"><button class="track-btn book" onclick="window.open('${bookUrl}','_blank')">🔗 Book</button><button class="track-btn" onclick="warUpdate(${r.id})">🔄 Update</button><button class="track-btn remove" onclick="warRemove(${r.id})">✕ Remove</button></div>
       </div>`;
     }).join('');
   }
@@ -1616,18 +1459,6 @@ function warRenderAll(){
   if(warAlerts.length===0){alertWrap.innerHTML=`<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px;">No alerts yet. Add a route to start monitoring.</div>`;}
   else{alertWrap.innerHTML=warAlerts.map(a=>`<div class="alert-item ${a.type}"><div class="alert-ico">${a.ico}</div><div><div class="alert-title">${a.title}</div><div class="alert-desc">${a.desc}</div><div class="alert-time">${a.time}</div></div></div>`).join('');}
 
-  // Single assigned handler - no stacking, safe re-render
-  const tracksEl=document.getElementById('w-tracks');
-  if(tracksEl){
-    tracksEl.onclick=function(e){
-      const bookBtn=e.target.closest('[data-bookurl]');
-      if(bookBtn){try{window.open(bookBtn.dataset.bookurl,'_blank');}catch(ex){}return;}
-      const updBtn=e.target.closest('[data-wupdate]');
-      if(updBtn){warUpdate(parseInt(updBtn.dataset.wupdate));return;}
-      const remBtn=e.target.closest('[data-wremove]');
-      if(remBtn){warRemove(parseInt(remBtn.dataset.wremove));return;}
-    };
-  }
   document.getElementById('w-stat-tracking').textContent=warRoutes.length;
   document.getElementById('w-stat-deals').textContent=warRoutes.filter(r=>warGetStatus(r)==='deal').length;
   document.getElementById('w-stat-airlines').textContent=new Set(warRoutes.map(r=>r.airlineCode)).size;
@@ -1636,6 +1467,7 @@ function warRenderAll(){
 // ══════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════
+
 // ── EXTENDED SCAM CITY DATABASE ──
 const extraCities = {
   amsterdam:{name:'Amsterdam',ico:'🇳🇱',risk:'Medium',alertText:'Medium — Bike rental scams and tourist zone markups are the main traps.',scams:[{title:'🚲 Fake Bike Rentals',desc:'Unlicensed rental shops charge 3× market rate and demand cash deposits.',touristPrice:'€30–€50/day',localPrice:'€10–€15 at MacBike or Yellow Bike',tip:'Only rent from established chains like MacBike or your hotel concierge.'},{title:'🍺 Heineken Experience Area Bars',desc:'Bars immediately near tourist attractions mark up 200–300%.',touristPrice:'€8–€12 per beer',localPrice:'€3–€5 at a brown café (bruine kroeg)',tip:'Walk 3+ blocks from any tourist attraction. Brown cafés are local and half the price.'},{title:'💊 Street Drug Offers',desc:'Illegal substances sold near Leidseplein — entrapment risk in some areas.',touristPrice:'Legal and personal safety risk',localPrice:'Coffee shops only — licensed only',tip:'Only enter licensed coffee shops. Never buy from street dealers.'},{title:'💱 Currency Exchange Kiosks',desc:'Airport and tourist area exchange booths charge 8–15% fees.',touristPrice:'10–15% above market',localPrice:'ABN AMRO or ING ATM',tip:'Use your bank ATM. Never exchange at tourist kiosks.'}],tips:[{ico:'🚲',title:'Get an OV-Chip Card',text:'Public transit card covers trams, buses, metro. €2.90 per ride.'},{ico:'🏘️',title:'Eat in De Pijp',text:'Local neighborhood — better food, real prices, no tourists.'},{ico:'💳',title:'Cards Everywhere',text:'Amsterdam is nearly cashless. Cards accepted almost everywhere.'},{ico:'🚫',title:'Lock Your Bike',text:'Bike theft is extremely common. Use two locks minimum.'}]},
@@ -1656,17 +1488,8 @@ const extraCities = {
   phuket:{name:'Phuket',ico:'🇹🇭',risk:'High',alertText:'High — Taxi scams, tuk-tuk overcharging, and jet ski damage scams are extremely common.',scams:[{title:'🚕 Tuk-Tuk Overcharge',desc:'Tuk-tuks in Phuket charge tourist prices 5–10× the fair rate and often take you to shops for commissions.',touristPrice:'฿300–฿800 for short ride',localPrice:'฿50–฿150 on Grab',tip:'Use Grab app exclusively in Phuket. Tuk-tuks are for short trips where you\'ve agreed on price first.'},{title:'🛵 Jet Ski Damage Scam',desc:'Jet ski rental operators claim you damaged the jet ski and demand $200–$500.',touristPrice:'$200–$500 invented damage claim',localPrice:'Document everything before and after — or skip jet skis',tip:'Photograph or video the jet ski from every angle before and after use. Have a witness. Or avoid jet skis entirely in Phuket.'},{title:'🐘 Elephant Camp Overpricing',desc:'Patong-area elephant camps charge 3–4× what ethical sanctuaries charge.',touristPrice:'฿2,500–฿4,000',localPrice:'฿1,500–฿2,000 at reputable sanctuaries',tip:'Choose elephant sanctuaries where riding is NOT offered. Elephant Nature Park and Wild Elephant Valley are ethical.'},{title:'💎 Gem Store Scam',desc:'Taxi drivers take you to "special" gem stores where they earn commissions.',touristPrice:'Massively overpriced gems',localPrice:'Skip entirely',tip:'Never accept a ride to a "special" shop. The driver earns commission regardless of your purchase.'}],tips:[{ico:'🚗',title:'Grab App',text:'Only way to get fair pricing on transport in Phuket.'},{ico:'🏖️',title:'Kata Over Patong',text:'Kata and Karon beaches are quieter, cheaper, and less scam-heavy than Patong.'},{ico:'🍜',title:'Street Food Night Markets',text:'Phuket Town night market — best food, ฿30–฿80 per dish.'},{ico:'🤿',title:'Book Tours Online',text:'Snorkeling and island hopping tours online = 50–70% cheaper than beach vendors.'}]},
 };
 
-(function init(){try{
-  // Document-level scam grid handler — survives any re-render
-  document.addEventListener('click',function(e){
-    var grid=document.getElementById('sc-dest-grid');
-    if(!grid||!grid.contains(e.target))return;
-    var del=e.target.closest('[data-delkey]');
-    if(del){e.stopPropagation();scamDeleteCity(del.dataset.delkey);return;}
-    var card=e.target.closest('[data-citykey]');
-    if(card){scamPickDest(card.dataset.citykey);}
-  });
-  // Merge extended cities before first render
+(function init(){
+  // Merge extended cities first — must happen before scamRenderGrid
   Object.assign(scamBuiltIn, extraCities);
   // Skip onboard if returning user
   if(Store.get('tt_onboarded')==='1'){
@@ -1677,9 +1500,7 @@ const extraCities = {
   warRenderAll();
   ncAddScam();
   ncAddTip();
-}catch(e){console.warn("TripTrue init error:",e);}
 })();
-
 
 
 </script>
