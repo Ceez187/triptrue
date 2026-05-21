@@ -34,7 +34,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 
 /* ── PAGES ── */
 .page{display:none;padding:20px 16px 0;width:100%;box-sizing:border-box;}
-.page.active{display:block !important;width:100%;min-height:50vh;}
+.page.active{display:block;width:100%;min-height:50vh;}
 
 /* ── SHARED COMPONENTS ── */
 .hero{background:linear-gradient(135deg,rgba(245,196,24,0.08),rgba(91,142,240,0.05));border:1px solid rgba(245,196,24,0.15);border-radius:14px;padding:16px;margin-bottom:20px;}
@@ -312,7 +312,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 .crowd-btn{display:block;width:100%;background:none;border:1.5px dashed var(--border);border-radius:10px;padding:11px;color:var(--sub);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-align:center;margin-top:12px;transition:all 0.2s;}
 .crowd-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-.sdot{width:5px;height:5px;border-radius:50%;background:var(--muted);transition:all 0.2s;}.sdot.active{width:16px;border-radius:3px;background:var(--accent);}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--muted);transition:all 0.2s;}.sdot.active{width:8px;border-radius:50%;background:var(--accent);}
 .share-card{background:linear-gradient(135deg,#0e0e1a,#141428);border:2px solid var(--accent);border-radius:18px;padding:20px;margin-bottom:14px;display:none;}
 .share-card.show{display:block;}
 .sc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
@@ -377,7 +377,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 <!-- ════════════════════════════════════
      PAGE 1 — REAL COST CALCULATOR
      ════════════════════════════════════ -->
-<div class="page active" id="page-calc">
+<div class="page" id="page-calc">
 
   <div class="hero">
     <h2>💰 Real Cost Calculator</h2>
@@ -791,11 +791,11 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 </div>
 
 <!-- BOTTOM NAV -->
-<div id="swipe-dots" style="position:fixed;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 6px);left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:101;pointer-events:none;"><div class="sdot" data-page="war"></div><div class="sdot" data-page="split"></div><div class="sdot" data-page="calc"></div><div class="sdot" data-page="scam"></div></div>
+<div id="swipe-dots" style="position:fixed;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 12px);left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:99;pointer-events:none;"><div class="sdot active" data-page="calc"></div><div class="sdot" data-page="split"></div><div class="sdot" data-page="war"></div><div class="sdot" data-page="scam"></div></div>
 <nav class="nav">
-  <button class="nav-btn" onclick="goPage('war',this)"><span class="nav-ico">📈</span><span class="nav-label">War Room</span></button>
-  <button class="nav-btn" onclick="goPage('split',this)"><span class="nav-ico">⚡</span><span class="nav-label">Split Fare</span></button>
   <button class="nav-btn active" onclick="goPage('calc',this)"><span class="nav-ico">💰</span><span class="nav-label">Real Cost</span></button>
+  <button class="nav-btn" onclick="goPage('split',this)"><span class="nav-ico">⚡</span><span class="nav-label">Split Fare</span></button>
+  <button class="nav-btn" onclick="goPage('war',this)"><span class="nav-ico">📈</span><span class="nav-label">War Room</span></button>
   <button class="nav-btn" onclick="goPage('scam',this)"><span class="nav-ico">🛡️</span><span class="nav-label">Scam Shield</span></button>
 </nav>
 
@@ -818,35 +818,17 @@ function sanitizeKey(str){return (str||'').toLowerCase().replace(/[^a-z0-9_]/g,'
 // ══════════════════════════════════════
 const modNames = {calc:'Real Cost',split:'Split Fare',scam:'Scam Shield',war:'War Room'};
 
-function goPage(id, btn) {
-  try{
-    var allPages=document.querySelectorAll('.page');
-    for(var i=0;i<allPages.length;i++){
-      allPages[i].classList.remove('active');
-      allPages[i].setAttribute('style','display:none');
-    }
-    var allBtns=document.querySelectorAll('.nav-btn');
-    for(var j=0;j<allBtns.length;j++){allBtns[j].classList.remove('active');}
-    var pg=document.getElementById('page-'+id);
-    if(pg){
-      pg.setAttribute('style','display:block');
-      pg.classList.add('active');
-    }
-    if(btn)btn.classList.add('active');
-    var mod=document.getElementById('hdr-mod');
-    if(mod)mod.textContent=modNames[id]||id;
-    // Force scroll reset after render - critical for mobile
-    setTimeout(function(){
-      try{
-        window.scrollTo({top:0,behavior:'instant'});
-        document.documentElement.scrollTop=0;
-        document.body.scrollTop=0;
-      }catch(ex){window.scrollTo(0,0);}
-    },0);
-    var hdr=document.getElementById('main-hdr');
-    if(hdr)hdr.style.transform='translateY(0)';
-    if(typeof updateDots==='function')updateDots(id);
-  }catch(ex){console.error('goPage:',ex);}
+function goPage(id,btn){
+  var pages=document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++){pages[i].style.display='none';}
+  var btns=document.querySelectorAll('.nav-btn');
+  for(var j=0;j<btns.length;j++){btns[j].classList.remove('active');}
+  var pg=document.getElementById('page-'+id);
+  if(pg){pg.style.display='block';}
+  if(btn){btn.classList.add('active');}
+  var mod=document.getElementById('hdr-mod');
+  if(mod){mod.textContent=modNames[id]||id;}
+  if(typeof updateDots==='function'){updateDots(id);}
 }
 
 function toggleSOP(id) {
@@ -884,7 +866,7 @@ function closeOnboard(){
 function updateDots(pid){document.querySelectorAll('.sdot').forEach(function(d){d.classList.toggle('active',d.dataset.page===pid);});}
 
 (function(){try{
-  var pages=['war','split','calc','scam'],tx=0,ty=0,tt=0;
+  var pages=['calc','split','war','scam'],tx=0,ty=0,tt=0;
   document.addEventListener('touchstart',function(e){try{tx=e.touches[0].clientX;ty=e.touches[0].clientY;tt=Date.now();}catch(x){}},{passive:true});
   document.addEventListener('touchend',function(e){
     try{
@@ -1756,6 +1738,9 @@ document.addEventListener("DOMContentLoaded",function(){
     var calcPage=document.getElementById('page-calc');
     if(calcPage){calcPage.setAttribute('style','display:block');calcPage.classList.add('active');}
   }catch(ex){}
+  // Set default page
+  var calcBtn=document.querySelector('.nav-btn');
+  goPage('calc', calcBtn);
 })();
 });
 
