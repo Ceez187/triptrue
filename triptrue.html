@@ -741,55 +741,48 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
      PAGE 4 — PRICE WAR ROOM
      ════════════════════════════════════ -->
 <div class="page" id="page-war">
-  <div class="hero green">
-    <h2>📈 Price War Room</h2>
-    <p>Select a route and every airline flying it auto-loads with current fares. Set your target, watch for deals, book at the right moment.</p>
-    <div style="margin-top:10px;font-size:11px;color:var(--muted);background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px;line-height:1.6;">⚠️ Fares shown are <strong style="color:var(--text)">typical reference prices</strong> — not live data. Always verify current prices at the airline's site before tracking or booking.</div>
-  </div>
-  <div class="sec">
-    <div class="sec-hdr"><span class="sec-num">01</span><span class="sec-title">Pick a Route</span><span class="sec-ico">✈️</span></div>
-    <div class="sec-body">
-      <div class="row c2">
-        <div class="fld"><label>From</label><select id="w-origin" onchange="warLoadFares()"><option value="">-- Origin --</option></select></div>
-        <div class="fld"><label>To</label><select id="w-dest" onchange="warLoadFares()"><option value="">-- Destination --</option></select></div>
-      </div>
-      <div class="fld" style="margin-top:8px;"><label>Airline Fares — Tap to Select</label><div id="w-fare-pills" class="fare-pills"></div></div>
+  <h2 style="color:#f5c418;font-size:24px;padding:20px 20px 6px;">📈 Price War Room</h2>
+  <p style="color:#9090b0;padding:0 20px 12px;font-size:13px;">Track flight prices and know exactly when to book.</p>
+  <div style="margin:0 16px 16px;background:rgba(245,196,24,0.06);border:1px solid rgba(245,196,24,0.2);border-radius:12px;padding:14px;">
+    <div style="font-size:11px;font-weight:700;color:#f5c418;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">HOW TO USE</div>
+    <div style="font-size:12px;color:#f2f2fc;line-height:1.8;">
+      <strong style="color:#f5c418;">1.</strong> Pick your origin and destination airport<br>
+      <strong style="color:#f5c418;">2.</strong> Tap an airline fare pill to select it<br>
+      <strong style="color:#f5c418;">3.</strong> Enter your target price — what you want to pay<br>
+      <strong style="color:#f5c418;">4.</strong> Hit <strong>Add to Watchlist</strong><br>
+      <strong style="color:#f5c418;">5.</strong> Come back and tap <strong>Update</strong> to log new prices over time<br>
+      <strong style="color:#f5c418;">6.</strong> When status shows <strong style="color:#3dd68c;">BOOK NOW</strong> — buy immediately
     </div>
+    <div style="margin-top:10px;font-size:11px;color:#9090b0;background:rgba(0,0,0,0.2);border-radius:8px;padding:8px;">⚠️ Fares shown are reference prices — not live data. Always verify at the airline site before booking.</div>
   </div>
-  <div class="sec">
-    <div class="sec-hdr"><span class="sec-num">02</span><span class="sec-title">Set Your Target</span><span class="sec-ico">🎯</span></div>
-    <div class="sec-body">
-      <div class="row c3">
-        <div class="fld" style="grid-column:span 2"><label>Target Price (RT per person $)</label><input type="number" id="w-target" placeholder="e.g. 150"></div>
-        <div class="fld"><label>Travelers</label><select id="w-travelers"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-      </div>
-      <div class="stat-row" style="margin-top:10px;">
-        <div class="stat-item"><div class="stat-val" id="w-stat-tracking">0</div><div class="stat-label">Tracking</div></div>
-        <div class="stat-item"><div class="stat-val green" id="w-stat-deals">0</div><div class="stat-label">Deals</div></div>
-        <div class="stat-item"><div class="stat-val" id="w-stat-airlines">0</div><div class="stat-label">Airlines</div></div>
-      </div>
-      <button class="big-btn" onclick="warAdd()">ADD TO WATCHLIST</button>
+  <div style="padding:0 16px 16px;">
+    <select id="w-origin" onchange="warLoadFares()" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:10px;display:block;">
+      <option value="">-- Origin --</option>
+    </select>
+    <select id="w-dest" onchange="warLoadFares()" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:10px;display:block;">
+      <option value="">-- Destination --</option>
+    </select>
+    <div id="w-fare-pills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:20px;"></div>
+    <input type="number" id="w-target" placeholder="Target price RT $ (e.g. 150)" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:10px;display:block;">
+    <select id="w-travelers" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:14px;display:block;">
+      <option value="1">1 Traveler</option><option value="2">2 Travelers</option><option value="3">3 Travelers</option><option value="4">4 Travelers</option><option value="5">5 Travelers</option>
+    </select>
+    <div style="display:flex;justify-content:space-around;margin-bottom:14px;background:#14141e;border-radius:10px;padding:12px;">
+      <div style="text-align:center;"><div id="w-stat-tracking" style="font-size:22px;font-weight:800;color:#f2f2fc;">0</div><div style="font-size:10px;color:#9090b0;text-transform:uppercase;">Tracking</div></div>
+      <div style="text-align:center;"><div id="w-stat-deals" style="font-size:22px;font-weight:800;color:#3dd68c;">0</div><div style="font-size:10px;color:#9090b0;text-transform:uppercase;">Deals</div></div>
+      <div style="text-align:center;"><div id="w-stat-airlines" style="font-size:22px;font-weight:800;color:#f2f2fc;">0</div><div style="font-size:10px;color:#9090b0;text-transform:uppercase;">Airlines</div></div>
     </div>
+    <button onclick="warAdd()" style="width:100%;background:#f5c418;color:#000;border:none;border-radius:12px;padding:16px;font-size:20px;font-weight:800;cursor:pointer;margin-bottom:20px;letter-spacing:1px;">ADD TO WATCHLIST</button>
   </div>
-  <div style="margin-bottom:20px;">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--sub);margin-bottom:11px;">Your Watchlist</div>
+  <div id="w-alerts" style="padding:0 16px 8px;"></div>
+  <div style="padding:0 16px 16px;">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9090b0;margin-bottom:10px;">Your Watchlist</div>
     <div id="w-tracks"></div>
   </div>
-  <div style="margin-bottom:20px;">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--sub);margin-bottom:11px;">📡 Alert Feed</div>
-    <div id="w-alerts"></div>
+  <div style="margin:0 16px 20px;background:#14141e;border-radius:12px;padding:14px;border:1px solid #28283c;">
+    <div style="font-size:11px;font-weight:700;color:#f5c418;margin-bottom:10px;">💡 Price Tracking &amp; Search Strategy</div>
+    <div style="font-size:12px;color:#f2f2fc;line-height:1.7;"><strong>Search incognito always</strong> — airlines inflate prices on repeated searches.<br><strong>Tuesday 7–10 AM</strong> — best time to find fare drops.<br><strong>21-day rule</strong> — lowest fares appear 3 weeks before departure.<br><strong>Never book Friday or Sunday</strong> — weekend demand inflates fares 15–25%.<br><strong>6–8 weeks out</strong> — sweet spot for domestic booking.<br><strong>Nearby airports</strong> — VPS vs PNS vs ECP can differ by $50–$100.<br><strong>Hidden city trick</strong> — book through your destination, skip last leg. Carry-on only.</div>
   </div>
-    <div class="tip-card"><div class="tip-hdr">&#x1F4A1; Price Tracking &amp; Search Strategy</div>
-    <div class="tip-item"><strong>Search in incognito always</strong> — airlines track repeated searches and inflate prices. Private window = clean slate every time.</div>
-    <div class="tip-item"><strong>Tuesday 7–10 AM</strong> — Allegiant flash sales and most airline fare drops hit overnight Monday. Check first thing Tuesday morning.</div>
-    <div class="tip-item"><strong>21-day rule</strong> — Southwest and most majors release lowest fares 3 weeks before departure. Set your target and wait for it.</div>
-    <div class="tip-item"><strong>Never book Friday or Sunday</strong> — weekend demand signals inflate fares 15–25% vs midweek. Tuesday and Wednesday are cheapest booking days.</div>
-    <div class="tip-item"><strong>6–8 weeks out is the sweet spot</strong> for domestic flights. Far enough for deals, close enough for inventory to be released.</div>
-    <div class="tip-item"><strong>August is cheapest month VPS↔MDW</strong> — aim for Tuesday/Thursday departures for best fares in either direction.</div>
-    <div class="tip-item"><strong>Delta and United match each other</strong> — if one drops, the other follows within 24–48 hrs. Watch both on the same route.</div>
-    <div class="tip-item"><strong>Hidden city trick</strong> — sometimes booking a flight that connects through your destination and not taking the last leg is cheaper. Only works with carry-on, no checked bags.</div>
-    <div class="tip-item"><strong>Nearby airports save money</strong> — VPS vs PNS vs ECP can differ by $50–$100 on the same date. Always check all 3 before booking.</div>
-  </div></div>
 </div>
 
 <!-- BOTTOM NAV -->
