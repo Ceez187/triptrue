@@ -748,22 +748,27 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
     <div style="font-size:12px;color:#f2f2fc;line-height:1.8;">
       <strong style="color:#f5c418;">1.</strong> Pick your origin and destination airport<br>
       <strong style="color:#f5c418;">2.</strong> Tap an airline fare pill to select it<br>
-      <strong style="color:#f5c418;">3.</strong> Enter your target price — what you want to pay<br>
-      <strong style="color:#f5c418;">4.</strong> Hit <strong>Add to Watchlist</strong><br>
-      <strong style="color:#f5c418;">5.</strong> Come back and tap <strong>Update</strong> to log new prices over time<br>
+      <strong style="color:#f5c418;">3.</strong> Enter your target price<br>
+      <strong style="color:#f5c418;">4.</strong> Hit Add to Watchlist<br>
+      <strong style="color:#f5c418;">5.</strong> Tap Update to log new prices over time<br>
       <strong style="color:#f5c418;">6.</strong> When status shows <strong style="color:#3dd68c;">BOOK NOW</strong> — buy immediately
     </div>
     <div style="margin-top:10px;font-size:11px;color:#9090b0;background:rgba(0,0,0,0.2);border-radius:8px;padding:8px;">⚠️ Fares shown are reference prices — not live data. Always verify at the airline site before booking.</div>
   </div>
   <div style="padding:0 16px 16px;">
-    <select id="w-origin" onchange="warLoadFares()" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:10px;display:block;">
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">From</label>
+    <select id="w-origin" onchange="warLoadFares()" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:12px;display:block;">
       <option value="">-- Origin --</option>
     </select>
-    <select id="w-dest" onchange="warLoadFares()" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:10px;display:block;">
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">To</label>
+    <select id="w-dest" onchange="warLoadFares()" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:12px;display:block;">
       <option value="">-- Destination --</option>
     </select>
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Airline Fares — Tap to Select</label>
     <div id="w-fare-pills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:20px;"></div>
-    <input type="number" id="w-target" placeholder="Target price RT $ (e.g. 150)" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:10px;display:block;">
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Target Price RT $</label>
+    <input type="number" id="w-target" placeholder="e.g. 150" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:12px;display:block;">
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Travelers</label>
     <select id="w-travelers" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:14px;display:block;">
       <option value="1">1 Traveler</option><option value="2">2 Travelers</option><option value="3">3 Travelers</option><option value="4">4 Travelers</option><option value="5">5 Travelers</option>
     </select>
@@ -772,7 +777,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
       <div style="text-align:center;"><div id="w-stat-deals" style="font-size:22px;font-weight:800;color:#3dd68c;">0</div><div style="font-size:10px;color:#9090b0;text-transform:uppercase;">Deals</div></div>
       <div style="text-align:center;"><div id="w-stat-airlines" style="font-size:22px;font-weight:800;color:#f2f2fc;">0</div><div style="font-size:10px;color:#9090b0;text-transform:uppercase;">Airlines</div></div>
     </div>
-    <button onclick="warAdd()" style="width:100%;background:#f5c418;color:#000;border:none;border-radius:12px;padding:16px;font-size:20px;font-weight:800;cursor:pointer;margin-bottom:20px;letter-spacing:1px;">ADD TO WATCHLIST</button>
+    <button onclick="warAdd()" style="width:100%;background:#f5c418;color:#000;border:none;border-radius:12px;padding:16px;font-size:20px;font-weight:800;cursor:pointer;margin-bottom:20px;touch-action:manipulation;">ADD TO WATCHLIST</button>
   </div>
   <div id="w-alerts" style="padding:0 16px 8px;"></div>
   <div style="padding:0 16px 16px;">
@@ -781,12 +786,12 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
   <div style="margin:0 16px 20px;background:#14141e;border-radius:12px;padding:14px;border:1px solid #28283c;">
     <div style="font-size:11px;font-weight:700;color:#f5c418;margin-bottom:10px;">💡 Price Tracking &amp; Search Strategy</div>
-    <div style="font-size:12px;color:#f2f2fc;line-height:1.7;"><strong>Search incognito always</strong> — airlines inflate prices on repeated searches.<br><strong>Tuesday 7–10 AM</strong> — best time to find fare drops.<br><strong>21-day rule</strong> — lowest fares appear 3 weeks before departure.<br><strong>Never book Friday or Sunday</strong> — weekend demand inflates fares 15–25%.<br><strong>6–8 weeks out</strong> — sweet spot for domestic booking.<br><strong>Nearby airports</strong> — VPS vs PNS vs ECP can differ by $50–$100.<br><strong>Hidden city trick</strong> — book through your destination, skip last leg. Carry-on only.</div>
+    <div style="font-size:12px;color:#f2f2fc;line-height:1.8;"><strong>Search incognito always</strong> — airlines inflate prices on repeated searches.<br><strong>Tuesday 7–10 AM</strong> — best time to find fare drops.<br><strong>21-day rule</strong> — lowest fares appear 3 weeks before departure.<br><strong>Never book Friday or Sunday</strong> — fares inflate 15–25%.<br><strong>6–8 weeks out</strong> — sweet spot for domestic booking.<br><strong>Nearby airports</strong> — VPS vs PNS vs ECP can differ $50–$100.<br><strong>Hidden city trick</strong> — book through destination, skip last leg. Carry-on only.</div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
-<div id="swipe-dots" style="position:fixed;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 6px);left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:101;pointer-events:none;"><div class="sdot active" data-page="war"></div><div class="sdot" data-page="split"></div><div class="sdot" data-page="calc"></div><div class="sdot" data-page="scam"></div></div>
+<div id="swipe-dots" style="position:fixed;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 6px);left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:101;pointer-events:none;"><div class="sdot" data-page="war"></div><div class="sdot" data-page="split"></div><div class="sdot" data-page="calc"></div><div class="sdot" data-page="scam"></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="goPage('war',this)"><span class="nav-ico">📈</span><span class="nav-label">War Room</span></button>
   <button class="nav-btn" onclick="goPage('split',this)"><span class="nav-ico">⚡</span><span class="nav-label">Split Fare</span></button>
@@ -1729,7 +1734,7 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   populateBothAirportDropdowns();
   scamRenderGrid();
-  if(typeof updateDots==='function')updateDots('war');
+  if(typeof updateDots==='function')updateDots('calc');
   // Ensure correct page shown on load
   document.querySelectorAll('.page').forEach(function(p){p.style.display='none';});
   var startPage=document.getElementById('page-calc');
