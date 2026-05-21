@@ -817,10 +817,18 @@ function goPage(id, btn) {
   document.querySelectorAll('.page').forEach(function(p){
     p.classList.remove('active');
     p.style.display='none';
+    p.style.visibility='hidden';
   });
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   var target=document.getElementById('page-'+id);
-  if(target){target.classList.add('active');target.style.display='block';}
+  if(target){
+    target.classList.add('active');
+    target.style.display='block';
+    target.style.visibility='visible';
+    target.style.opacity='1';
+    target.style.zIndex='10';
+    target.style.position='relative';
+  }
   if(btn)btn.classList.add('active');
   if(document.getElementById('hdr-mod'))document.getElementById('hdr-mod').textContent=modNames[id]||id;
   try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}
@@ -1716,7 +1724,12 @@ var extraCities = {
   // Ensure correct page shown on load
   document.querySelectorAll('.page').forEach(function(p){p.style.display='none';});
   var startPage=document.getElementById('page-calc');
-  if(startPage){startPage.style.display='block';startPage.classList.add('active');}
+  if(startPage){
+    startPage.style.display='block';
+    startPage.style.visibility='visible';
+    startPage.style.opacity='1';
+    startPage.classList.add('active');
+  }
   warRenderAll();
   ncAddScam();
   ncAddTip();
