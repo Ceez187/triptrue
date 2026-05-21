@@ -814,26 +814,24 @@ function sanitizeKey(str){return (str||'').toLowerCase().replace(/[^a-z0-9_]/g,'
 const modNames = {calc:'Real Cost',split:'Split Fare',scam:'Scam Shield',war:'War Room'};
 
 function goPage(id, btn) {
-  document.querySelectorAll('.page').forEach(function(p){
-    p.classList.remove('active');
-    p.style.display='none';
-    p.style.visibility='hidden';
-  });
-  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
-  var target=document.getElementById('page-'+id);
-  if(target){
-    target.classList.add('active');
-    target.style.display='block';
-    target.style.visibility='visible';
-    target.style.opacity='1';
-    target.style.zIndex='10';
-    target.style.position='relative';
-  }
-  if(btn)btn.classList.add('active');
-  if(document.getElementById('hdr-mod'))document.getElementById('hdr-mod').textContent=modNames[id]||id;
-  try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}
-  var hdr=document.getElementById('main-hdr');if(hdr)hdr.style.transform='translateY(0)';
-  if(typeof updateDots==='function')updateDots(id);
+  try{
+    var allPages=document.querySelectorAll('.page');
+    for(var i=0;i<allPages.length;i++){
+      allPages[i].classList.remove('active');
+      allPages[i].setAttribute('style','display:none');
+    }
+    var allBtns=document.querySelectorAll('.nav-btn');
+    for(var j=0;j<allBtns.length;j++){allBtns[j].classList.remove('active');}
+    var pg=document.getElementById('page-'+id);
+    if(pg){pg.setAttribute('style','display:block');pg.classList.add('active');}
+    if(btn)btn.classList.add('active');
+    var mod=document.getElementById('hdr-mod');
+    if(mod)mod.textContent=modNames[id]||id;
+    try{window.scrollTo(0,0);document.body.scrollTop=0;}catch(ex){}
+    var hdr=document.getElementById('main-hdr');
+    if(hdr)hdr.style.transform='translateY(0)';
+    if(typeof updateDots==='function')updateDots(id);
+  }catch(ex){console.error('goPage:',ex);}
 }
 
 function toggleSOP(id) {
@@ -1711,6 +1709,7 @@ var extraCities = {
   puerto_vallarta:{name:'Puerto Vallarta',ico:'🇲🇽',risk:'Medium',alertText:'Medium — Malecon tourist zone is heavily priced. Romantic Zone is authentic and affordable.',scams:[{title:'🚕 Airport Taxi Overcharge',desc:'Official-looking taxis outside PVR airport charge 2-3x the authorized rate.',touristPrice:'$35-$50 to hotel zone',localPrice:'$15-$20 pre-paid taxi booth inside terminal',tip:'Buy your taxi ticket at the official booth INSIDE the terminal before exiting. Never negotiate with drivers outside.'},{title:'🏖️ Timeshare Breakfast Scam',desc:'Offers of free breakfast or tours in exchange for sitting through a timeshare presentation.',touristPrice:'2-3 hours of your vacation',localPrice:'Skip it entirely',tip:'There is no free breakfast. Say no and keep walking. Any offer that requires your time has a cost.'},{title:'🛍️ Malecon Souvenir Prices',desc:'Vendors on the Malecon quote tourist prices 3-4x what you should pay.',touristPrice:'$25-$40 for souvenirs',localPrice:'$5-$12 after negotiating or in local markets',tip:'Offer 25-30% of the asking price. Walk away. The vendor will follow with a better price almost every time.'},{title:'🍽️ Hotel Zone Restaurants',desc:'Restaurants in the hotel zone charge resort prices.',touristPrice:'$25-$40 per main course',localPrice:'$8-$15 in the Romantic Zone or 5 de Diciembre',tip:'The Romantic Zone (Zona Romantica) is 10 minutes by local bus. Authentic food, real prices, better atmosphere.'}],tips:[{ico:'🚌',title:'Local Bus',text:'Runs along the entire hotel strip for 10 pesos ($0.50). Best transportation deal in Mexico.'},{ico:'🌮',title:'Romantic Zone',text:'Old Town Puerto Vallarta. Best food, best vibe, lowest prices. Stay here if possible.'},{ico:'🐋',title:'Whale Season',text:'December through March. Book whale watching directly with Marina operators for best price.'},{ico:'🏖️',title:'Sayulita Day Trip',text:'45 min north by bus. Surf town, great food, zero resort pricing. Best day trip from PV.'}]},
 };
 
+document.addEventListener("DOMContentLoaded",function(){
 (function init(){
   // Merge extended cities first — must happen before scamRenderGrid
   Object.assign(scamBuiltIn, extraCities);
@@ -1735,8 +1734,15 @@ var extraCities = {
   ncAddTip();
   // Restore last calculation inputs
   try{var lc=Store.get('tt_last_calc');if(lc){var s=JSON.parse(lc);var flds=[['c-origin','origin'],['c-dest','dest'],['c-depart','depart'],['c-ret','ret'],['c-travelers','travelers'],['c-nights','nights'],['c-hotel-rate','hotelRate'],['c-food','food'],['c-activities','activities']];flds.forEach(function(f){if(s[f[1]])document.getElementById(f[0]).value=s[f[1]];});if(s.airline){calcAirline=s.airline;document.querySelectorAll('.al-card').forEach(function(c){c.classList.remove('on');});var ac=document.querySelector('[onclick*="'+s.airline+'"]');if(ac)ac.classList.add('on');}if(s.customPrice>0){calcPrices.custom=parseFloat(s.customPrice);document.getElementById('c-custom-disp').textContent='$'+s.customPrice;}}}catch(e){}
+  // Force correct page visibility on load
+  try{
+    var initPages=document.querySelectorAll('.page');
+    for(var ip=0;ip<initPages.length;ip++){initPages[ip].setAttribute('style','display:none');}
+    var calcPage=document.getElementById('page-calc');
+    if(calcPage){calcPage.setAttribute('style','display:block');calcPage.classList.add('active');}
+  }catch(ex){}
 })();
-
+});
 
 </script>
 </body>
