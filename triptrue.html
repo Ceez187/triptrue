@@ -823,11 +823,21 @@ function goPage(id, btn) {
     var allBtns=document.querySelectorAll('.nav-btn');
     for(var j=0;j<allBtns.length;j++){allBtns[j].classList.remove('active');}
     var pg=document.getElementById('page-'+id);
-    if(pg){pg.setAttribute('style','display:block');pg.classList.add('active');}
+    if(pg){
+      pg.setAttribute('style','display:block');
+      pg.classList.add('active');
+    }
     if(btn)btn.classList.add('active');
     var mod=document.getElementById('hdr-mod');
     if(mod)mod.textContent=modNames[id]||id;
-    try{window.scrollTo(0,0);document.body.scrollTop=0;}catch(ex){}
+    // Force scroll reset after render - critical for mobile
+    setTimeout(function(){
+      try{
+        window.scrollTo({top:0,behavior:'instant'});
+        document.documentElement.scrollTop=0;
+        document.body.scrollTop=0;
+      }catch(ex){window.scrollTo(0,0);}
+    },0);
     var hdr=document.getElementById('main-hdr');
     if(hdr)hdr.style.transform='translateY(0)';
     if(typeof updateDots==='function')updateDots(id);
