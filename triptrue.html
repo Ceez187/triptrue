@@ -29,11 +29,11 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 .nav-btn::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--accent);border-radius:0 0 2px 2px;opacity:0;transition:opacity 0.2s;}
 .nav-btn.active::before{opacity:1;}
 .nav-ico{font-size:20px;}
-.nav-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);transition:color 0.2s;}
+.nav-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--sub);transition:color 0.2s;}
 .nav-btn.active .nav-label{color:var(--accent);}
 
 /* ── PAGES ── */
-.page{display:none;padding:20px 16px 0;width:100%;box-sizing:border-box;}
+.page{display:none;padding:20px 16px 0;width:100%;box-sizing:border-box;background:var(--bg);min-height:100vh;}
 .page.active{display:block;width:100%;min-height:50vh;}
 
 /* ── SHARED COMPONENTS ── */
@@ -136,6 +136,13 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 .bd-total-label{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text);}
 .bd-total-amt{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent);}
 
+.book-hdr{font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;}
+.bd-label{font-size:12px;color:var(--sub);flex:1;}
+.bd-val{font-size:13px;font-weight:700;color:var(--text);}
+.bd-val.pos{color:var(--green);}
+.bd-val.neg{color:var(--red);}
+.sop-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;}
+.nav-btn.active .nav-ico{opacity:1;transform:scale(1.1);}
 .warn-card{display:none;background:rgba(240,64,96,0.07);border:1.5px solid rgba(240,64,96,0.28);border-radius:var(--r);padding:13px;margin-bottom:12px;}
 .warn-hdr{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
 .warn-item{font-size:12px;color:var(--text);line-height:1.6;padding:6px 0;border-bottom:1px solid rgba(240,64,96,0.1);}
@@ -343,10 +350,10 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--green);color:#000;font-size:12px;font-weight:700;padding:9px 18px;border-radius:18px;transition:transform 0.3s ease;z-index:999;pointer-events:none;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
-@keyframes up{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.fade{animation:up 0.3s ease forwards;opacity:0;}
-.d1{animation-delay:0.00s}.d2{animation-delay:0.06s}.d3{animation-delay:0.12s}
-.d4{animation-delay:0.18s}.d5{animation-delay:0.24s}.d6{animation-delay:0.30s}
+
+.fade{opacity:1;}
+.d1{}.d2{}.d3{}
+.d4{}.d5{}.d6{}
 </style>
 </head>
 <body>
@@ -740,12 +747,12 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 <!-- ════════════════════════════════════
      PAGE 4 — PRICE WAR ROOM
      ════════════════════════════════════ -->
-<div class="page" id="page-war">
+<div class="page" id="page-war" style="background:var(--bg);">
   <h2 style="color:#f5c418;font-size:24px;padding:20px 20px 6px;">📈 Price War Room</h2>
   <p style="color:#9090b0;padding:0 20px 12px;font-size:13px;">Track flight prices and know exactly when to book.</p>
   <div style="margin:0 16px 16px;background:rgba(245,196,24,0.06);border:1px solid rgba(245,196,24,0.2);border-radius:12px;padding:14px;">
     <div style="font-size:11px;font-weight:700;color:#f5c418;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">HOW TO USE</div>
-    <div style="font-size:12px;color:#f2f2fc;line-height:1.8;">
+    <div style="font-size:13px;color:#f2f2fc;line-height:2.0;">
       <strong style="color:#f5c418;">1.</strong> Pick your origin and destination airport<br>
       <strong style="color:#f5c418;">2.</strong> Tap an airline fare pill to select it<br>
       <strong style="color:#f5c418;">3.</strong> Enter your target price<br>
@@ -786,7 +793,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
   <div style="margin:0 16px 20px;background:#14141e;border-radius:12px;padding:14px;border:1px solid #28283c;">
     <div style="font-size:11px;font-weight:700;color:#f5c418;margin-bottom:10px;">💡 Price Tracking &amp; Search Strategy</div>
-    <div style="font-size:12px;color:#f2f2fc;line-height:1.8;"><strong>Search incognito always</strong> — airlines inflate prices on repeated searches.<br><strong>Tuesday 7–10 AM</strong> — best time to find fare drops.<br><strong>21-day rule</strong> — lowest fares appear 3 weeks before departure.<br><strong>Never book Friday or Sunday</strong> — fares inflate 15–25%.<br><strong>6–8 weeks out</strong> — sweet spot for domestic booking.<br><strong>Nearby airports</strong> — VPS vs PNS vs ECP can differ $50–$100.<br><strong>Hidden city trick</strong> — book through destination, skip last leg. Carry-on only.</div>
+    <div style="font-size:13px;color:#f2f2fc;line-height:2.0;"><strong>Search incognito always</strong> — airlines inflate prices on repeated searches.<br><strong>Tuesday 7–10 AM</strong> — best time to find fare drops.<br><strong>21-day rule</strong> — lowest fares appear 3 weeks before departure.<br><strong>Never book Friday or Sunday</strong> — fares inflate 15–25%.<br><strong>6–8 weeks out</strong> — sweet spot for domestic booking.<br><strong>Nearby airports</strong> — VPS vs PNS vs ECP can differ $50–$100.<br><strong>Hidden city trick</strong> — book through destination, skip last leg. Carry-on only.</div>
   </div>
 </div>
 
@@ -824,7 +831,11 @@ function goPage(id,btn){
   var btns=document.querySelectorAll('.nav-btn');
   for(var j=0;j<btns.length;j++){btns[j].classList.remove('active');}
   var pg=document.getElementById('page-'+id);
-  if(pg){pg.style.display='block';}
+  if(pg){
+    pg.style.display='block';
+    pg.style.visibility='visible';
+    pg.style.opacity='1';
+  }
   if(btn){btn.classList.add('active');}
   var mod=document.getElementById('hdr-mod');
   if(mod){mod.textContent=modNames[id]||id;}
