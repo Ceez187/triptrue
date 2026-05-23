@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TripTrue</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── ROOT ── */
+:root {
+  --bg:#0c0c14;--card:#14141e;--card2:#1a1a28;--border:#28283c;
+  --accent:#f5c418;--red:#f04060;--green:#3dd68c;--blue:#5b8ef0;--orange:#f08040;
+  --text:#f2f2fc;--sub:#9090b0;--muted:#55556a;--r:14px;--nav:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+button,select,input{touch-action:manipulation;}
+html{scroll-behavior:smooth;}
+body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.5;min-height:100vh;max-width:600px;margin:0 auto;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 16px);-webkit-text-size-adjust:100%;width:100%;max-width:600px;}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(12,12,20,0.97);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;color:var(--accent);line-height:1;}
+.hdr-mod{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);}
+.hdr-tag{font-size:10px;color:var(--muted);}
+
+/* ── BOTTOM NAV ── */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:600px;height:calc(var(--nav) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(14,14,22,0.98);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;z-index:100;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;padding:8px 4px;position:relative;transition:all 0.2s;}
+.nav-btn::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--accent);border-radius:0 0 2px 2px;opacity:0;transition:opacity 0.2s;}
+.nav-btn.active::before{opacity:1;}
+.nav-ico{font-size:20px;}
+.nav-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--sub);transition:color 0.2s;}
+.nav-btn.active .nav-label{color:var(--accent);}
+
+/* ── PAGES ── */
+.page{display:none;padding:20px 16px 0;width:100%;box-sizing:border-box;background:var(--bg);min-height:100vh;}
+.page.active{display:block;width:100%;min-height:50vh;}
+
+/* ── SHARED COMPONENTS ── */
+.hero{background:linear-gradient(135deg,rgba(245,196,24,0.08),rgba(91,142,240,0.05));border:1px solid rgba(245,196,24,0.15);border-radius:14px;padding:16px;margin-bottom:20px;}
+.hero h2{font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.hero p{font-size:13px;color:var(--sub);line-height:1.6;}
+.hero.red{background:linear-gradient(135deg,rgba(240,64,96,0.08),rgba(245,196,24,0.05));border-color:rgba(240,64,96,0.15);}
+.hero.green{background:linear-gradient(135deg,rgba(61,214,140,0.08),rgba(91,142,240,0.05));border-color:rgba(61,214,140,0.15);}
+
+.sop{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px;}
+.sop-head{background:rgba(245,196,24,0.07);border-bottom:1px solid var(--border);padding:13px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+.sop-head-title{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;flex:1;}
+.sop-arrow{font-size:11px;color:var(--sub);transition:transform 0.2s;}
+.sop-arrow.open{transform:rotate(180deg);}
+.sop-body{display:none;padding:14px;}
+.sop-body.show{display:block;}
+.sop-step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.sop-step:last-of-type{border-bottom:none;padding-bottom:0;}
+.sop-num{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent);line-height:1;min-width:24px;margin-top:2px;}
+.sop-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.sop-desc{font-size:12px;color:var(--sub);line-height:1.6;}
+.sop-tip{margin-top:12px;background:rgba(61,214,140,0.07);border:1px solid rgba(61,214,140,0.2);border-radius:10px;padding:11px;font-size:12px;color:var(--text);line-height:1.6;}
+.sop-tip strong{color:var(--green);}
+
+.sec{margin-bottom:20px;}
+.sec-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r) var(--r) 0 0;border-bottom:2px solid var(--accent);}
+.sec-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);line-height:1;}
+.sec-title{font-size:15px;font-weight:700;color:var(--text);flex:1;}
+.sec-ico{font-size:17px;}
+.sec-body{background:var(--card2);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:14px;}
+
+.row{display:grid;gap:10px;margin-bottom:10px;}
+.row.c2{grid-template-columns:1fr 1fr;}
+.row.c3{grid-template-columns:1fr 1fr 1fr;}
+.row:last-child{margin-bottom:0;}
+.fld{display:flex;flex-direction:column;gap:5px;}
+.fld label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);}
+.fld input,.fld select,.fld textarea{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;outline:none;width:100%;-webkit-appearance:none;transition:border-color 0.2s;resize:none;}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,196,24,0.1);}
+.fld input::placeholder,.fld textarea::placeholder{color:var(--muted);font-weight:400;}
+.fld select option{background:#1a1a2e;}
+
+.tog-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:9px;cursor:pointer;gap:12px;transition:border-color 0.2s;}
+.tog-row:last-child{margin-bottom:0;}
+.tog-row:hover{border-color:rgba(245,196,24,0.3);}
+.tog-info{flex:1;}
+.tog-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.tog-desc{font-size:11px;color:var(--sub);line-height:1.4;}
+.tog-sw{width:46px;height:25px;background:var(--border);border-radius:13px;position:relative;flex-shrink:0;transition:background 0.25s;}
+.tog-sw.on{background:var(--accent);}
+.tog-sw::after{content:'';position:absolute;width:19px;height:19px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
+.tog-sw.on::after{left:24px;}
+.sub-fld{display:none;margin-bottom:9px;}
+.sub-fld.show{display:block;}
+
+.big-btn{display:block;width:100%;background:var(--accent);color:#000;border:none;border-radius:14px;padding:18px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(245,196,24,0.2);margin-top:4px;}
+.big-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(245,196,24,0.3);}
+.save-btn{display:block;width:100%;background:var(--green);color:#000;border:none;border-radius:12px;padding:15px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+.save-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(61,214,140,0.25);}
+
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.div-line{flex:1;height:1px;background:var(--border);}
+.div-text{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted);}
+
+.total-card{background:linear-gradient(135deg,#151a0e,#0e1a12);border:2px solid var(--accent);border-radius:var(--r);padding:24px 16px;text-align:center;margin-bottom:12px;box-shadow:0 0 40px rgba(245,196,24,0.07);}
+.total-eye{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--sub);margin-bottom:8px;}
+.total-num{font-family:'Bebas Neue',sans-serif;font-size:74px;color:var(--accent);letter-spacing:2px;line-height:1;margin-bottom:8px;}
+.total-sub{font-size:13px;color:var(--sub);font-weight:500;}
+
+.vs-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.vs-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;}
+.vs-card.win{border-color:var(--green);}
+.vs-eye{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;}
+.vs-airline{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.vs-price{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text);line-height:1;margin-bottom:5px;}
+.vs-card.win .vs-price{color:var(--green);}
+.win-badge{display:inline-block;background:var(--green);color:#000;font-size:8px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;padding:3px 7px;border-radius:12px;}
+.vs-note{font-size:11px;color:var(--sub);margin-top:4px;}
+
+.bar-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
+.bar-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:10px;}
+.bar-track{height:12px;background:var(--border);border-radius:6px;overflow:hidden;display:flex;gap:2px;margin-bottom:10px;}
+.bar-seg{height:100%;border-radius:3px;min-width:2px;}
+.s-flight{background:var(--accent);}.s-hotel{background:var(--blue);}.s-transport{background:var(--green);}.s-food{background:#f08040;}.s-other{background:var(--muted);}
+.bar-legend{display:flex;flex-wrap:wrap;gap:8px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--sub);}
+.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+.bd-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+.bd-hdr{padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.bd-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid rgba(40,40,60,0.6);gap:10px;}
+.bd-row:last-child{border-bottom:none;}
+.bd-left{display:flex;align-items:center;gap:8px;flex:1;min-width:0;}
+.bd-ico{font-size:17px;flex-shrink:0;}
+.bd-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px;}
+.bd-note{font-size:11px;color:var(--sub);}
+.bd-amt{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--text);flex-shrink:0;}
+.bd-amt.gold{color:var(--accent);}.bd-amt.neg{color:var(--green);}.bd-amt.zero{color:var(--muted);font-size:14px;}
+.bd-total{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;background:rgba(245,196,24,0.07);border-top:2px solid var(--accent);}
+.bd-total-label{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text);}
+.bd-total-amt{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent);}
+
+.book-hdr{font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;}
+.bd-label{font-size:12px;color:var(--sub);flex:1;}
+.bd-val{font-size:13px;font-weight:700;color:var(--text);}
+.bd-val.pos{color:var(--green);}
+.bd-val.neg{color:var(--red);}
+.sop-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;}
+.nav-btn.active .nav-ico{opacity:1;transform:scale(1.1);}
+.warn-card{display:none;background:rgba(240,64,96,0.07);border:1.5px solid rgba(240,64,96,0.28);border-radius:var(--r);padding:13px;margin-bottom:12px;}
+.warn-hdr{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.warn-item{font-size:12px;color:var(--text);line-height:1.6;padding:6px 0;border-bottom:1px solid rgba(240,64,96,0.1);}
+.warn-item:last-child{border-bottom:none;padding-bottom:0;}
+
+.tip-card{background:rgba(61,214,140,0.07);border:1.5px solid rgba(61,214,140,0.22);border-radius:var(--r);padding:13px;margin-bottom:12px;}
+.tip-hdr{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px;}
+.tip-item{font-size:12px;color:var(--text);line-height:1.6;padding:6px 0;border-bottom:1px solid rgba(61,214,140,0.07);}
+.tip-item:last-child{border-bottom:none;}
+.tip-item::before{content:'→';color:var(--green);font-weight:700;flex-shrink:0;}
+
+.act-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.act-btn{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all 0.2s;}
+.act-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── MODULE 1 SPECIFIC ── */
+.airline-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.al-card{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:13px;cursor:pointer;text-align:center;transition:all 0.2s;}
+.al-card:hover{border-color:rgba(245,196,24,0.35);}
+.al-card.on{border-color:var(--accent);background:rgba(245,196,24,0.06);}
+.al-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--sub);margin-bottom:4px;}
+.al-card.on .al-name{color:var(--accent);}
+.al-price{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--accent);line-height:1;margin-bottom:3px;}
+.al-note{font-size:10px;color:var(--muted);}.al-check-live{display:block;margin-top:6px;font-size:10px;font-weight:700;color:var(--accent);text-decoration:none;touch-action:manipulation;}
+.mil-banner{display:none;background:rgba(91,142,240,0.1);border:1.5px solid rgba(91,142,240,0.3);border-radius:12px;padding:11px 14px;font-size:13px;font-weight:600;color:var(--blue);margin-bottom:12px;text-align:center;}
+
+/* ── MODULE 2 SPECIFIC ── */
+.airline-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.al-check{display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;cursor:pointer;transition:border-color 0.2s;}
+.al-check:hover{border-color:rgba(245,196,24,0.3);}
+.al-check.on{border-color:var(--accent);background:rgba(245,196,24,0.05);}
+.al-check input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--accent);}
+.al-check-name{font-size:12px;font-weight:600;color:var(--text);flex:1;}
+.al-check-code{font-size:10px;color:var(--sub);}
+.route-info{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;margin-top:10px;font-size:12px;color:var(--sub);line-height:1.6;display:none;}
+.route-info.show{display:block;}
+.combo-card{background:var(--card);border:2px solid var(--border);border-radius:13px;padding:13px;margin-bottom:9px;}
+.combo-card.best{border-color:var(--green);background:rgba(61,214,140,0.04);}
+.combo-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.combo-name{font-size:13px;font-weight:700;color:var(--text);}
+.combo-price{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);line-height:1;}
+.combo-card.best .combo-price{color:var(--green);}
+.combo-legs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:5px;}
+.leg-pill{display:inline-flex;align-items:center;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:4px 9px;font-size:11px;font-weight:600;color:var(--sub);}
+.leg-price{color:var(--accent);margin-left:3px;}
+.combo-save{font-size:11px;color:var(--green);font-weight:700;}
+.best-badge{display:inline-block;background:var(--green);color:#000;font-size:8px;font-weight:800;text-transform:uppercase;padding:2px 6px;border-radius:10px;margin-left:6px;vertical-align:middle;}
+.sum-card{background:linear-gradient(135deg,#151a0e,#0e1a12);border:2px solid var(--accent);border-radius:var(--r);padding:18px;text-align:center;margin-bottom:12px;}
+.sum-eye{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--sub);margin-bottom:5px;}
+.sum-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--accent);line-height:1;margin-bottom:5px;}
+.sum-sub{font-size:12px;color:var(--sub);}
+
+/* ── MODULE 3 SPECIFIC ── */
+.dest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.dest-card{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;transition:all 0.2s;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
+.dest-card:hover{border-color:rgba(245,196,24,0.35);}
+.dest-card.on{border-color:var(--accent);background:rgba(245,196,24,0.06);}
+.dest-card.custom-city{border-style:dashed;}
+.dest-card.custom-city.on{border-style:solid;}
+.dest-ico{font-size:22px;margin-bottom:4px;}
+.dest-name{font-size:11px;font-weight:800;color:var(--text);margin-bottom:3px;letter-spacing:0px;}
+.dest-risk{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;}
+.risk-high{color:var(--red);}.risk-medium{color:var(--accent);}.risk-low{color:var(--green);}
+.dest-del{position:absolute;top:5px;right:7px;font-size:14px;color:var(--muted);cursor:pointer;line-height:1;}
+.dest-del:hover{color:var(--red);}
+.alert-banner{background:linear-gradient(135deg,rgba(240,64,96,0.1),rgba(240,64,96,0.05));border:1.5px solid rgba(240,64,96,0.25);border-radius:var(--r);padding:13px;margin-bottom:14px;text-align:center;}
+.alert-title{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.alert-text{font-size:13px;color:var(--text);font-weight:500;}
+.scam-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+.scam-hdr{padding:11px 13px;background:rgba(240,64,96,0.08);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;}
+.scam-item{padding:13px;border-bottom:1px solid rgba(40,40,60,0.6);}
+.scam-item:last-child{border-bottom:none;}
+.scam-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.scam-desc{font-size:11px;color:var(--sub);line-height:1.6;margin-bottom:8px;}
+.price-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:7px;}
+.price-item{font-size:11px;font-weight:600;}
+.price-label{color:var(--muted);}
+.tourist-price{color:var(--red);margin-left:3px;font-weight:700;}
+.local-price{color:var(--green);margin-left:3px;font-weight:700;}
+.scam-tip-box{background:rgba(61,214,140,0.06);border-left:3px solid var(--green);padding:7px 9px;border-radius:4px;font-size:11px;color:var(--text);line-height:1.5;}
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.tip-mini{background:rgba(61,214,140,0.07);border:1px solid rgba(61,214,140,0.2);border-radius:12px;padding:11px;}
+.tip-ico{font-size:20px;margin-bottom:5px;}
+.tip-title-sm{font-size:11px;font-weight:700;color:var(--green);margin-bottom:3px;}
+.tip-text-sm{font-size:11px;color:var(--sub);line-height:1.5;}
+.scam-entry{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px;}
+.scam-entry-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.scam-entry-title{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.8px;}
+.entry-del-btn{font-size:11px;color:var(--muted);cursor:pointer;font-weight:600;padding:3px 8px;border:1px solid var(--border);border-radius:6px;background:none;}
+.entry-del-btn:hover{color:var(--red);border-color:var(--red);}
+.add-entry-btn{display:block;width:100%;background:none;border:1.5px dashed var(--border);border-radius:10px;padding:11px;color:var(--sub);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:10px;transition:all 0.2s;}
+.add-entry-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── MODULE 4 SPECIFIC ── */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:20px;}
+.stat-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px;text-align:center;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);line-height:1;margin-bottom:3px;}
+.stat-num.green{color:var(--green);}.stat-num.blue{color:var(--blue);}
+.stat-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--sub);}
+.fare-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.fare-pill{display:flex;align-items:center;gap:5px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:5px 11px;cursor:pointer;transition:all 0.2s;font-size:11px;font-weight:600;color:var(--sub);}
+.fare-pill:hover{border-color:var(--accent);}
+.fare-pill.on{border-color:var(--accent);background:rgba(245,196,24,0.07);color:var(--text);}
+.fare-pill .pill-price{color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:15px;line-height:1;}
+.no-fares{font-size:12px;color:var(--muted);padding:6px 0;}
+.track-card{background:var(--card);border:1.5px solid var(--border);border-radius:13px;padding:14px;margin-bottom:11px;}
+.track-card.deal{border-color:var(--green);background:rgba(61,214,140,0.03);}
+.track-card.watch{border-color:var(--orange);background:rgba(240,128,64,0.02);}
+.track-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.track-route{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.track-detail{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.track-airline{font-size:11px;color:var(--sub);}
+.track-badge{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;padding:2px 6px;border-radius:9px;display:inline-block;}
+.badge-deal{background:var(--green);color:#000;}.badge-watch{background:var(--orange);color:#000;}.badge-track{background:var(--border);color:var(--sub);}
+.track-right{text-align:right;}
+.track-current{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text);line-height:1;}
+.track-card.deal .track-current{color:var(--green);}
+.track-target-label{font-size:10px;color:var(--muted);}
+.track-bar-wrap{margin-bottom:9px;}
+.track-bar-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px;}
+.track-bar-bg{height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.track-bar-fill{height:100%;border-radius:4px;transition:width 0.6s ease;}
+.history-wrap{margin-bottom:10px;}
+.history-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:6px;}
+.history-chart{display:flex;align-items:flex-end;gap:4px;height:44px;}
+.h-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.h-bar{width:100%;border-radius:2px 2px 0 0;min-height:4px;}
+.h-bar.current{outline:2px solid var(--accent);}
+.h-bar.low{background:var(--green);}.h-bar.mid{background:var(--blue);}.h-bar.high-b{background:var(--orange);}
+.h-label{font-size:7px;color:var(--muted);text-align:center;}
+.fares-table{margin-bottom:10px;background:var(--card2);border-radius:9px;overflow:hidden;border:1px solid var(--border);}
+.fares-row{display:flex;justify-content:space-between;align-items:center;padding:8px 11px;border-bottom:1px solid rgba(40,40,60,0.5);}
+.fares-row:last-child{border-bottom:none;}
+.fares-row.lowest{background:rgba(61,214,140,0.05);}
+.fares-airline{font-size:12px;font-weight:600;color:var(--text);flex:1;}
+.fares-price{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--text);}
+.fares-row.lowest .fares-price{color:var(--green);}
+.fares-diff{font-size:9px;color:var(--muted);margin-left:7px;}
+.fares-row.lowest .fares-diff{color:var(--green);}
+.track-actions{display:flex;gap:7px;}
+.track-btn{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 4px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--sub);cursor:pointer;text-align:center;transition:all 0.2s;}
+.track-btn:hover{border-color:var(--accent);color:var(--accent);}
+.track-btn.book{background:rgba(61,214,140,0.08);border-color:rgba(61,214,140,0.3);color:var(--green);}
+.track-btn.remove{background:rgba(240,64,96,0.06);border-color:rgba(240,64,96,0.2);color:var(--red);}
+.alert-item{display:flex;align-items:flex-start;gap:11px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px;}
+.alert-item.green{border-color:rgba(61,214,140,0.3);background:rgba(61,214,140,0.04);}
+.alert-item.orange{border-color:rgba(240,128,64,0.3);background:rgba(240,128,64,0.03);}
+.alert-ico{font-size:20px;flex-shrink:0;margin-top:2px;}
+.alert-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.alert-desc{font-size:11px;color:var(--sub);line-height:1.5;}
+.alert-time{font-size:9px;color:var(--muted);margin-top:3px;}
+.empty-state{text-align:center;padding:28px 16px;color:var(--muted);}
+.empty-ico{font-size:36px;margin-bottom:10px;}
+.empty-text{font-size:13px;line-height:1.6;}
+
+.onboard{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;max-width:600px;margin:0 auto;}
+.onboard-logo{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:var(--accent);margin-bottom:8px;}
+.onboard-tag{font-size:14px;color:var(--sub);font-weight:600;margin-bottom:32px;}
+.onboard-steps{width:100%;margin-bottom:32px;}
+.onboard-step{display:flex;align-items:flex-start;gap:14px;text-align:left;padding:12px 0;border-bottom:1px solid var(--border);}
+.onboard-step:last-child{border-bottom:none;}
+.onboard-n{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--accent);line-height:1;min-width:28px;}
+.onboard-txt{font-size:13px;color:var(--text);line-height:1.6;}
+.onboard-txt strong{color:var(--accent);}
+.onboard-disc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:24px;padding:12px;background:rgba(255,255,255,0.03);border-radius:10px;border:1px solid var(--border);}
+.onboard-btn{display:block;width:100%;background:var(--accent);color:#000;border:none;border-radius:14px;padding:18px;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;cursor:pointer;}
+.price-disc{font-size:10px;color:var(--muted);background:rgba(245,196,24,0.08);border:1px solid rgba(245,196,24,0.2);border-radius:8px;padding:6px 10px;margin-top:8px;line-height:1.5;}
+.book-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;}
+.book-card-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:12px;}
+.book-links{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.book-link{display:block;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:11px 12px;font-size:12px;font-weight:700;color:var(--text);text-decoration:none;text-align:center;transition:all 0.2s;}
+.book-link:hover{border-color:var(--accent);color:var(--accent);}
+.book-link .bl-ico{font-size:18px;display:block;margin-bottom:3px;}
+.crowd-btn{display:block;width:100%;background:none;border:1.5px dashed var(--border);border-radius:10px;padding:11px;color:var(--sub);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-align:center;margin-top:12px;transition:all 0.2s;}
+.crowd-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--muted);transition:all 0.2s;}.sdot.active{width:8px;border-radius:50%;background:var(--accent);}
+.share-card{background:linear-gradient(135deg,#0e0e1a,#141428);border:2px solid var(--accent);border-radius:18px;padding:20px;margin-bottom:14px;display:none;}
+.share-card.show{display:block;}
+.sc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sc-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--accent);}
+.sc-tag{font-size:10px;color:var(--sub);font-weight:600;}
+.sc-city{font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.sc-dates{font-size:12px;color:var(--sub);margin-bottom:16px;}
+.sc-total-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.sc-total-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);}
+.sc-total-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--accent);line-height:1;}
+.sc-per-person{font-size:11px;color:var(--sub);margin-top:2px;}
+.sc-items{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.sc-item{background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;}
+.sc-item-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:3px;}
+.sc-item-val{font-size:15px;font-weight:800;color:var(--text);}
+.sc-item-val.gold{color:var(--accent);}
+.sc-item-val.green{color:var(--green);}
+.sc-item-val.red{color:var(--red);}
+.sc-alerts{background:rgba(240,64,96,0.08);border:1px solid rgba(240,64,96,0.2);border-radius:10px;padding:10px;margin-bottom:14px;display:none;}
+.sc-alerts.show{display:block;}
+.sc-alert-title{font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
+.sc-alert-item{font-size:11px;color:var(--text);line-height:1.5;padding:3px 0;}
+.sc-footer{display:flex;align-items:center;justify-content:space-between;}
+.sc-footer-tag{font-size:10px;color:var(--muted);}
+.sc-footer-url{font-size:10px;font-weight:700;color:var(--accent);}
+.share-btn{display:block;width:100%;background:linear-gradient(135deg,var(--accent),#f0a418);color:#000;border:none;border-radius:12px;padding:15px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;cursor:pointer;margin-bottom:10px;touch-action:manipulation;}
+
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--green);color:#000;font-size:12px;font-weight:700;padding:9px 18px;border-radius:18px;transition:transform 0.3s ease;z-index:999;pointer-events:none;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+
+.fade{opacity:1;}
+.d1{}.d2{}.d3{}
+.d4{}.d5{}.d6{}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING SPLASH -->
+<div class="onboard" id="onboard">
+  <div class="onboard-logo">TRIPTRUE</div>
+  <div class="onboard-tag">The travel app built for people who don't want to get played.</div>
+  <div class="onboard-steps">
+    <div class="onboard-step"><div class="onboard-n">1</div><div class="onboard-txt"><strong>Look up your flight price</strong> on Google Flights, Allegiant, or Southwest first — then enter it here.</div></div>
+    <div class="onboard-step"><div class="onboard-n">2</div><div class="onboard-txt"><strong>Enter every cost</strong> — bags, hotel, resort fees, transport, food. Most apps hide these until checkout.</div></div>
+    <div class="onboard-step"><div class="onboard-n">3</div><div class="onboard-txt"><strong>See the real total</strong> — what your trip actually costs before you swipe your card.</div></div>
+    <div class="onboard-step"><div class="onboard-n">4</div><div class="onboard-txt"><strong>Compare packages</strong> — enter any Expedia or CheapCaribbean package price to see if it beats booking direct.</div></div>
+  </div>
+  <div class="onboard-disc">⚠️ Sample airline prices shown in the app are estimates for reference only. Always check live prices at the airline's website before calculating your trip cost.</div>
+  <button class="onboard-btn" onclick="closeOnboard()">LET'S GO</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr" id="main-hdr">
+  <div class="logo">TRIPTRUE</div>
+  <div style="text-align:right;">
+    <div class="hdr-mod" id="hdr-mod">Real Cost</div>
+    <div class="hdr-tag">We give answers, not guesses</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PAGE 1 — REAL COST CALCULATOR
+     ════════════════════════════════════ -->
+<div class="page" id="page-calc">
+
+  <div class="hero">
+    <h2>💰 Real Cost Calculator</h2>
+    <p>Enter your trip details and see every fee, tax, and hidden charge — not just the advertised price.</p>
+  </div>
+
+  <div class="sop">
+    <div class="sop-head" onclick="toggleSOP('sop1')">
+      <span style="font-size:17px">📋</span>
+      <span class="sop-head-title">How To Use</span>
+      <span class="sop-arrow" id="sop-arrow-sop1">▼</span>
+    </div>
+    <div class="sop-body" id="sop1">
+      <div class="sop-step"><div class="sop-num">1</div><div><div class="sop-title">Enter Trip Details</div><div class="sop-desc">Destination, dates, travelers, nights.</div></div></div>
+      <div class="sop-step"><div class="sop-num">2</div><div><div class="sop-title">Pick Your Flight</div><div class="sop-desc">Tap the airline card. Add bags and seat selection.</div></div></div>
+      <div class="sop-step"><div class="sop-num">3</div><div><div class="sop-title">Toggle Hotel Hidden Fees</div><div class="sop-desc">Resort fee, cleaning fee, parking — the stuff apps hide.</div></div></div>
+      <div class="sop-step"><div class="sop-num">4</div><div><div class="sop-title">Fill Transport & Food</div><div class="sop-desc">Airport rides, daily transport, food budget.</div></div></div>
+      <div class="sop-step"><div class="sop-num">5</div><div><div class="sop-title">Hit Calculate</div><div class="sop-desc">Full line-item breakdown, hidden fee warnings, money-saving tips.</div></div></div>
+      <div class="sop-tip"><strong>Pro Tip:</strong> Real all-in cost is typically <strong>30–60% higher</strong> than what booking apps show upfront.</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">01</span><span class="sec-title">Flight</span><span class="sec-ico">✈️</span></div>
+    <div class="sec-body">
+      <div class="airline-grid">
+        <div class="al-card on" onclick="calcPickAirline(this,'allegiant',140)"><div class="al-name">Allegiant</div><div class="al-price">$140</div><div class="al-note">Sample · Nonstop RT</div><a class="al-check-live" href="https://www.allegiantair.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a></div>
+        <div class="al-card" onclick="calcPickAirline(this,'southwest',378)"><div class="al-name">Southwest</div><div class="al-price">$378</div><div class="al-note">Sample · Nonstop RT</div><a class="al-check-live" href="https://www.southwest.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a></div>
+        <div class="al-card" onclick="calcPickAirline(this,'split',260)"><div class="al-name">Split Fare ✦</div><div class="al-price">$260</div><div class="al-note">Allegiant out · SW back</div></div>
+        <div class="al-card" onclick="calcPickAirline(this,'custom',0)"><div class="al-name">My Price</div><div class="al-price" id="c-custom-disp">$—</div><div class="al-note">Enter your real fare</div><a class="al-check-live" href="https://www.google.com/flights" target="_blank" onclick="event.stopPropagation()">Find it →</a></div>
+      </div>
+      <div class="sub-fld" id="c-custom-fld"><div class="fld"><label>Your Round Trip Price ($)</label><input type="number" id="c-custom-price" placeholder="e.g. 220" oninput="calcSetCustom(this.value)"></div></div>
+      <div class="price-disc">⚠️ Prices above are <strong>sample estimates only</strong> — not live fares. Look up your actual price first, then select "My Price" and enter it. <strong>Check live:</strong> <a href="https://www.allegiantair.com" target="_blank" style="color:var(--accent)">Allegiant</a> · <a href="https://www.southwest.com" target="_blank" style="color:var(--accent)">Southwest</a> · <a href="https://www.google.com/flights" target="_blank" style="color:var(--accent)">Google Flights</a> · <a href="https://www.kayak.com" target="_blank" style="color:var(--accent)">Kayak</a></div>
+      <div class="row c3">
+        <div class="fld"><label>Carry-On</label><select id="c-carryon"><option value="0">None</option><option value="1" selected>1 Bag</option><option value="2">2 Bags</option></select></div>
+        <div class="fld"><label>Checked</label><select id="c-checked"><option value="0" selected>None</option><option value="1">1 Bag</option><option value="2">2 Bags</option></select></div>
+        <div class="fld"><label>Seat</label><select id="c-seat"><option value="0" selected>Standard</option><option value="30">Extra Legroom</option><option value="80">Premium</option></select></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">02</span><span class="sec-title">Trip Basics</span><span class="sec-ico">🗺️</span></div>
+    <div class="sec-body">
+      <div class="row c2">
+        <div class="fld"><label>From</label><input type="text" id="c-origin" value="VPS — Fort Walton Beach"></div>
+        <div class="fld"><label>To</label><input type="text" id="c-dest" value="MDW — Chicago Midway"></div>
+      </div>
+      <div class="row c2">
+        <div class="fld"><label>Depart</label><input type="date" id="c-depart"></div>
+        <div class="fld"><label>Return</label><input type="date" id="c-ret"></div>
+      </div>
+      <div class="row c3">
+        <div class="fld"><label>Travelers</label><select id="c-travelers"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+        <div class="fld"><label>Trip Type</label><select id="c-triptype"><option>Leisure</option><option>Military</option><option>Business</option></select></div>
+        <div class="fld"><label>Nights</label><input type="number" id="c-nights" value="4" min="1" max="60"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">03</span><span class="sec-title">Hotel & Hidden Fees</span><span class="sec-ico">🏨</span></div>
+    <div class="sec-body">
+      <div class="row c2">
+        <div class="fld"><label>Nightly Rate ($)</label><input type="number" id="c-hotel-rate" value="120"></div>
+        <div class="fld"><label>Booked On</label><select id="c-platform"><option value="booking">Booking.com</option><option value="airbnb">Airbnb</option><option value="direct">Direct</option><option value="vrbo">VRBO</option></select></div>
+      </div>
+      <div class="tog-row" onclick="togFee('c-resort-fld','c-resort-tog')"><div class="tog-info"><div class="tog-name">Resort / Destination Fee</div><div class="tog-desc">$20–$45/night — NOT in listed price</div></div><div class="tog-sw" id="c-resort-tog"></div></div>
+      <div class="sub-fld" id="c-resort-fld"><div class="fld"><label>Resort Fee Per Night ($)</label><input type="number" id="c-resort-fee" value="35"></div></div>
+      <div class="tog-row" onclick="togFee('c-clean-fld','c-clean-tog')"><div class="tog-info"><div class="tog-name">Cleaning Fee</div><div class="tog-desc">One-time — hidden until final checkout</div></div><div class="tog-sw" id="c-clean-tog"></div></div>
+      <div class="sub-fld" id="c-clean-fld"><div class="fld"><label>Cleaning Fee ($)</label><input type="number" id="c-clean-fee" value="85"></div></div>
+      <div class="tog-row" onclick="togFee('c-park-fld','c-park-tog')"><div class="tog-info"><div class="tog-name">Hotel Parking</div><div class="tog-desc">$30–$60/night downtown</div></div><div class="tog-sw" id="c-park-tog"></div></div>
+      <div class="sub-fld" id="c-park-fld"><div class="fld"><label>Parking Per Night ($)</label><input type="number" id="c-park-fee" value="40"></div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">04</span><span class="sec-title">Ground Transport</span><span class="sec-ico">🚕</span></div>
+    <div class="sec-body">
+      <div class="row c2">
+        <div class="fld"><label>Transfer Type</label><select id="c-transport-type"><option>Uber</option><option>Lyft</option><option>Rideshare</option><option>Taxi</option><option>Shuttle</option><option>Rental Car</option><option>Hotel Shuttle</option><option>Transit</option><option>Friend/Family Pickup</option></select></div>
+        <div class="fld"><label>Cost Each Way ($)</label><input type="number" id="c-transport-cost" value="35"></div>
+      </div>
+      <div class="row c2">
+        <div class="fld"><label>Daily Local Transport ($)</label><input type="number" id="c-daily-transport" value="20"></div>
+        <div class="fld"><label>Rental Car Days</label><input type="number" id="c-rental-days" value="0" min="0"></div>
+      </div>
+      <div class="row c2">
+        <div class="fld"><label>Airport Parking Days</label><input type="number" id="c-park-days" value="0" min="0" placeholder="0"></div>
+        <div class="fld"><label>Parking Rate Per Day ($)</label><input type="number" id="c-park-rate" value="15" placeholder="e.g. 15"></div>
+      </div>
+      <p style="font-size:11px;color:var(--sub);margin-top:4px;">VPS ~$10/day · PNS ~$12/day · ECP ~$10/day · MOB ~$8/day · MSY ~$22/day</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">05</span><span class="sec-title">Food & Activities</span><span class="sec-ico">🍔</span></div>
+    <div class="sec-body">
+      <div class="row c2">
+        <div class="fld"><label>Daily Food / Person</label><select id="c-food"><option value="30">Budget — $30</option><option value="60" selected>Moderate — $60</option><option value="100">Comfortable — $100</option><option value="150">Splurge — $150</option></select></div>
+        <div class="fld"><label>Activities Total ($)</label><input type="number" id="c-activities" value="150"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">06</span><span class="sec-title">Add-Ons & Savings</span><span class="sec-ico">⭐</span></div>
+    <div class="sec-body">
+      <div class="tog-row" onclick="togExtra('c-ins-tog')"><div class="tog-info"><div class="tog-name">Travel Insurance</div><div class="tog-desc">~$55 per person</div></div><div class="tog-sw" id="c-ins-tog"></div></div>
+      <div class="tog-row" onclick="togExtra('c-mil-tog')"><div class="tog-info"><div class="tog-name">Military Discount Mode ⭐</div><div class="tog-desc">Allegiant Honors + hotel military rates</div></div><div class="tog-sw" id="c-mil-tog"></div></div>
+      <div class="tog-row" onclick="togExtra('c-fx-tog')"><div class="tog-info"><div class="tog-name">No Foreign Transaction Fee Card</div><div class="tog-desc">Saves 3% — Chase Sapphire or Capital One Venture</div></div><div class="tog-sw" id="c-fx-tog"></div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">07</span><span class="sec-title">Cruise Costs</span><span class="sec-ico">🚢</span></div>
+    <div class="sec-body">
+      <div class="tog-row" onclick="togFee('c-cruise-fld','c-cruise-tog')"><div class="tog-info"><div class="tog-name">Add Cruise to Trip</div><div class="tog-desc">Replaces hotel — enter cruise fare instead</div></div><div class="tog-sw" id="c-cruise-tog"></div></div>
+      <div class="sub-fld" id="c-cruise-fld">
+        <div class="row c2">
+          <div class="fld"><label>Cruise Line</label>
+            <select id="c-cruise-line" onchange="cruiseLineChange()">
+              <option value="0">Select Cruise Line</option>
+              <option value="18">Carnival ($18/day)</option>
+              <option value="20">Royal Caribbean ($20/day)</option>
+              <option value="22">Norwegian NCL ($22/day)</option>
+              <option value="18">Celebrity ($18/day)</option>
+              <option value="16">MSC Cruises ($16/day)</option>
+              <option value="18">Holland America ($18/day)</option>
+              <option value="25">Princess Cruises ($25/day)</option>
+              <option value="20">Disney Cruise Line ($20/day)</option>
+              <option value="16">Costa Cruises ($16/day)</option>
+              <option value="0">Other (enter manually)</option>
+            </select>
+          </div>
+          <div class="fld"><label>Cruise Length (Nights)</label><input type="number" id="c-cruise-nights" value="7" min="1" onchange="cruiseLineChange()"></div>
+        </div>
+        <div class="row c2">
+          <div class="fld"><label>Cruise Fare Per Person ($)</label><input type="number" id="c-cruise-fare" placeholder="Find at cruise line site"></div>
+          <div class="fld"><label>Port Fees / Taxes Per Person ($)</label><input type="number" id="c-cruise-port" value="120" placeholder="e.g. 120"></div>
+        </div>
+        <div class="row c2">
+          <div class="fld"><label>Gratuities Per Person ($) — Auto-Filled</label><input type="number" id="c-cruise-grat" placeholder="Auto-calculated"></div>
+          <div class="fld"><label>Grat Rate Per Day ($/person)</label><input type="number" id="c-cruise-grat-rate" placeholder="e.g. 18" oninput="cruiseManualGrat()"></div>
+        </div>
+        <div class="row c2">
+          <div class="fld"><label>Drink Package Total ($)</label><input type="number" id="c-cruise-drinks" value="0" placeholder="e.g. 200"></div>
+          <div class="fld"><label>Shore Excursions Total ($)</label><input type="number" id="c-cruise-excur" value="0" placeholder="e.g. 150"></div>
+        </div>
+        <div id="c-cruise-grat-note" style="font-size:11px;color:var(--green);margin-top:4px;display:none;"></div>
+        <p style="font-size:11px;color:var(--sub);margin-top:4px;">Get cruise fares at Carnival.com · RoyalCaribbean.com · CruiseDirect.com · CheapCruises.com</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">08</span><span class="sec-title">Package vs. Direct</span><span class="sec-ico">📦</span></div>
+    <div class="sec-body">
+      <div class="row c2">
+        <div class="fld"><label>Package Price (All-In $)</label><input type="number" id="c-pkg-price" placeholder="e.g. 1200" value="0"></div>
+        <div class="fld"><label>Package Source</label><select id="c-pkg-source"><option value="">Not comparing</option><option value="expedia">Expedia</option><option value="cheapcaribbean">CheapCaribbean</option><option value="costco">Costco Travel</option><option value="applevac">Apple Vacations</option><option value="swvac">Southwest Vacations</option><option value="deltavac">Delta Vacations</option><option value="aavac">AA Vacations</option><option value="priceline">Priceline</option><option value="other">Other</option></select></div>
+      </div>
+      <p style="font-size:11px;color:var(--sub);margin-top:4px;">Enter the package total to see how it compares to booking everything separately. Result shows in your breakdown.</p>
+    </div>
+  </div>
+
+  <button class="big-btn" onclick="calcRun()">CALCULATE MY REAL TOTAL</button>
+
+  <div id="c-results" style="display:none;">
+    <div class="divider"><div class="div-line"></div><div class="div-text">Real Cost Breakdown</div><div class="div-line"></div></div>
+    <div class="mil-banner" id="c-mil-banner">⭐ Military Mode Active — Allegiant Honors + Hotel Military Rates Applied</div>
+    <div class="total-card fade d1"><div class="total-eye">Your Trip Will Actually Cost</div><div class="total-num" id="c-total">$0</div><div class="total-sub" id="c-sub">all fees included</div></div>
+    <div class="vs-row fade d2">
+      <div class="vs-card win"><div class="vs-eye">Your Fare</div><div class="vs-airline" id="c-vs-l-al">Allegiant</div><div class="vs-price" id="c-vs-l-p">$140</div><div class="win-badge">✓ Selected</div></div>
+      <div class="vs-card"><div class="vs-eye">vs. Alternative</div><div class="vs-airline" id="c-vs-r-al">Southwest</div><div class="vs-price" id="c-vs-r-p">$378</div><div class="vs-note" id="c-vs-note"></div></div>
+    </div>
+    <div class="bar-card fade d3"><div class="bar-title">Where Your Money Goes</div><div class="bar-track" id="c-bar"></div><div class="bar-legend"><div class="leg-item"><div class="leg-dot s-flight"></div>Flight</div><div class="leg-item"><div class="leg-dot s-hotel"></div>Hotel</div><div class="leg-item"><div class="leg-dot s-transport"></div>Transport</div><div class="leg-item"><div class="leg-dot s-food"></div>Food</div><div class="leg-item"><div class="leg-dot s-other"></div>Other</div></div></div>
+    <div class="bd-card fade d4" id="c-bd"></div>
+    <div class="warn-card fade d5" id="c-warn-card"><div class="warn-hdr">⚠️ Hidden Fee Alerts</div><div id="c-warn-list"></div></div>
+    <div class="tip-card fade d6"><div class="tip-hdr">💡 Money-Saving Tips</div><div class="tip-item" id="c-tip1">Book Allegiant directly — third-party sites add $15–$30</div><div class="tip-item" id="c-tip2">Fly Tuesday or Thursday — 10–20% cheaper than weekends</div><div class="tip-item" id="c-tip3">Add bags at booking, NOT the gate — gate bags cost 2× more</div><div class="tip-item" id="c-tip4">Use a no-foreign-transaction-fee card — Chase Sapphire or Capital One Venture</div><div class="tip-item" id="c-tip5">Find hotel on Booking.com then call direct — ask for price match, no resort fee</div></div>
+
+    <div class="book-card fade d6">
+      <div class="book-card-title">🔗 Book Your Trip — Verified Sites Only</div>
+      <div style="font-size:11px;color:var(--sub);margin-bottom:10px;">Now that you know the real cost, book directly. These are official sites — no third-party markups.</div>
+      <div class="book-links">
+        <a class="book-link" href="https://www.allegiantair.com" target="_blank"><span class="bl-ico">✈️</span>Allegiant Air</a>
+        <a class="book-link" href="https://www.southwest.com" target="_blank"><span class="bl-ico">✈️</span>Southwest</a>
+        <a class="book-link" href="https://www.google.com/flights" target="_blank"><span class="bl-ico">🔍</span>Google Flights</a>
+        <a class="book-link" href="https://www.kayak.com" target="_blank"><span class="bl-ico">🔍</span>Kayak</a>
+        <a class="book-link" href="https://www.booking.com" target="_blank"><span class="bl-ico">🏨</span>Booking.com</a>
+        <a class="book-link" href="https://www.airbnb.com" target="_blank"><span class="bl-ico">🏠</span>Airbnb</a>
+        <a class="book-link" href="https://www.cheapcaribbean.com" target="_blank"><span class="bl-ico">🌴</span>CheapCaribbean</a>
+        <a class="book-link" href="https://www.costcotravel.com" target="_blank"><span class="bl-ico">📦</span>Costco Travel</a>
+        <a class="book-link" href="https://www.expedia.com" target="_blank"><span class="bl-ico">🌐</span>Expedia Pkg</a>
+        <a class="book-link" href="https://www.carnival.com" target="_blank"><span class="bl-ico">🚢</span>Carnival</a>
+        <a class="book-link" href="https://www.royalcaribbean.com" target="_blank"><span class="bl-ico">🚢</span>Royal Caribbean</a>
+        <a class="book-link" href="https://www.cruisedirect.com" target="_blank"><span class="bl-ico">🚢</span>CruiseDirect</a>
+      </div>
+    
+      <div class="tip-item"><strong>OTA vs Direct rule</strong> — Expedia and Kayak are great for finding the lowest price but book direct on the airline or hotel website. You get better cancellation rights, no OTA service fees, and the airline will actually help you if something goes wrong. Use OTAs to find, use direct to book.</div>
+      <div class="tip-item"><strong>Geo-pricing is real</strong> — the same flight can cost less when searched from a different country's version of the booking site. Before buying, try searching on Google Flights with the destination country selected as your region. VPNs can also unlock lower regional fares on international routes.</div>
+      <div class="tip-item"><strong>Package math</strong> — flight + hotel packages on Expedia or CheapCaribbean are sometimes cheaper than booking separately because the airline sells distressed inventory to OTAs at wholesale. Always compare both in this calculator before deciding.</div></div>
+
+    <div class="share-card fade d6" id="c-share-card">
+      <div class="sc-header">
+        <div>
+          <div class="sc-logo">TRIPTRUE</div>
+          <div class="sc-tag">Real Trip Cost Breakdown</div>
+        </div>
+        <div style="font-size:28px" id="sc-dest-emoji">✈️</div>
+      </div>
+      <div class="sc-city" id="sc-city">My Trip</div>
+      <div class="sc-dates" id="sc-dates">—</div>
+      <div class="sc-total-row">
+        <div>
+          <div class="sc-total-label">Real All-In Cost</div>
+          <div class="sc-total-num" id="sc-total">$0</div>
+          <div class="sc-per-person" id="sc-pp"></div>
+        </div>
+        <div style="text-align:right">
+          <div class="sc-total-label">What I Thought</div>
+          <div style="font-size:20px;font-weight:800;color:var(--muted);text-decoration:line-through;" id="sc-advertised">—</div>
+          <div style="font-size:11px;color:var(--red);font-weight:700;" id="sc-diff"></div>
+        </div>
+      </div>
+      <div class="sc-items">
+        <div class="sc-item"><div class="sc-item-label">Flight</div><div class="sc-item-val gold" id="sc-flight">—</div></div>
+        <div class="sc-item"><div class="sc-item-label">Hotel / Stay</div><div class="sc-item-val" id="sc-hotel">—</div></div>
+        <div class="sc-item"><div class="sc-item-label">Transport</div><div class="sc-item-val" id="sc-transport">—</div></div>
+        <div class="sc-item"><div class="sc-item-label">Food & Fun</div><div class="sc-item-val" id="sc-food">—</div></div>
+        <div class="sc-item"><div class="sc-item-label">Travelers</div><div class="sc-item-val" id="sc-travelers-display">—</div></div>
+        <div class="sc-item"><div class="sc-item-label">Nights</div><div class="sc-item-val" id="sc-nights-display">—</div></div>
+      </div>
+      <div class="sc-alerts" id="sc-hidden-fees">
+        <div class="sc-alert-title">⚠️ Hidden Fees Found</div>
+        <div id="sc-fee-list"></div>
+      </div>
+      <div class="sc-footer">
+        <div class="sc-footer-tag">We give answers, not guesses</div>
+        <div class="sc-footer-url">ceez187.github.io/triptrue</div>
+      </div>
+    </div>
+    <button class="share-btn fade d6" id="c-share-btn" onclick="shareCard()">📤 SHARE THIS BREAKDOWN</button>
+    <div class="act-row fade d6"><button class="act-btn" onclick="calcCopy()">📋 Copy Summary</button><button class="act-btn" onclick="calcReset()">🔄 Reset</button></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PAGE 2 — SPLIT FARE ENGINE
+     ════════════════════════════════════ -->
+<div class="page" id="page-split">
+  <div class="hero">
+    <h2>⚡ Split Fare Engine</h2>
+    <p>Every major US airline. Every route combo. We rank all splits cheapest to most expensive so you know exactly which legs to book.</p>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px;line-height:1.6;">⚠️ Fares shown are <strong style="color:var(--text)">reference estimates only</strong>. Verify actual prices at each airline's site before booking your legs separately.</div>
+  </div>
+  <div class="sop">
+    <div class="sop-head" onclick="toggleSOP('sop2')"><span style="font-size:17px">📋</span><span class="sop-head-title">How To Use</span><span class="sop-arrow" id="sop-arrow-sop2">▼</span></div>
+    <div class="sop-body" id="sop2">
+      <div class="sop-step"><div class="sop-num">1</div><div><div class="sop-title">Select Your Route</div><div class="sop-desc">Pick origin and destination. Airlines auto-populate with current fares.</div></div></div>
+      <div class="sop-step"><div class="sop-num">2</div><div><div class="sop-title">Check Airlines to Compare</div><div class="sop-desc">All airlines flying that route appear. Need at least 2 to find a split.</div></div></div>
+      <div class="sop-step"><div class="sop-num">3</div><div><div class="sop-title">Search All Combos</div><div class="sop-desc">Every outbound + return pairing ranked cheapest to most expensive. Green = book it.</div></div></div>
+      <div class="sop-step"><div class="sop-num">4</div><div><div class="sop-title">Book Each Leg Separately</div><div class="sop-desc">Go to each airline's website and book the one-way legs independently.</div></div></div>
+      <div class="sop-tip"><strong>Pro Tip:</strong> Southwest includes 2 free checked bags. Allegiant/Spirit/Frontier bags often cost more than the base fare.</div>
+      <div class="sop-tip" style="margin-top:8px;"><strong style="color:var(--accent);">&#x1F5FA;&#xFE0F; Hidden Route Strategies:</strong> Beyond splitting airlines, consider: (1) <strong>Nearby departure airports</strong> — VPS, PNS, ECP, MOB, and MSY can all differ by $50–$150 on the same date. Check all 5 before committing. (2) <strong>Hidden city ticketing</strong> — booking a connecting flight through your destination and skipping the last leg. Only works with carry-on only and you cannot check bags. (3) <strong>One-way on two separate airlines</strong> is almost always cheaper than round-trip on one airline when one carrier has a sale on only one direction. (4) <strong>Positioning flights</strong> — drive to a bigger hub (MSY, ATL) and catch a nonstop. The gas + parking can still beat the connecting fare from VPS.</div>
+      <div class="sop-tip" style="margin-top:8px;background:rgba(91,142,240,0.07);border-color:rgba(91,142,240,0.25);"><strong style="color:var(--blue);">&#x1F3AB; Fare Class Reality:</strong> Airlines sell the same seat at 8–12 different price levels called fare buckets. The cheapest bucket (usually 2–4 seats) sells out first. When you see a price and come back tomorrow, you may find the next bucket which is $30–$80 more. This is why you set a target and track — the low bucket appears again when cancellations happen or the airline runs a promotion. Basic economy is the cheapest bucket but has the most restrictions. Main cabin is the next bucket. Always check both before buying.</div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">01</span><span class="sec-title">Your Route</span><span class="sec-ico">🗺️</span></div>
+    <div class="sec-body">
+      <div class="row c2">
+        <div class="fld"><label>From</label><select id="s-origin" onchange="splitLoadFares()"><option value="">-- Origin --</option></select></div>
+        <div class="fld"><label>To</label><select id="s-dest" onchange="splitLoadFares()"><option value="">-- Destination --</option></select></div>
+      </div>
+      <div class="row c3">
+        <div class="fld"><label>Travelers</label><select id="s-travelers"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+        <div class="fld"><label>Carry-On</label><select id="s-carryon"><option value="0">None</option><option value="1" selected>1</option><option value="2">2</option></select></div>
+        <div class="fld"><label>Checked</label><select id="s-checked"><option value="0" selected>None</option><option value="1">1</option><option value="2">2</option></select></div>
+      </div>
+      <div class="route-info" id="s-route-info"></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">02</span><span class="sec-title">Airlines to Compare</span><span class="sec-ico">✈️</span></div>
+    <div class="sec-body">
+      <div class="airline-check-grid" id="s-airline-checks"></div>
+      <p style="font-size:11px;color:var(--sub);margin-top:9px;">Select at least 2. Prices are typical one-way base fares.</p>
+    </div>
+  </div>
+  <button class="big-btn" onclick="splitRun()">SEARCH ALL COMBOS</button>
+  <div id="s-results" style="display:none;">
+    <div class="divider"><div class="div-line"></div><div class="div-text">All Splits Ranked</div><div class="div-line"></div></div>
+    <div class="sum-card fade d1"><div class="sum-eye">Best Deal Found</div><div class="sum-num" id="s-best-price">$0</div><div class="sum-sub" id="s-best-desc">—</div></div>
+    <div id="s-combo-list" class="fade d2"></div>
+    <div class="bd-card fade d3" id="s-bd"></div>
+    <div class="tip-card fade d4"><div class="tip-hdr">💡 Split Fare Rules</div><div class="tip-item">Two separate one-way tickets — airlines don't know they're paired</div><div class="tip-item">Build in buffer time between legs — a delay on leg 1 won't protect you on leg 2</div><div class="tip-item">Southwest: 2 free checked bags always. Allegiant/Spirit/Frontier: bags cost more sometimes</div><div class="tip-item">Best splits happen when one airline has a sale on one direction only</div></div>
+    <div class="act-row fade d5"><button class="act-btn" onclick="splitCopy()">📋 Copy</button><button class="act-btn" onclick="splitReset()">🔄 Reset</button></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PAGE 3 — SCAM SHIELD
+     ════════════════════════════════════ -->
+<div class="page" id="page-scam">
+  <div class="hero red">
+    <h2>🛡️ Scam Shield</h2>
+    <p>Destination-specific database of tourist traps and hidden fees — plus what locals actually pay. Add any city yourself.</p>
+  </div>
+  <div class="sop">
+    <div class="sop-head" onclick="toggleSOP('sop3')"><span style="font-size:17px">📋</span><span class="sop-head-title">How To Use</span><span class="sop-arrow" id="sop-arrow-sop3">▼</span></div>
+    <div class="sop-body" id="sop3">
+      <div class="sop-step"><div class="sop-num">1</div><div><div class="sop-title">Pick a City</div><div class="sop-desc">Tap any card. Custom cities you add have a dashed border and an × to delete.</div></div></div>
+      <div class="sop-step"><div class="sop-num">2</div><div><div class="sop-title">Show Scams & Fair Prices</div><div class="sop-desc">Red = tourist price. Green = local price. Tip = how to avoid the trap.</div></div></div>
+      <div class="sop-step"><div class="sop-num">3</div><div><div class="sop-title">Add a New City</div><div class="sop-desc">Scroll to the Add City section. Fill in name, risk, scams, tips. Hit Save — it persists between sessions.</div></div></div>
+      <div class="sop-tip"><strong>Pro Tip:</strong> Screenshot the scam cards before you land. Cell data abroad is slow — you want this offline.</div>
+    </div>
+  </div>
+  <!-- City grid -->
+  <div class="sec">
+    <div class="sec-hdr"><span class="sec-num">01</span><span class="sec-title">Where Are You Going?</span><span class="sec-ico">🌍</span></div>
+    <div class="sec-body">
+      <div class="fld" style="margin-bottom:12px;">
+        <label>Search Cities</label>
+        <input type="text" id="sc-search" placeholder="Type a city name..." oninput="scamFilter(this.value)" style="font-size:16px;">
+      </div>
+      <div class="dest-grid" id="sc-dest-grid"></div>
+    </div>
+  </div>
+  <button class="big-btn" id="sc-show-btn" onclick="scamShow()">SHOW SCAMS &amp; FAIR PRICES</button>
+  <div id="sc-results" style="display:none;">
+    <div class="divider"><div class="div-line"></div><div class="div-text" id="sc-dest-display">City Scams</div><div class="div-line"></div></div>
+    <div class="alert-text" id="sc-alert-text"></div>
+    <div id="sc-scam-list"></div>
+    <div class="tip-grid" id="sc-tips-grid"></div>
+    <div class="act-row"><button class="act-btn" onclick="scamCopy()">📋 Copy Scam Report</button><button class="act-btn" onclick="scamReset()">🔄 Reset</button></div>
+  </div>
+  <!-- Add City -->
+  <div class="sec" style="margin-top:8px;">
+    <div class="sec-hdr"><span class="sec-num">+</span><span class="sec-title">Add a New City</span><span class="sec-ico">🏙️</span></div>
+    <div class="sec-body">
+      <div class="row c3">
+        <div class="fld" style="grid-column:span 2"><label>City Name</label><input type="text" id="nc-name" placeholder="e.g. Rome, Paris, Vegas" style="font-size:16px;" oninput="ncCityTyped()"></div>
+        <div class="fld"><label>Emoji</label><input type="text" id="nc-emoji" placeholder="🌍" maxlength="4"></div>
+      </div>
+      <button id="nc-ai-btn" onclick="ncAIGenerate()" style="display:block;width:100%;background:linear-gradient(135deg,var(--blue),var(--accent));color:#000;border:none;border-radius:12px;padding:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;margin-bottom:10px;touch-action:manipulation;">⚡ AUTO-FILL WITH AI</button>
+      <div id="nc-ai-status" style="display:none;font-size:12px;color:var(--sub);text-align:center;padding:8px;margin-bottom:10px;"></div>
+      <div class="row c2">
+        <div class="fld"><label>Risk Level</label><select id="nc-risk"><option value="Low">Low Risk</option><option value="Medium" selected>Medium Risk</option><option value="High">High Risk</option></select></div>
+        <div class="fld"><label>Risk Note</label><input type="text" id="nc-riskdesc" placeholder="e.g. Watch taxi markups"></div>
+      </div>
+      <div style="margin-bottom:9px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);">Scam Entries (up to 5)</div>
+      <div id="nc-scam-entries"></div>
+      <button class="add-entry-btn" onclick="ncAddScam()">+ Add Scam Entry</button>
+      <div style="margin-bottom:9px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);">Safety Tips (up to 4)</div>
+      <div id="nc-tip-entries"></div>
+      <button class="add-entry-btn" onclick="ncAddTip()">+ Add Safety Tip</button>
+      <button class="save-btn" onclick="ncSave()">SAVE CITY TO DATABASE</button>
+    </div>
+  </div>
+</div>
+<!-- ════════════════════════════════════
+     PAGE 4 — PRICE WAR ROOM
+     ════════════════════════════════════ -->
+<div class="page" id="page-war" style="background:var(--bg);">
+  <h2 style="color:#f5c418;font-size:24px;padding:20px 20px 6px;">📈 Price War Room</h2>
+  <p style="color:#9090b0;padding:0 20px 12px;font-size:13px;">Track flight prices and know exactly when to book.</p>
+  <div style="margin:0 16px 16px;background:rgba(245,196,24,0.06);border:1px solid rgba(245,196,24,0.2);border-radius:12px;padding:14px;">
+    <div style="font-size:11px;font-weight:700;color:#f5c418;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">HOW TO USE</div>
+    <div style="font-size:13px;color:#f2f2fc;line-height:2.0;">
+      <strong style="color:#f5c418;">1.</strong> Pick your origin and destination airport<br>
+      <strong style="color:#f5c418;">2.</strong> Tap an airline fare pill to select it<br>
+      <strong style="color:#f5c418;">3.</strong> Enter your target price<br>
+      <strong style="color:#f5c418;">4.</strong> Hit Add to Watchlist<br>
+      <strong style="color:#f5c418;">5.</strong> Tap Update to log new prices over time<br>
+      <strong style="color:#f5c418;">6.</strong> When status shows <strong style="color:#3dd68c;">BOOK NOW</strong> — buy immediately
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:#9090b0;background:rgba(0,0,0,0.2);border-radius:8px;padding:8px;">⚠️ Fares shown are reference prices — not live data. Always verify at the airline site before booking.</div>
+  </div>
+  <div style="padding:0 16px 16px;">
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">From</label>
+    <select id="w-origin" onchange="warLoadFares()" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:12px;display:block;">
+      <option value="">-- Origin --</option>
+    </select>
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">To</label>
+    <select id="w-dest" onchange="warLoadFares()" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:12px;display:block;">
+      <option value="">-- Destination --</option>
+    </select>
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Airline Fares — Tap to Select</label>
+    <div id="w-fare-pills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:20px;"></div>
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Target Price RT $</label>
+    <input type="number" id="w-target" placeholder="e.g. 150" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:12px;display:block;">
+    <label style="display:block;font-size:11px;font-weight:700;color:#9090b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Travelers</label>
+    <select id="w-travelers" style="width:100%;background:#14141e;color:#f2f2fc;border:1px solid #28283c;border-radius:10px;padding:12px;font-size:16px;margin-bottom:14px;display:block;">
+      <option value="1">1 Traveler</option><option value="2">2 Travelers</option><option value="3">3 Travelers</option><option value="4">4 Travelers</option><option value="5">5 Travelers</option>
+    </select>
+    <div style="display:flex;justify-content:space-around;margin-bottom:14px;background:#14141e;border-radius:10px;padding:12px;">
+      <div style="text-align:center;"><div id="w-stat-tracking" style="font-size:22px;font-weight:800;color:#f2f2fc;">0</div><div style="font-size:10px;color:#9090b0;text-transform:uppercase;">Tracking</div></div>
+      <div style="text-align:center;"><div id="w-stat-deals" style="font-size:22px;font-weight:800;color:#3dd68c;">0</div><div style="font-size:10px;color:#9090b0;text-transform:uppercase;">Deals</div></div>
+      <div style="text-align:center;"><div id="w-stat-airlines" style="font-size:22px;font-weight:800;color:#f2f2fc;">0</div><div style="font-size:10px;color:#9090b0;text-transform:uppercase;">Airlines</div></div>
+    </div>
+    <button onclick="warAdd()" style="width:100%;background:#f5c418;color:#000;border:none;border-radius:12px;padding:16px;font-size:20px;font-weight:800;cursor:pointer;margin-bottom:20px;touch-action:manipulation;">ADD TO WATCHLIST</button>
+  </div>
+  <div id="w-alerts" style="padding:0 16px 8px;"></div>
+  <div style="padding:0 16px 16px;">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9090b0;margin-bottom:10px;">Your Watchlist</div>
+    <div id="w-tracks"></div>
+  </div>
+  <div style="margin:0 16px 20px;background:#14141e;border-radius:12px;padding:14px;border:1px solid #28283c;">
+    <div style="font-size:11px;font-weight:700;color:#f5c418;margin-bottom:10px;">💡 Price Tracking &amp; Search Strategy</div>
+    <div style="font-size:13px;color:#f2f2fc;line-height:2.0;"><strong>Search incognito always</strong> — airlines inflate prices on repeated searches.<br><strong>Tuesday 7–10 AM</strong> — best time to find fare drops.<br><strong>21-day rule</strong> — lowest fares appear 3 weeks before departure.<br><strong>Never book Friday or Sunday</strong> — fares inflate 15–25%.<br><strong>6–8 weeks out</strong> — sweet spot for domestic booking.<br><strong>Nearby airports</strong> — VPS vs PNS vs ECP can differ $50–$100.<br><strong>Hidden city trick</strong> — book through destination, skip last leg. Carry-on only.</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div id="swipe-dots" style="position:fixed;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 10px);left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:49;pointer-events:none;"><div class="sdot active" data-page="calc"></div><div class="sdot" data-page="split"></div><div class="sdot" data-page="war"></div><div class="sdot" data-page="scam"></div></div>
+<nav class="nav">
+  <button class="nav-btn active" onclick="goPage('calc',this)"><span class="nav-ico">💰</span><span class="nav-label">Real Cost</span></button>
+  <button class="nav-btn" onclick="goPage('split',this)"><span class="nav-ico">⚡</span><span class="nav-label">Split Fare</span></button>
+  <button class="nav-btn" onclick="goPage('war',this)"><span class="nav-ico">📈</span><span class="nav-label">War Room</span></button>
+  <button class="nav-btn" onclick="goPage('scam',this)"><span class="nav-ico">🛡️</span><span class="nav-label">Scam Shield</span></button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ── SAFE STORAGE ──
+const Store={_m:{},get:function(k){try{return localStorage.getItem(k);}catch(e){return this._m[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){this._m[k]=v;}},remove:function(k){try{localStorage.removeItem(k);}catch(e){delete this._m[k];}}};
+
+// ── CONFIG ──
+const CONFIG={hotelTaxRate:0.13,airbnbPlatformFee:0.14,defaultPlatformFee:0.12,milHotelDiscount:0.12,milBagCredit:60,allegiantCarryOn:30,allegiantChecked:40,insurancePerPerson:55,rentalCarPerDay:75,defaultNights:4};
+
+// ── SANITIZE ──
+function sanitize(str){if(typeof str!=='string')return '';return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;').slice(0,300);}
+function sanitizeKey(str){return (str||'').toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,40);}
+
+// ══════════════════════════════════════
+//  SHARED UTILITIES
+// ══════════════════════════════════════
+const modNames = {calc:'Real Cost',split:'Split Fare',scam:'Scam Shield',war:'War Room'};
+
+function goPage(id,btn){
+  var pages=document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++){pages[i].style.display='none';}
+  var btns=document.querySelectorAll('.nav-btn');
+  for(var j=0;j<btns.length;j++){btns[j].classList.remove('active');}
+  var pg=document.getElementById('page-'+id);
+  if(pg){
+    pg.style.display='block';
+    pg.style.visibility='visible';
+    pg.style.opacity='1';
+  }
+  if(btn){btn.classList.add('active');}
+  var mod=document.getElementById('hdr-mod');
+  if(mod){mod.textContent=modNames[id]||id;}
+  if(typeof updateDots==='function'){updateDots(id);}
+}
+
+function toggleSOP(id) {
+  document.getElementById(id).classList.toggle('show');
+  document.getElementById('sop-arrow-'+id).classList.toggle('open');
+}
+
+function togFee(fieldId, swId) {
+  const sw = document.getElementById(swId);
+  sw.classList.toggle('on');
+  document.getElementById(fieldId).classList.toggle('show', sw.classList.contains('on'));
+}
+
+function togExtra(swId) {
+  document.getElementById(swId).classList.toggle('on');
+  if(swId==='c-mil-tog') {
+    document.getElementById('c-mil-banner').style.display =
+      document.getElementById('c-mil-tog').classList.contains('on') ? 'block' : 'none';
+  }
+}
+
+function showToast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+function closeOnboard(){
+  var el=document.getElementById('onboard');
+  el.style.opacity='0';el.style.transition='opacity 0.3s';
+  setTimeout(function(){el.style.display='none';},300);
+  Store.set('tt_onboarded','1');
+}
+
+function updateDots(pid){document.querySelectorAll('.sdot').forEach(function(d){d.classList.toggle('active',d.dataset.page===pid);});}
+
+(function(){try{
+  var pages=['calc','split','war','scam'],tx=0,ty=0,tt=0;
+  document.addEventListener('touchstart',function(e){try{tx=e.touches[0].clientX;ty=e.touches[0].clientY;tt=Date.now();}catch(x){}},{passive:true});
+  document.addEventListener('touchend',function(e){
+    try{
+      var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty,dt=Date.now()-tt;
+      if(dt>500||Math.abs(dy)>Math.abs(dx)*0.7||Math.abs(dx)<55)return;
+      var ap=document.querySelector('.page.active');if(!ap)return;
+      var idx=pages.indexOf(ap.id.replace('page-',''));
+      if(dx<0&&idx<pages.length-1)goPage(pages[idx+1],document.querySelectorAll('.nav-btn')[idx+1]);
+      else if(dx>0&&idx>0)goPage(pages[idx-1],document.querySelectorAll('.nav-btn')[idx-1]);
+    }catch(x){}
+  },{passive:true});
+  var lastY=0,hdr=document.getElementById('main-hdr');
+  if(hdr)window.addEventListener('scroll',function(){
+    try{var y=window.scrollY||window.pageYOffset||0;if(y>lastY&&y>80)hdr.style.transform='translateY(-100%)';else hdr.style.transform='translateY(0)';lastY=y;}catch(x){}
+  },{passive:true});
+}catch(x){}})();
+
+// ══════════════════════════════════════
+//  MODULE 1 — REAL COST CALCULATOR
+// ══════════════════════════════════════
+let calcAirline = 'allegiant';
+const calcPrices = {allegiant:140,southwest:378,split:260,custom:0};
+
+(function initCalcDates(){
+  const t=new Date();
+  const d1=new Date(t); d1.setDate(t.getDate()+30);
+  const d2=new Date(t); d2.setDate(t.getDate()+34);
+  document.getElementById('c-depart').value=d1.toISOString().split('T')[0];
+  document.getElementById('c-ret').value=d2.toISOString().split('T')[0];
+})();
+
+function calcPickAirline(el,name) {
+  document.querySelectorAll('.al-card').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); calcAirline=name;
+  document.getElementById('c-custom-fld').classList.toggle('show',name==='custom');
+}
+
+function calcSetCustom(val) {
+  calcPrices.custom=parseFloat(val)||0;
+  document.getElementById('c-custom-disp').textContent=val?`$${val}`:'$—';
+}
+
+function calcRun() {
+  const travelers=parseInt(document.getElementById('c-travelers').value);
+  const nights=parseInt(document.getElementById('c-nights').value)||4;
+  const milOn=document.getElementById('c-mil-tog').classList.contains('on');
+  const insOn=document.getElementById('c-ins-tog').classList.contains('on');
+  const resortOn=document.getElementById('c-resort-tog').classList.contains('on');
+  const cleanOn=document.getElementById('c-clean-tog').classList.contains('on');
+  const parkOn=document.getElementById('c-park-tog').classList.contains('on');
+
+  let flightRT=calcPrices[calcAirline];
+  if(milOn&&calcAirline==='allegiant') flightRT=Math.round(flightRT*0.85);
+  const flightTotal=flightRT*travelers;
+
+  const carryon=parseInt(document.getElementById('c-carryon').value);
+  const checked=parseInt(document.getElementById('c-checked').value);
+  const seat=parseInt(document.getElementById('c-seat').value);
+  let bagPP=0;
+  if(calcAirline==='allegiant'||calcAirline==='split'){bagPP+=carryon*30*2;bagPP+=checked*40*2;if(milOn)bagPP=Math.max(0,bagPP-60);}
+  const bagTotal=bagPP*travelers;
+  const seatTotal=seat*travelers*2;
+
+  const rate=parseFloat(document.getElementById('c-hotel-rate').value)||0;
+  const resortFee=resortOn?(parseFloat(document.getElementById('c-resort-fee').value)||0):0;
+  const cleanFee=cleanOn?(parseFloat(document.getElementById('c-clean-fee').value)||0):0;
+  const parkFee=parkOn?(parseFloat(document.getElementById('c-park-fee').value)||0):0;
+  const platPct=document.getElementById('c-platform').value==='airbnb'?0.14:0.12;
+  const hotelBase=rate*nights;
+  const resortTot=resortFee*nights;
+  const parkTot=parkFee*nights;
+  const taxes=hotelBase*0.13;
+  const platFee=hotelBase*platPct;
+  const milDisc=milOn?hotelBase*0.12:0;
+  const hotelTotal=hotelBase+resortTot+cleanFee+parkTot+taxes+platFee-milDisc;
+
+  const xfer=parseFloat(document.getElementById('c-transport-cost').value)||0;
+  const daily=parseFloat(document.getElementById('c-daily-transport').value)||0;
+  const renDays=parseInt(document.getElementById('c-rental-days').value)||0;
+  const parkDays=parseInt(document.getElementById('c-park-days').value)||0;
+  const parkRate=parseFloat(document.getElementById('c-park-rate').value)||0;
+  const airportPark=parkDays*parkRate;
+  const transTot=(xfer*2*travelers)+(daily*nights)+(renDays*75)+airportPark;
+
+  const foodDay=parseInt(document.getElementById('c-food').value);
+  const foodTot=foodDay*(nights+1)*travelers;
+  const acts=parseFloat(document.getElementById('c-activities').value)||0;
+  const ins=insOn?55*travelers:0;
+
+  // Cruise
+  const cruiseOn=document.getElementById('c-cruise-tog').classList.contains('on');
+  const cruiseFare=cruiseOn?(parseFloat(document.getElementById('c-cruise-fare').value)||0)*travelers:0;
+  const cruisePort=cruiseOn?(parseFloat(document.getElementById('c-cruise-port').value)||0):0;
+  const cruiseGrat=cruiseOn?(parseFloat(document.getElementById('c-cruise-grat').value)||0)*travelers:0;
+  const cruiseDrinks=cruiseOn?(parseFloat(document.getElementById('c-cruise-drinks').value)||0):0;
+  const cruiseExcur=cruiseOn?(parseFloat(document.getElementById('c-cruise-excur').value)||0):0;
+  const cruiseTotal=cruiseFare+cruisePort+cruiseGrat+cruiseDrinks+cruiseExcur;
+
+  // Use cruise instead of hotel if cruise toggled on
+  const accommodationTotal=cruiseOn?cruiseTotal:hotelTotal;
+
+  const grand=flightTotal+bagTotal+seatTotal+accommodationTotal+transTot+foodTot+acts+ins;
+  const perP=Math.round(grand/travelers);
+
+  // Package comparison
+  const pkgPrice=parseFloat(document.getElementById('c-pkg-price').value)||0;
+  const pkgSource=document.getElementById('c-pkg-source').value;
+  const pkgSavings=pkgPrice>0?grand-pkgPrice:0;
+
+  document.getElementById('c-results').style.display='block';
+  document.getElementById('c-total').textContent=`$${Math.round(grand).toLocaleString()}`;
+  document.getElementById('c-sub').textContent=travelers>1?`total for ${travelers} people · $${perP.toLocaleString()} per person`:'per person · all fees included';
+
+  const alt=calcAirline==='allegiant'?'southwest':'allegiant';
+  document.getElementById('c-vs-l-al').textContent=calcAirline.charAt(0).toUpperCase()+calcAirline.slice(1);
+  document.getElementById('c-vs-l-p').textContent=`$${flightRT}`;
+  document.getElementById('c-vs-r-al').textContent=alt.charAt(0).toUpperCase()+alt.slice(1);
+  document.getElementById('c-vs-r-p').textContent=`$${calcPrices[alt]}`;
+  document.getElementById('c-vs-note').textContent=calcPrices[alt]>flightRT?`You save $${calcPrices[alt]-flightRT}`:`$${flightRT-calcPrices[alt]} more than ${alt}`;
+
+  const tot=grand||1;
+  document.getElementById('c-bar').innerHTML=[
+    {pct:(flightTotal+bagTotal+seatTotal)/tot*100,cls:'s-flight'},
+    {pct:hotelTotal/tot*100,cls:'s-hotel'},
+    {pct:transTot/tot*100,cls:'s-transport'},
+    {pct:foodTot/tot*100,cls:'s-food'},
+    {pct:(acts+ins)/tot*100,cls:'s-other'},
+  ].map(s=>`<div class="bar-seg ${s.cls}" style="width:${Math.max(s.pct,0).toFixed(1)}%"></div>`).join('');
+
+  const items=[
+    {ico:'✈️',name:'Base Flight (RT)',note:`${travelers} traveler(s) · ${calcAirline}`,amt:flightTotal,gold:true},
+    {ico:'🧳',name:'Bag Fees',note:`${carryon} carry-on · ${checked} checked`,amt:bagTotal},
+    {ico:'💺',name:'Seat Selection',note:seat>0?'Upgrade':'Standard included',amt:seatTotal},
+    ...(cruiseOn?[
+      {ico:'🚢',name:'Cruise Fare',note:`${travelers} traveler(s)`,amt:cruiseFare},
+      {ico:'⚓',name:'Port Fees & Taxes',note:'Required by cruise line',amt:cruisePort},
+      {ico:'🤝',name:'Gratuities',note:`${travelers} × auto-gratuity`,amt:cruiseGrat},
+      {ico:'🍹',name:'Drink Package',note:cruiseDrinks>0?'Added':'Not selected',amt:cruiseDrinks},
+      {ico:'🤿',name:'Shore Excursions',note:cruiseExcur>0?'Added':'Not selected',amt:cruiseExcur},
+    ]:[
+      {ico:'🏨',name:'Hotel — Base',note:`${nights} nights @ $${rate}/night`,amt:hotelBase},
+      {ico:'🏖️',name:'Resort Fee',note:resortOn?`$${resortFee}/night`:'Not added',amt:resortTot},
+      {ico:'🧹',name:'Cleaning Fee',note:cleanOn?'One-time':'Not added',amt:cleanFee},
+      {ico:'🚗',name:'Hotel Parking',note:parkOn?`$${parkFee}/night`:'Not added',amt:parkTot},
+      {ico:'📊',name:'Hotel Taxes',note:'~13%',amt:Math.round(taxes)},
+      {ico:'💻',name:'Platform Fee',note:`${(platPct*100).toFixed(0)}%`,amt:Math.round(platFee)},
+      {ico:'🎖️',name:'Military Discount',note:milOn?'12% off hotel':'Not active',amt:milOn?-Math.round(milDisc):0,neg:true},
+    ]),
+    {ico:'🚕',name:'Airport Transport',note:'Both ways · all travelers',amt:xfer*2*travelers},
+    {ico:'🛵',name:'Local Transport',note:`$${daily}/day × ${nights} nights`,amt:daily*nights},
+    {ico:'🚙',name:'Rental Car',note:renDays>0?`${renDays} days`:'Not selected',amt:renDays*75},
+    {ico:'🅿️',name:'Airport Parking',note:parkDays>0?`${parkDays} days @ $${parkRate}/day`:'Not added',amt:airportPark},
+    {ico:'🍔',name:'Food & Dining',note:`$${foodDay}/day × ${nights+1} days × ${travelers}`,amt:foodTot},
+    {ico:'🎭',name:'Activities',note:'Entertainment budget',amt:acts},
+    {ico:'🛡️',name:'Travel Insurance',note:insOn?`${travelers} × $55`:'Not selected',amt:ins},
+  ];
+  let bdHtml='<div class="bd-hdr">Full Line-Item Breakdown</div>';
+  items.forEach(i=>{
+    const z=i.amt===0,n=i.amt<0;
+    bdHtml+=`<div class="bd-row"><div class="bd-left"><span class="bd-ico">${i.ico}</span><div><div class="bd-name">${i.name}</div><div class="bd-note">${i.note}</div></div></div><div class="bd-amt ${z?'zero':n?'neg':i.gold?'gold':''}">${z?'—':n?`-$${Math.abs(Math.round(i.amt)).toLocaleString()}`:`$${Math.round(i.amt).toLocaleString()}`}</div></div>`;
+  });
+  bdHtml+=`<div class="bd-total"><div class="bd-total-label">Real Total (Book Direct)</div><div class="bd-total-amt">$${Math.round(grand).toLocaleString()}</div></div>`;
+  // Package comparison row
+  if(pkgPrice>0){
+    const srcLabel=pkgSource?pkgSource.charAt(0).toUpperCase()+pkgSource.slice(1):'Package';
+    const better=pkgSavings>0;
+    bdHtml+=`<div class="bd-row" style="background:${better?'rgba(61,214,140,0.06)':'rgba(240,64,96,0.06)'}">
+      <div class="bd-left"><span class="bd-ico">📦</span><div><div class="bd-name">${srcLabel} Package Price</div><div class="bd-note">${better?`Save $${Math.round(pkgSavings)} vs booking direct`:`$${Math.round(Math.abs(pkgSavings))} more than booking direct`}</div></div></div>
+      <div class="bd-amt" style="color:${better?'var(--green)':'var(--red)'}">$${Math.round(pkgPrice).toLocaleString()}</div>
+    </div>`;
+  }
+  document.getElementById('c-bd').innerHTML=bdHtml;
+
+  const warns=[];
+  if(resortTot>0) warns.push(`Resort fee adds $${Math.round(resortTot)} — NOT in the listed hotel rate`);
+  if(cleanFee>0) warns.push(`Cleaning fee of $${cleanFee} hidden until final checkout`);
+  if(calcAirline==='allegiant'&&carryon>0) warns.push('Allegiant carry-on — add at booking NOT gate (2× cost at gate)');
+  if(platFee>50) warns.push(`Platform fee $${Math.round(platFee)} — call hotel direct to skip it`);
+  document.getElementById('c-warn-list').innerHTML=warns.map(w=>`<div class="warn-item">⚠️ ${w}</div>`).join('');
+  document.getElementById('c-warn-card').style.display=warns.length?'block':'none';
+
+  if(milOn){
+    document.getElementById('c-tip1').textContent='Allegiant Honors: free carry-on + checked bag — show ID at airport';
+    document.getElementById('c-tip2').textContent='Show military ID at hotel — many give 10–15% off even walk-in';
+    document.getElementById('c-tip5').textContent='Check IHG, Hilton, Marriott for gov/military rates — often beats public prices';
+  } else {
+    document.getElementById('c-tip1').textContent='Book Allegiant directly — third-party sites add $15–$30';
+    document.getElementById('c-tip2').textContent='Fly Tuesday or Thursday — 10–20% cheaper than weekends';
+    document.getElementById('c-tip5').textContent='Find hotel on Booking.com then call direct — ask for price match, no resort fee';
+  }
+
+  document.getElementById('c-results').scrollIntoView({behavior:'smooth'});
+  // Save last calc inputs to Store
+  try{
+    var saved={
+      origin:document.getElementById('c-origin').value,
+      dest:document.getElementById('c-dest').value,
+      depart:document.getElementById('c-depart').value,
+      ret:document.getElementById('c-ret').value,
+      travelers:document.getElementById('c-travelers').value,
+      nights:document.getElementById('c-nights').value,
+      hotelRate:document.getElementById('c-hotel-rate').value,
+      food:document.getElementById('c-food').value,
+      activities:document.getElementById('c-activities').value,
+      airline:calcAirline,
+      customPrice:calcPrices.custom
+    };
+    Store.set('tt_last_calc',JSON.stringify(saved));
+  }catch(e){}
+  // Build share card
+  buildShareCard({grand,travelers,nights,flightTotal,bagTotal,seatTotal,accommodationTotal,transTot,foodTot,acts,ins,cruiseOn,cruiseFare,cruiseGrat,hotelBase,resortTot,cleanFee,parkTot,platFee,airportPark});
+}
+
+function cruiseLineChange(){
+  const sel=document.getElementById('c-cruise-line');
+  const rate=parseFloat(sel.value)||0;
+  const nights=parseInt(document.getElementById('c-cruise-nights').value)||0;
+  const note=document.getElementById('c-cruise-grat-note');
+  if(rate>0&&nights>0){
+    const total=rate*nights;
+    document.getElementById('c-cruise-grat').value=total;
+    document.getElementById('c-cruise-grat-rate').value=rate;
+    const lineName=sel.options[sel.selectedIndex].text;
+    note.textContent=`✓ ${lineName}: $${rate}/day × ${nights} nights = $${total}/person`;
+    note.style.display='block';
+  } else {
+    note.style.display='none';
+  }
+}
+function cruiseManualGrat(){
+  const rate=parseFloat(document.getElementById('c-cruise-grat-rate').value)||0;
+  const nights=parseInt(document.getElementById('c-cruise-nights').value)||0;
+  if(rate>0&&nights>0){
+    document.getElementById('c-cruise-grat').value=rate*nights;
+  }
+}
+
+function buildShareCard(d){
+  // Populate share card from calculated data
+  var dest=document.getElementById('c-dest').value||'My Trip';
+  var depart=document.getElementById('c-depart').value;
+  var ret=document.getElementById('c-ret').value;
+  var dateStr=depart&&ret?(depart+' → '+ret):(depart||'');
+
+  // Destination emoji based on airline/trip type
+  var emoji=d.cruiseOn?'🚢':dest.toLowerCase().includes('orlando')?'🎢':
+    dest.toLowerCase().includes('miami')?'🌴':dest.toLowerCase().includes('vegas')?'🎰':
+    dest.toLowerCase().includes('hawaii')?'🌺':dest.toLowerCase().includes('cancun')?'🌊':'✈️';
+
+  document.getElementById('sc-dest-emoji').textContent=emoji;
+  document.getElementById('sc-city').textContent=dest;
+  document.getElementById('sc-dates').textContent=dateStr||'Dates not set';
+  document.getElementById('sc-total').textContent='$'+Math.round(d.grand).toLocaleString();
+  document.getElementById('sc-pp').textContent=d.travelers>1?d.travelers+' travelers · $'+Math.round(d.grand/d.travelers).toLocaleString()+'/person':'1 traveler';
+
+  // Advertised price = flight + base hotel only (what people think they're paying)
+  var advertised=d.flightTotal+(d.cruiseOn?d.cruiseFare:d.hotelBase);
+  document.getElementById('sc-advertised').textContent='$'+Math.round(advertised).toLocaleString();
+  var diff=d.grand-advertised;
+  document.getElementById('sc-diff').textContent=diff>0?'+$'+Math.round(diff).toLocaleString()+' more than expected':'';
+
+  document.getElementById('sc-flight').textContent='$'+Math.round(d.flightTotal+d.bagTotal+d.seatTotal).toLocaleString();
+  document.getElementById('sc-hotel').textContent='$'+Math.round(d.accommodationTotal).toLocaleString();
+  document.getElementById('sc-transport').textContent='$'+Math.round(d.transTot).toLocaleString();
+  document.getElementById('sc-food').textContent='$'+Math.round(d.foodTot+d.acts).toLocaleString();
+  document.getElementById('sc-travelers-display').textContent=d.travelers+' '+( d.travelers===1?'person':'people');
+  document.getElementById('sc-nights-display').textContent=d.nights+' nights';
+
+  // Hidden fees
+  var fees=[];
+  if(d.resortTot>0)fees.push('Resort fee: $'+Math.round(d.resortTot));
+  if(d.cleanFee>0)fees.push('Cleaning fee: $'+Math.round(d.cleanFee));
+  if(Math.round(d.platFee)>30)fees.push('Platform fee: $'+Math.round(d.platFee));
+  if(d.parkTot>0)fees.push('Hotel parking: $'+Math.round(d.parkTot));
+  if(d.airportPark>0)fees.push('Airport parking: $'+Math.round(d.airportPark));
+  if(d.cruiseGrat>0)fees.push('Cruise gratuities: $'+Math.round(d.cruiseGrat));
+
+  var feeEl=document.getElementById('sc-hidden-fees');
+  var feeList=document.getElementById('sc-fee-list');
+  if(fees.length>0){
+    feeList.innerHTML=fees.map(function(f){return '<div class="sc-alert-item">⚠️ '+f+'</div>';}).join('');
+    feeEl.classList.add('show');
+  } else {
+    feeEl.classList.remove('show');
+  }
+
+  document.getElementById('c-share-card').classList.add('show');
+}
+
+function shareCard(){
+  var total=document.getElementById('sc-total').textContent;
+  var city=document.getElementById('sc-city').textContent;
+  var pp=document.getElementById('sc-pp').textContent;
+  var text='My trip to '+city+' actually costs '+total+' ('+pp+'). I found out using TripTrue — it shows you the real all-in cost before you book. ceez187.github.io/triptrue';
+
+  if(navigator.share){
+    try{
+      navigator.share({
+        title:'TripTrue — Real Trip Cost',
+        text:text,
+        url:'https://ceez187.github.io/triptrue'
+      }).catch(function(){copyShareText(text);});
+    }catch(e){copyShareText(text);}
+  } else {
+    copyShareText(text);
+  }
+}
+
+function copyShareText(text){
+  try{
+    navigator.clipboard.writeText(text)
+      .then(function(){showToast('Copied! Paste to share your breakdown 📋');})
+      .catch(function(){showToast('Share: '+text.substring(0,50)+'...');});
+  }catch(e){
+    showToast('Copy not supported — screenshot the card above!');
+  }
+}
+
+function calcCopy(){
+  const t=document.getElementById('c-total').textContent;
+  const s=document.getElementById('c-sub').textContent;
+  navigator.clipboard.writeText(`TripTrue Cost: ${t} — ${s}`).then(()=>showToast('Copied!'));
+}
+function calcReset(){document.getElementById('c-results').style.display='none';window.scrollTo({top:0,behavior:'smooth'});}
+
+// ══════════════════════════════════════
+//  MODULE 2 — SPLIT FARE ENGINE
+// ══════════════════════════════════════
+const splitAirlines = {
+  AA:{name:'American Airlines',carryOn:0,checked1:30},DL:{name:'Delta Air Lines',carryOn:0,checked1:30},
+  UA:{name:'United Airlines',carryOn:0,checked1:35},WN:{name:'Southwest',carryOn:0,checked1:0},
+  B6:{name:'JetBlue',carryOn:0,checked1:35},AS:{name:'Alaska Airlines',carryOn:0,checked1:30},
+  F9:{name:'Frontier',carryOn:45,checked1:49},NK:{name:'Spirit',carryOn:50,checked1:55},
+  G4:{name:'Allegiant',carryOn:30,checked1:40},SY:{name:'Sun Country',carryOn:35,checked1:38},
+  HA:{name:'Hawaiian Airlines',carryOn:0,checked1:30},OO:{name:'SkyWest/Regional',carryOn:0,checked1:30},
+};
+
+const sharedAirports = [
+  {code:'VPS',name:'Fort Walton Beach (VPS)'},{code:'PNS',name:'Pensacola (PNS)'},{code:'ATL',name:'Atlanta (ATL)'},
+  {code:'LAX',name:'Los Angeles (LAX)'},{code:'ORD',name:"Chicago O'Hare (ORD)"},{code:'MDW',name:'Chicago Midway (MDW)'},
+  {code:'DFW',name:'Dallas/Ft Worth (DFW)'},{code:'DEN',name:'Denver (DEN)'},{code:'JFK',name:'New York JFK (JFK)'},
+  {code:'LGA',name:'New York LaGuardia (LGA)'},{code:'EWR',name:'Newark (EWR)'},{code:'SFO',name:'San Francisco (SFO)'},
+  {code:'SEA',name:'Seattle (SEA)'},{code:'MIA',name:'Miami (MIA)'},{code:'FLL',name:'Fort Lauderdale (FLL)'},
+  {code:'MCO',name:'Orlando (MCO)'},{code:'TPA',name:'Tampa (TPA)'},{code:'BOS',name:'Boston (BOS)'},
+  {code:'MSP',name:'Minneapolis (MSP)'},{code:'PHX',name:'Phoenix (PHX)'},{code:'LAS',name:'Las Vegas (LAS)'},
+  {code:'CLT',name:'Charlotte (CLT)'},{code:'IAH',name:'Houston Intercontinental (IAH)'},{code:'HOU',name:'Houston Hobby (HOU)'},
+  {code:'SAN',name:'San Diego (SAN)'},{code:'PDX',name:'Portland (PDX)'},{code:'MSY',name:'New Orleans (MSY)'},
+  {code:'BNA',name:'Nashville (BNA)'},{code:'AUS',name:'Austin (AUS)'},{code:'RDU',name:'Raleigh-Durham (RDU)'},
+  {code:'PHL',name:'Philadelphia (PHL)'},{code:'BWI',name:'Baltimore (BWI)'},{code:'DCA',name:'Washington Reagan (DCA)'},
+  {code:'IAD',name:'Washington Dulles (IAD)'},{code:'DTW',name:'Detroit (DTW)'},{code:'SLC',name:'Salt Lake City (SLC)'},
+  {code:'HNL',name:'Honolulu (HNL)'},{code:'DAL',name:'Dallas Love Field (DAL)'},{code:'JAX',name:'Jacksonville (JAX)'},
+  {code:'RSW',name:'Fort Myers (RSW)'},{code:'CLE',name:'Cleveland (CLE)'},{code:'IND',name:'Indianapolis (IND)'},
+  {code:'STL',name:'St. Louis (STL)'},{code:'MCI',name:'Kansas City (MCI)'},{code:'ABQ',name:'Albuquerque (ABQ)'},
+  {code:'OKC',name:'Oklahoma City (OKC)'},{code:'MEM',name:'Memphis (MEM)'},{code:'BHM',name:'Birmingham (BHM)'},
+  {code:'CHS',name:'Charleston SC (CHS)'},{code:'SAV',name:'Savannah (SAV)'},
+];
+
+const sharedRouteFares = {
+  'VPS-MDW':{G4:70,WN:189},'VPS-LAS':{G4:59,WN:199},'VPS-DEN':{G4:59},
+  'VPS-MCO':{WN:89,G4:79},'VPS-TPA':{WN:79},'VPS-ATL':{WN:99,DL:119,AA:109},
+  'VPS-DFW':{AA:129,WN:149},'VPS-IAH':{UA:139,WN:129},'VPS-BOS':{G4:89,WN:179},'VPS-EWR':{G4:89},
+  'ATL-LAX':{DL:149,AA:159,UA:169,WN:189,NK:89,F9:79},'ATL-JFK':{DL:99,AA:109,UA:119,B6:89,WN:129},
+  'ATL-MIA':{DL:79,AA:89,WN:99},'ATL-MCO':{DL:69,AA:79,WN:89,NK:49,F9:49},
+  'ATL-ORD':{DL:99,AA:109,UA:119,WN:129},'ATL-DFW':{DL:99,AA:89,WN:119},
+  'ATL-LAS':{DL:149,AA:139,WN:169,NK:89,F9:79},'ATL-DEN':{DL:129,AA:139,UA:149,WN:149,F9:79},
+  'LAX-JFK':{AA:199,UA:189,DL:209,B6:149,AS:179},'LAX-ORD':{AA:149,UA:159,DL:169,WN:179},
+  'LAX-SFO':{AA:89,UA:79,DL:99,WN:99,AS:89},'LAX-LAS':{AA:79,UA:89,DL:99,WN:99,F9:39,NK:39},
+  'LAX-DEN':{AA:129,UA:139,DL:149,WN:149,F9:69,NK:59},'LAX-SEA':{AA:139,UA:129,DL:149,AS:99,WN:159},
+  'LAX-PHX':{AA:79,UA:89,DL:99,WN:99,F9:39},'LAX-HNL':{HA:179,AA:199,UA:209,DL:219},
+  'ORD-JFK':{AA:99,UA:109,DL:119,B6:89,WN:129},'ORD-MIA':{AA:109,UA:119,DL:129,WN:149},
+  'ORD-LAX':{AA:149,UA:159,DL:169,WN:179},'ORD-DFW':{AA:99,UA:109,DL:119,WN:129},
+  'ORD-DEN':{AA:99,UA:109,DL:119,WN:129,F9:69},'ORD-LAS':{AA:129,UA:139,DL:149,WN:159,F9:79,NK:69},
+  'ORD-MCO':{AA:99,UA:109,DL:119,WN:129,NK:59,F9:59},
+  'MDW-LAX':{WN:149,NK:89,F9:79},'MDW-LAS':{WN:129,NK:79,F9:69},
+  'MDW-MCO':{WN:99,NK:59,F9:59},'MDW-MIA':{WN:109,NK:69},'MDW-DEN':{WN:119,F9:69},
+  'JFK-LAX':{AA:199,UA:189,DL:209,B6:149,AS:179},'JFK-MIA':{AA:89,DL:99,UA:109,B6:79,WN:119},
+  'JFK-MCO':{AA:89,DL:99,UA:109,B6:79,WN:119},'JFK-BOS':{AA:69,DL:79,UA:89,B6:59,WN:79},
+  'JFK-LAS':{AA:179,DL:189,UA:199,B6:149,WN:199},
+  'MIA-LAX':{AA:159,DL:169,UA:179,WN:189,NK:99,F9:89},'MIA-ORD':{AA:109,DL:119,UA:129,WN:149},
+  'MIA-BOS':{AA:99,DL:109,UA:119,B6:89,WN:129},'MIA-LAS':{AA:169,DL:179,UA:189,WN:199,NK:99},
+  'MCO-JFK':{AA:89,DL:99,UA:109,B6:79,WN:119},'MCO-BOS':{AA:89,DL:99,UA:109,B6:79,WN:119},
+  'MCO-LAS':{AA:149,DL:159,UA:169,WN:179,NK:89,F9:79},'MCO-LAX':{AA:149,DL:159,UA:169,WN:179,NK:89},
+  'MCO-DFW':{AA:99,DL:109,UA:119,WN:129},
+  'LAS-SEA':{AA:129,AS:99,WN:149,F9:69,NK:59},'LAS-DEN':{AA:89,UA:99,DL:109,WN:119,F9:49,NK:39},
+  'LAS-PHX':{AA:69,UA:79,DL:89,WN:99,F9:39},'LAS-SFO':{AA:89,UA:79,DL:99,WN:109,AS:89,NK:49},
+  'DFW-LAX':{AA:129,UA:149,DL:159,WN:169},'DFW-SEA':{AA:149,UA:159,DL:169,AS:149,WN:179},
+  'DFW-DEN':{AA:89,UA:99,DL:109,WN:119,F9:59},'DFW-LAS':{AA:109,UA:119,DL:129,WN:149,F9:69},
+  'SEA-SFO':{AS:89,UA:99,DL:109,WN:119,AA:99},'SEA-LAX':{AS:109,AA:129,UA:139,DL:149,WN:159},
+  'SEA-DEN':{AA:99,UA:109,DL:119,AS:109,WN:129},
+  'BOS-MIA':{AA:99,DL:109,UA:119,B6:89,WN:129},'BOS-MCO':{AA:89,DL:99,UA:109,B6:79,WN:119},
+  'DEN-LAX':{AA:129,UA:139,DL:149,WN:149,F9:69,NK:59},'DEN-SEA':{AA:99,UA:109,DL:119,AS:109,WN:129},
+  'MSY-ORD':{WN:109,AA:119,DL:129,UA:139},'MSY-ATL':{WN:79,DL:89,AA:99},
+  'BNA-LAX':{WN:149,AA:159,DL:169},'BNA-MCO':{WN:89,AA:99,DL:109,NK:59},
+  'AUS-LAX':{WN:129,AA:139,DL:149},'AUS-DEN':{WN:99,AA:109,UA:119,F9:59},
+  'TPA-ORD':{WN:99,AA:109,DL:119,NK:59},'TPA-LAS':{WN:149,AA:159,DL:169,NK:79},
+  'CLT-LAX':{AA:149,DL:169,UA:179},'CLT-MCO':{AA:79,DL:89,WN:99},
+  'PHL-MIA':{AA:89,DL:109,UA:99,B6:79},'PHL-MCO':{AA:79,DL:99,UA:89,B6:69,WN:99},
+};
+
+const airlineBookUrls={AA:'https://www.aa.com',DL:'https://www.delta.com',UA:'https://www.united.com',WN:'https://www.southwest.com',B6:'https://www.jetblue.com',AS:'https://www.alaskaair.com',F9:'https://www.flyfrontier.com',NK:'https://www.spirit.com',G4:'https://www.allegiantair.com',SY:'https://www.suncountry.com',HA:'https://www.hawaiianairlines.com',OO:'https://www.skywest.com'};
+
+function getRouteKey(o,d){const k1=`${o}-${d}`,k2=`${d}-${o}`;return sharedRouteFares[k1]?k1:sharedRouteFares[k2]?k2:null;}
+
+function populateBothAirportDropdowns(){
+  const sorted=[...sharedAirports].sort((a,b)=>a.name.localeCompare(b.name));
+  ['s-origin','s-dest','w-origin','w-dest'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    sorted.forEach(a=>{el.innerHTML+=`<option value="${a.code}">${a.name}</option>`;});
+  });
+  document.getElementById('s-origin').value='VPS';
+  document.getElementById('s-dest').value='MDW';
+  document.getElementById('w-origin').value='VPS';
+  document.getElementById('w-dest').value='MDW';
+  splitLoadFares();
+  warLoadFares();
+}
+
+function splitLoadFares(){
+  const o=document.getElementById('s-origin').value;
+  const d=document.getElementById('s-dest').value;
+  const container=document.getElementById('s-airline-checks');
+  const info=document.getElementById('s-route-info');
+  if(!o||!d||o===d){container.innerHTML='';info.classList.remove('show');return;}
+  const key=getRouteKey(o,d);
+  if(!key){container.innerHTML='<p style="color:var(--sub);font-size:12px;grid-column:span 2;">No direct fare data for this route.</p>';info.classList.remove('show');return;}
+  const fares=sharedRouteFares[key];
+  const codes=Object.keys(fares);
+  container.innerHTML=codes.map(code=>`<label class="al-check on" id="sl-${code}"><input type="checkbox" id="sc-${code}" value="${code}" checked onchange="splitToggleCheck('${code}')"><span class="al-check-name">${(splitAirlines[code]&&splitAirlines[code].name?splitAirlines[code].name:code)}</span><span class="al-check-code">~$${fares[code]} OW</span></label>`).join('');
+  info.innerHTML=`✈️ <strong>${o} ↔ ${d}</strong> — ${codes.length} airline${codes.length>1?'s':''} found.`;
+  info.classList.add('show');
+}
+
+function splitToggleCheck(code){
+  const checked=document.getElementById(`sc-${code}`).checked;
+  document.getElementById(`sl-${code}`).classList.toggle('on',checked);
+}
+
+function splitRun(){
+  const o=document.getElementById('s-origin').value;
+  const d=document.getElementById('s-dest').value;
+  const travelers=parseInt(document.getElementById('s-travelers').value);
+  const carryons=parseInt(document.getElementById('s-carryon').value);
+  const checkeds=parseInt(document.getElementById('s-checked').value);
+  if(!o||!d||o===d){showToast('Select valid origin and destination');return;}
+  const key=getRouteKey(o,d);
+  if(!key){showToast('No fare data for this route');return;}
+  const fares=sharedRouteFares[key];
+  const selected=Object.keys(fares).filter(code=>{const el=document.getElementById(`sc-${code}`);return el&&el.checked;});
+  if(selected.length<2){showToast('Select at least 2 airlines');return;}
+
+  function totalFor(code){
+    const a=splitAirlines[code]||{carryOn:0,checked1:30};
+    const base=fares[code]||0;
+    const bags=(carryons*a.carryOn)+(checkeds*a.checked1);
+    return(base+bags)*travelers;
+  }
+
+  const combos=[];
+  for(let out of selected)for(let ret of selected){
+    const outT=totalFor(out),retT=totalFor(ret);
+    combos.push({out,ret,outName:(splitAirlines[out]&&splitAirlines[out].name?splitAirlines[out].name:out),retName:(splitAirlines[ret]&&splitAirlines[ret].name?splitAirlines[ret].name:ret),outBase:fares[out],retBase:fares[ret],outT,retT,total:outT+retT});
+  }
+  combos.sort((a,b)=>a.total-b.total);
+  const best=combos[0],worst=combos[combos.length-1];
+
+  document.getElementById('s-results').style.display='block';
+  document.getElementById('s-best-price').textContent=`$${Math.round(best.total).toLocaleString()}`;
+  document.getElementById('s-best-desc').textContent=`${best.outName} out + ${best.retName} return`;
+
+  document.getElementById('s-combo-list').innerHTML=combos.map((c,i)=>{
+    const isBest=i===0;
+    const save=worst.total-c.total;
+    return `<div class="combo-card ${isBest?'best':''}"><div class="combo-top"><div class="combo-name">${c.outName} + ${c.retName}${isBest?'<span class="best-badge">CHEAPEST</span>':''}</div><div class="combo-price">$${Math.round(c.total).toLocaleString()}</div></div><div class="combo-legs"><span class="leg-pill">Out: ${c.outName} <span class="leg-price">$${c.outBase}</span></span><span class="leg-pill">Return: ${c.retName} <span class="leg-price">$${c.retBase}</span></span></div>${save>0?`<div class="combo-save">💰 Saves $${Math.round(save)} vs most expensive</div>`:''}</div>`;
+  }).join('');
+
+  let bdHtml='<div class="bd-hdr">Best Combo — Breakdown</div>';
+  bdHtml+=`<div class="bd-row"><div class="bd-left"><span class="bd-ico">✈️</span><div><div class="bd-name">Outbound — ${best.outName}</div><div class="bd-note">× ${travelers} traveler(s)</div></div></div><div class="bd-amt gold">$${Math.round(best.outT).toLocaleString()}</div></div>`;
+  bdHtml+=`<div class="bd-row"><div class="bd-left"><span class="bd-ico">✈️</span><div><div class="bd-name">Return — ${best.retName}</div><div class="bd-note">× ${travelers} traveler(s)</div></div></div><div class="bd-amt gold">$${Math.round(best.retT).toLocaleString()}</div></div>`;
+  bdHtml+=`<div class="bd-total"><div class="bd-total-label">Total All-In</div><div class="bd-total-amt">$${Math.round(best.total).toLocaleString()}</div></div>`;
+  document.getElementById('s-bd').innerHTML=bdHtml;
+  document.getElementById('s-results').scrollIntoView({behavior:'smooth'});
+}
+
+function splitCopy(){navigator.clipboard.writeText(`TripTrue Split Fare: ${document.getElementById('s-best-price').textContent} — ${document.getElementById('s-best-desc').textContent}`).then(()=>showToast('Copied!'));}
+function splitReset(){document.getElementById('s-results').style.display='none';window.scrollTo({top:0,behavior:'smooth'});}
+
+// ══════════════════════════════════════
+//  MODULE 3 — SCAM SHIELD
+// ══════════════════════════════════════
+let scSelectedDest='chicago';
+let ncScamCount=0,ncTipCount=0;
+
+const scamBuiltIn={
+  chicago:{name:'Chicago',ico:'🏙️',risk:'Low',alertText:'Low — Mostly standard tourist pricing. Watch for downtown restaurant markups.',scams:[{title:'🚕 Taxi from O\'Hare',desc:'Unmarked cabs charge 2–3× the real rate.',touristPrice:'$60–$80',localPrice:'$35–$45',tip:'Use official Medallion cabs or Blue Line train ($5) to Loop.'},{title:'🍽️ River North Restaurants',desc:'Tourist trap zone. 40–60% markup over similar quality elsewhere.',touristPrice:'$28–$40/entree',localPrice:'$16–$24/entree',tip:'Walk 2 blocks west of the river. Same quality, half the price.'},{title:'🎫 Attraction Combo Tickets',desc:'Third-party vendors sell at face value or higher.',touristPrice:'$99/combo',localPrice:'Pay-as-you-go ~$80',tip:'Millennium Park & Art Institute are free or pay-what-you-wish.'},{title:'🏨 Hotel Parking',desc:'Downtown hotels charge $40–$60/night. Valet adds $15.',touristPrice:'$55/night',localPrice:'SpotHero ~$20',tip:'Use SpotHero app. Pre-book nearby lots at half the hotel price.'}],tips:[{ico:'💳',title:'No Foreign Fees',text:'Chase Sapphire or Capital One Venture.'},{ico:'🚌',title:'CTA All Day',text:'Ventra card $2.50/ride. Beats taxis everywhere.'},{ico:'📱',title:'Offline Maps',text:'Download Chicago maps in Google Maps before you fly.'},{ico:'⏰',title:'Off-Peak Only',text:'Weekday mornings 30% cheaper than weekend nights.'}]},
+  bali:{name:'Bali',ico:'🏝️',risk:'High',alertText:'High — Heavy tourist markups. Taxis, tours, and restaurants all prey on visitors.',scams:[{title:'🚕 Airport Taxi Meter',desc:'Drivers claim meter is broken, demand 4–5× the real rate.',touristPrice:'$35–$50',localPrice:'$8–$12',tip:'Use Gojek or Grab app. Never negotiate at the curb.'},{title:'💎 Fake Jewelry',desc:'"Silver" and "Gold" are often plated. No certification.',touristPrice:'$150–$300',localPrice:'~$30–$50 certified',tip:'Buy from jewelers with government stamps only.'},{title:'🍜 Inflated Bills',desc:'Menus lack prices or bills include sudden "service" charges 20–40%.',touristPrice:'$25–$35/meal',localPrice:'$4–$8 at warungs',tip:'Eat where locals eat. Avoid beachfront restaurants entirely.'},{title:'💵 Currency Exchange',desc:'Shady booths skim bills or give counterfeit notes.',touristPrice:'Bad rate + fraud risk',localPrice:'ATM rate is always best',tip:'Only withdraw from BCA or Mandiri ATMs.'}],tips:[{ico:'🚗',title:'Gojek/Grab Only',text:'App pricing only. Avoid all street hails.'},{ico:'🏘️',title:'Eat at Warungs',text:'Local food stalls cheapest and best. Skip beach restaurants.'},{ico:'💰',title:'ATM Cash Only',text:'BCA or Mandiri. Never airport or street exchanges.'},{ico:'📱',title:'Offline Maps',text:'Download before arrival. Cell data slow and expensive.'}]},
+  cancun:{name:'Cancun',ico:'🇲🇽',risk:'High',alertText:'High — Heavy markup in tourist zones. Avoid the hotel strip for food entirely.',scams:[{title:'🚕 Airport Taxi',desc:'No meters. Fixed price scams or quotes 3× fair rate.',touristPrice:'$60–$80',localPrice:'$8 (ADO bus)',tip:'Take ADO bus from airport. $8 to downtown.'},{title:'🍽️ Beachfront Food',desc:'Same dish 3 blocks inland costs 60–70% less.',touristPrice:'$35/entree',localPrice:'$10/entree inland',tip:'Walk to Avenida Tulum.'},{title:'🏬 Timeshare Traps',desc:'Free breakfast/tour in exchange for high-pressure sales.',touristPrice:'4 hours of your life',localPrice:'Skip entirely',tip:'Politely walk past. Never accept "free" from street reps.'},{title:'🎫 Water Sports',desc:'Beach vendors charge 2–3× what you\'d pay booked online.',touristPrice:'$80–$120/tour',localPrice:'$30–$50 pre-booked',tip:'Book via GetYourGuide or Viator before you arrive.'}],tips:[{ico:'🚌',title:'ADO Bus',text:'Cheap, safe, goes everywhere.'},{ico:'🍲',title:'Inland Spots',text:'Never eat on the beach. One block in = 50% cheaper.'},{ico:'🚫',title:'Decline Street Offers',text:'No exceptions.'},{ico:'📅',title:'Pre-Book Tours',text:'GetYourGuide or Viator.'}]},
+  bangkok:{name:'Bangkok',ico:'🇹🇭',risk:'Medium',alertText:'Medium — Taxi and gem scams are common.',scams:[{title:'🚕 Rigged Taxi Meter',desc:'Drivers use "broken meter" trick and overcharge.',touristPrice:'$20–$30',localPrice:'$4–$8',tip:'Use Grab app. Confirm price before ride starts.'},{title:'💎 Gem Shop Scams',desc:'"Government-approved" shops sell glass as rubies and sapphires.',touristPrice:'$200–$500',localPrice:'Many are fakes',tip:'Don\'t buy gems. Certified dealers only.'},{title:'🎭 Tailor Scams',desc:'Promise suits in 24 hours. Deliver poor quality.',touristPrice:'$150–$300',localPrice:'$60–$100 reputable',tip:'Skip tailors entirely.'},{title:'🏨 Hotel Hidden Charges',desc:'Resort fees, service charges, minibar items you never touched.',touristPrice:'Surprise bill at checkout',localPrice:'Book direct, read fine print',tip:'Ask at check-in about ALL charges. Get it in writing.'}],tips:[{ico:'🚗',title:'Grab App',text:'Pre-set pricing. Avoids all taxi scams.'},{ico:'🍴',title:'Street Food',text:'Local stalls = safe, cheap, fresh.'},{ico:'💸',title:'ATM Cash',text:'Better rates than exchanges.'},{ico:'🚫',title:'No Tuk-Tuks Long Distance',text:'Overcharge heavily. Use BTS train.'}]},
+  vegas:{name:'Las Vegas',ico:'🎰',risk:'Medium',alertText:'Medium — Resort fees, Strip markups, and casino ATM fees are the main traps.',scams:[{title:'🏨 Resort Fees',desc:'Hotels advertise $60/night then add $30–$50/night mandatory fee.',touristPrice:'$50/night fee on top',localPrice:'Book direct, ask to waive',tip:'Call hotel direct and ask if resort fee is waivable.'},{title:'🍽️ Strip Restaurant Markup',desc:'Same chains on the Strip cost 40–60% more than off-Strip.',touristPrice:'$28–$45/entree',localPrice:'$14–$22 one block off Strip',tip:'Walk one block east or west of the Strip.'},{title:'🚕 Airport Taxi Overcharge',desc:'Taxis take the tunnel route ($5 toll) without asking.',touristPrice:'$35–$45',localPrice:'$18–$22 via rideshare',tip:'Use Uber or Lyft from the app.'},{title:'🎰 Casino ATM Fees',desc:'Casino ATMs charge $5–$10 per withdrawal.',touristPrice:'$15 per withdrawal',localPrice:'Use your bank ATM outside',tip:'Withdraw cash before entering any casino.'}],tips:[{ico:'🚶',title:'Walk the Strip',text:'It\'s shorter than maps show. Skip the $20 taxi between hotels.'},{ico:'🎟️',title:'Buy Show Tickets Direct',text:'Box office only. Third-party sellers add $20–$50.'},{ico:'🍳',title:'Off-Peak Buffets',text:'Some buffets have off-peak hours 20–30% cheaper.'},{ico:'🏧',title:'ATM Before Casinos',text:'Withdraw what you\'ll spend. Casino ATMs charge $5–$10.'}]},
+  orlando:{name:'Orlando',ico:'🎢',risk:'Medium',alertText:'Medium — Theme park add-ons, parking, and tourist-zone food are the main traps.',scams:[{title:'🎢 Theme Park Add-Ons',desc:'Base ticket doesn\'t include parking, express passes, or dining.',touristPrice:'$30–$40 parking + $80–$130 express',localPrice:'On-site hotel + skip express',tip:'Stay at an on-site hotel with free shuttle. Book tickets 60+ days ahead.'},{title:'🍔 Inside Park Food',desc:'$20–$30 for a burger and fries inside Disney or Universal.',touristPrice:'$22 burger combo',localPrice:'Pack a cooler — allowed at most parks',tip:'Check each park\'s outside food policy.'},{title:'🚗 I-Drive Hotel Fees',desc:'Cheap rates plus resort fee plus mandatory parking.',touristPrice:'$89 + $20 resort + $15 parking',localPrice:'$95 direct with no fees',tip:'Call hotel direct. Ask all-in nightly rate.'},{title:'🎟️ Third-Party Tickets',desc:'Discounted tickets have hidden restrictions or non-refundable terms.',touristPrice:'$89 turns into $140',localPrice:'Buy direct from park site',tip:'Only buy from official theme park websites.'}],tips:[{ico:'📅',title:'Book Months Ahead',text:'Tickets 20–30% cheaper booked 60+ days out.'},{ico:'🏨',title:'On-Site Hotels',text:'Include park transport and perks.'},{ico:'🎒',title:'Pack Snacks',text:'Most parks allow sealed snacks and refillable water.'},{ico:'🕗',title:'Arrive at Open',text:'First 2 hours = shortest lines.'}]},
+  miami:{name:'Miami',ico:'🌴',risk:'Medium',alertText:'Medium — South Beach and Brickell are heavily marked up.',scams:[{title:'🍹 South Beach Clubs',desc:'Minimum spends of $500–$2,000 not disclosed upfront.',touristPrice:'$500+ minimum spend',localPrice:'Pre-book or skip tourist clubs',tip:'Research any club\'s minimum before entering.'},{title:'🚕 Taxi from MIA',desc:'Flat-rate taxis to South Beach run $35–$55.',touristPrice:'$50–$55 taxi',localPrice:'$22–$28 Uber/Lyft',tip:'Use rideshare from MIA ground floor rideshare zone.'},{title:'🍽️ Ocean Drive Restaurants',desc:'$30–$50 entrees for mediocre food.',touristPrice:'$35/entree',localPrice:'$14–$20 in Wynwood',tip:'Eat in Wynwood, Brickell, or Little Havana.'},{title:'🏖️ Beach Chair Rentals',desc:'Unregulated vendors charge $30–$60/chair on public beaches.',touristPrice:'$30–$60/chair',localPrice:'Bring your own — public beach',tip:'Lummus Park is public. Bring your own chairs.'}],tips:[{ico:'🚇',title:'Metromover is Free',text:'Free downtown tram covers Brickell, downtown, Arts District.'},{ico:'🍽️',title:'Eat in Wynwood',text:'Best food in Miami with half the South Beach prices.'},{ico:'🏖️',title:'BYOC',text:'Bring your own chairs and cooler to Lummus Park.'},{ico:'🚗',title:'Parking Apps',text:'SpotHero or ParkWhiz. Street parking $2–$4/hr.'}]},
+  nyc:{name:'New York City',ico:'🗽',risk:'Medium',alertText:'Medium — Times Square zone is heavily marked up. Taxis are metered but tips add up.',scams:[{title:'🍔 Times Square Restaurants',desc:'$30–$50 entrees two blocks away are half the price.',touristPrice:'$35/entree',localPrice:'$16–$22 two blocks away',tip:'Walk two blocks north or south. Every restaurant improves immediately.'},{title:'🚕 Taxi Tip Manipulation',desc:'Taxi credit card screens show preset tips starting at 25–30%.',touristPrice:'25–30% tip default',localPrice:'15–20% is standard',tip:'Hit "Other" on the tip screen and enter your own amount.'},{title:'🎭 Broadway Third-Party Tickets',desc:'Third-party sites charge 2–3× face value with hidden fees.',touristPrice:'$250+ with fees',localPrice:'TKTS booth: $80–$120',tip:'TKTS booth in Times Square. Same-day at 20–50% off.'},{title:'🎵 Street Performer Scams',desc:'Performers put items on you then demand $20+.',touristPrice:'$20–$50 demanded',localPrice:'Zero — say no upfront',tip:'Don\'t take anything handed to you. Keep walking.'}],tips:[{ico:'🚇',title:'Subway is King',text:'$2.90/ride goes everywhere. Download MTA app.'},{ico:'🥯',title:'Avoid Times Square Food',text:'Walk 2 blocks in any direction. Prices halve immediately.'},{ico:'🎟️',title:'TKTS for Broadway',text:'Same-day tickets 20–50% off. Go at noon for evening shows.'},{ico:'🗺️',title:'Walk Manhattan',text:'Most Midtown attractions are walkable.'}]},
+  punta_cana:{name:'Punta Cana',ico:'🇩🇴',risk:'High',alertText:'High — All-inclusive traps, airport vendors, and fake excursions are common.',scams:[{title:'✈️ Airport Vendor Gauntlet',desc:'Timeshare and excursion reps run the exit at Punta Cana airport.',touristPrice:'Wasted time + overpriced tours',localPrice:'Pre-book online, walk straight through',tip:'Walk straight through. Your transfer should be pre-booked.'},{title:'🍹 All-Inclusive Upsells',desc:'Resort staff push upgrades at 3× online price.',touristPrice:'$200–$400 excursion at resort',localPrice:'$40–$80 on Viator',tip:'Never book excursions at the resort desk.'},{title:'💰 Resort ATMs',desc:'Resort ATMs charge 8–12% exchange rate fee.',touristPrice:'15–20% total fee',localPrice:'Banco Popular ATM = standard rate',tip:'Withdraw from Banco Popular ATMs near town center.'},{title:'🛒 Souvenir Market',desc:'Opening ask is 4–5× what they\'ll accept.',touristPrice:'$40 for a figurine',localPrice:'$8–$12 after negotiating',tip:'Offer 25% of asking price. Walk away. They always call you back.'}],tips:[{ico:'🏖️',title:'Stick to Resort Zone',text:'Bavaro Beach area is safe. Avoid outside resort zone at night.'},{ico:'📅',title:'Book Excursions Online',text:'Viator has same tours for 60–80% less than resort desk.'},{ico:'💵',title:'Bring USD',text:'Dominican pesos required for local markets.'},{ico:'🚌',title:'Pre-Book Airport Transfer',text:'Arrive with confirmed transfer. Never accept airport taxi offers.'}]},
+  new_orleans:{name:'New Orleans',ico:'🎷',risk:'Low',alertText:'Low — Mostly honest city. Bourbon Street markups and street game hustles are the main traps.',scams:[{title:'🃏 Shell Game / Card Tricks',desc:'Street hustlers run three-card monte on Bourbon St. You cannot win.',touristPrice:'$20–$100 lost',localPrice:'Don\'t play',tip:'Walk past. These are rigged and often illegal.'},{title:'🍺 Bourbon Street Drinks',desc:'$15–$25 for a basic drink in a plastic cup.',touristPrice:'$20 for a beer',localPrice:'$5–$8 one block off Bourbon',tip:'Frenchmen Street is 10 minutes away. Better music, cheaper drinks.'},{title:'💈 Shoe Shine Scam',desc:'Man bets you $5 he can guess where you got your shoes. Answer: on your feet.',touristPrice:'$10–$20 demanded',localPrice:'Zero — just say "no bet"',tip:'If anyone asks about your shoes, walk away.'},{title:'🚗 French Quarter Parking',desc:'Private lots charge $30–$50. Free street parking 10 min away.',touristPrice:'$40/night lot',localPrice:'Free street parking in Marigny',tip:'Park in the Marigny or Bywater, walk or rideshare.'}],tips:[{ico:'🎷',title:'Frenchmen Street',text:'Real music, local crowd, cheaper drinks. 10 min from Bourbon.'},{ico:'🚶',title:'Walk Everywhere',text:'French Quarter is very walkable.'},{ico:'🍴',title:'Eat Off the Main Drag',text:'Best food in Treme, Bywater, and Mid-City.'},{ico:'🎭',title:'Free Street Performances',text:'Best music in NOLA is free on the street.'}]},
+  hawaii:{name:'Hawaii (Maui)',ico:'🌺',risk:'Low',alertText:'Low — Honest state but expensive by nature. Resort markups are real.',scams:[{title:'🏄 Surf Lesson Overpricing',desc:'Resort-booked surf lessons run $150–$200. Local schools: $60–$80.',touristPrice:'$150–$200',localPrice:'$60–$80 local school',tip:'Book directly with a local surf school. Not through your hotel concierge.'},{title:'🌺 Lei at Airport',desc:'$15–$30 per person pushed aggressively at arrivals.',touristPrice:'$20–$30/lei',localPrice:'$4 at Costco',tip:'Buy fresh lei at a local grocery or Costco.'},{title:'🚗 Resort Parking',desc:'Many Maui resorts charge $30–$50/night for parking.',touristPrice:'$40/night',localPrice:'Public beach lots — free',tip:'Public beach parks have free parking nearby.'},{title:'🍹 Resort Poolside Drinks',desc:'$18–$22 for a cocktail at a resort pool bar.',touristPrice:'$20 mai tai',localPrice:'$10–$12 at a local bar',tip:'Explore Lahaina or Kihei town for happy hour deals.'}],tips:[{ico:'🌊',title:'Go Early',text:'Beaches less crowded and parking free before 8 AM.'},{ico:'🛒',title:'Costco Maui',text:'Gas, snacks, groceries — save 30–40% vs resort shops.'},{ico:'🐋',title:'Book Tours Direct',text:'Go to Trilogy or Pride of Maui websites directly.'},{ico:'🍍',title:'Eat at Food Trucks',text:'Maui\'s best food is at roadside stands. $8–$14.'}]},
+  rome:{name:'Rome',ico:'🇮🇹',risk:'Medium',alertText:'Medium — Tourist restaurants near major sights are heavily marked up. Pickpockets active.',scams:[{title:'🍕 Tourist Menus Near Colosseum',desc:'"Tourist menus" are pre-packaged mediocre meals at premium prices.',touristPrice:'€25–€35 for basic pasta',localPrice:'€10–€15 two streets away',tip:'Walk 3–4 streets from any major sight. Prices drop immediately.'},{title:'🌹 Flower/Bracelet Push',desc:'Strangers put items on you then demand payment aggressively.',touristPrice:'€10–€20 demanded',localPrice:'Zero — refuse firmly',tip:'Say "No grazie" loudly. Do not take anything handed to you.'},{title:'🚕 Taxi Without Meter',desc:'Some drivers quote fixed inflated rates instead of running the meter.',touristPrice:'€30–€50 quoted',localPrice:'€15–€25 on meter',tip:'Always insist on the meter. Official Rome taxis are white.'},{title:'☕ Standing vs Sitting Coffee',desc:'Espresso at the bar: €1.20. Same at a table: €3–€5.',touristPrice:'€4–€5 sitting',localPrice:'€1.20 standing at bar',tip:'Drink at the bar like locals. Same coffee, 70% cheaper.'}],tips:[{ico:'🚇',title:'Metro + Walking',text:'Metro A and B cover main sights.'},{ico:'🎟️',title:'Pre-Book Everything',text:'Colosseum, Vatican sell out. Book 2–4 weeks ahead.'},{ico:'👜',title:'Watch Your Bag',text:'Pickpockets work Termini, Colosseum, crowded buses.'},{ico:'💧',title:'Nasoni Fountains',text:'Hundreds of free public water fountains. Refill instead of buying.'}]},
+  dubai:{name:'Dubai',ico:'🇦🇪',risk:'Low',alertText:'Low — Very safe city. Main traps are tourist attraction overpricing and unlicensed taxis.',scams:[{title:'🚕 Unlicensed Taxis',desc:'Unofficial drivers charge 2–3× the rate.',touristPrice:'200–300 AED ($55–$80)',localPrice:'60–90 AED on Careem/Uber',tip:'Use Careem or Uber exclusively.'},{title:'🏙️ Burj Khalifa Upsell',desc:'Top floor ticket ($80) vs standard At the Top ($40).',touristPrice:'$80 "premium"',localPrice:'$40 standard',tip:'Book standard At the Top on official website. View is identical.'},{title:'🛒 Gold Souk Bargaining',desc:'Opening ask is 30–50% above what they\'ll accept.',touristPrice:'Whatever they quote',localPrice:'30–40% below asking',tip:'Negotiate. Start at 50% of ask. Walking away works.'},{title:'📸 Camel Ride Photos',desc:'Free camel ride turns into $20–$50 photo package.',touristPrice:'$30–$50 package',localPrice:'Book full desert tour — photos included',tip:'Book a desert safari through a licensed agency.'}],tips:[{ico:'🚇',title:'Dubai Metro',text:'Cleanest metro in the world. AED 3–8 per ride.'},{ico:'🌡️',title:'Visit Oct–March',text:'Summer temps hit 115°F. Book Nov–Feb for perfect weather.'},{ico:'👗',title:'Dress Code at Sites',text:'Cover knees and shoulders at mosques and some malls.'},{ico:'💳',title:'Cards Everywhere',text:'Dubai is nearly cashless. Cards accepted at 99% of places.'}]},
+  atlanta:{name:'Atlanta',ico:'🍑',risk:'Low',alertText:'Low — ATL airport taxis and tourist zone restaurants are the main traps.',scams:[{title:'🚕 Airport Taxi Overcharge',desc:'Unlicensed taxis outside baggage claim charge flat rates 2-3x the metered fare.',touristPrice:'$45-$65 to Midtown',localPrice:'$25-$35 on Uber/Lyft',tip:'Use Uber or Lyft from the designated rideshare pickup area on Level 1 Domestic.'},{title:'🍽️ Buckhead Restaurant Markup',desc:'Tourist-facing restaurants in Buckhead charge premium prices.',touristPrice:'$30-$45/entree',localPrice:'$14-$22 in Midtown or Little Five Points',tip:'Eat in Midtown or Inman Park. Better food, local crowd, real prices.'},{title:'🎭 Five Points Area',desc:'Street hustlers near Underground Atlanta and Five Points MARTA.',touristPrice:'Wallet and phone risk',localPrice:'Zero - stay alert, front pockets',tip:'Keep valuables secure. Stay aware at Five Points MARTA station.'},{title:'🏨 Downtown Parking',desc:'Hotels near GWCC and CNN charge $35-$55 per night for parking.',touristPrice:'$45/night parking',localPrice:'SpotHero or park-and-MARTA $5/day',tip:'Park at a MARTA station lot and ride in. Saves $30+ per day.'}],tips:[{ico:'🚇',title:'MARTA Rail',text:'Connects airport to downtown and Midtown. $2.50/ride beats any taxi.'},{ico:'🍑',title:'Eat in Midtown',text:'Better food than tourist zones at half the Buckhead prices.'},{ico:'🏈',title:'Book Events Early',text:'NFL and concerts cause hotel prices to triple. Book 60+ days out.'},{ico:'🌡️',title:'Summer Heat',text:'June-August is brutal. Plan outdoor activities for morning or evening only.'}]},
+  costa_rica:{name:'Costa Rica',ico:'🦜',risk:'Medium',alertText:'Medium — Eco-tourism markups and taxi scams are common.',scams:[{title:'🚕 San José Airport Taxis',desc:'Unlicensed drivers charge flat inflated rates.',touristPrice:'$60–$80 flat rate',localPrice:'$25–$35 on meter (red taxi)',tip:'Use official red SITTSA taxis with meters or Uber.'},{title:'🦥 Eco-Tour Overpricing',desc:'Resort-booked tours cost 2–3× direct booking.',touristPrice:'$150–$200/person resort tour',localPrice:'$50–$70 direct',tip:'Ask hotel to connect you directly with the tour operator.'},{title:'💵 USD vs Colones Pricing',desc:'Some tourist shops price in USD at unfavorable exchange rates.',touristPrice:'USD pricing 10–15% above market',localPrice:'Pay in colones at bank rate',tip:'Withdraw colones from Banco Nacional ATM.'},{title:'🏄 All-Inclusive Traps',desc:'Beachside all-inclusives charge extra for excursions and premium items.',touristPrice:'Hidden extras add $50–$100/day',localPrice:'Read contract before booking',tip:'Ask for full list of what\'s NOT included before booking.'}],tips:[{ico:'🚌',title:'Shared Shuttles',text:'Shuttles between destinations cost $15–$25. Private taxis $80–$150.'},{ico:'🐸',title:'Book Direct',text:'Find local guides on TripAdvisor reviews.'},{ico:'💧',title:'Tap Water is Safe',text:'San José and most tourist areas have drinkable tap water.'},{ico:'🌧️',title:'Pack for Rain',text:'Afternoons bring brief rain even in dry season.'}]}
+};
+
+function scamGetCustom(){try{return JSON.parse(Store.get('triptrue_cities')||'{}');}catch{return {};}}
+function scamSaveCustom(obj){Store.set('triptrue_cities',JSON.stringify(obj));}
+function scamAllCities(){return Object.assign({},scamBuiltIn,typeof extraCities!=="undefined"?extraCities:{},scamGetCustom());}
+
+function scamRenderGrid(){
+  var custom=scamGetCustom();
+  var allC=Object.assign({},scamBuiltIn,typeof extraCities!=="undefined"?extraCities:{},custom);
+  var grid=document.getElementById('sc-dest-grid');
+  if(!grid)return;
+  while(grid.firstChild)grid.removeChild(grid.firstChild);
+  Object.keys(allC).forEach(function(key){
+    var c=allC[key];
+    var sk=(key||'').toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,40);
+    var isCustom=!!custom[key];
+    var riskCls=c.risk==='High'?'risk-high':c.risk==='Medium'?'risk-medium':'risk-low';
+    var card=document.createElement('div');
+    card.className='dest-card'+(scSelectedDest===key?' on':'')+(isCustom?' custom-city':'');
+    if(isCustom){
+      var del=document.createElement('span');
+      del.className='dest-del';
+      del.textContent='x';
+      del.addEventListener('click',function(e){
+        e.stopPropagation();
+        var c2=scamGetCustom();delete c2[sk];scamSaveCustom(c2);
+        if(scSelectedDest===sk)scSelectedDest='chicago';
+        scamRenderGrid();showToast('City removed');
+      });
+      card.appendChild(del);
+    }
+    var ico=document.createElement('div');ico.className='dest-ico';ico.textContent=c.ico||'';card.appendChild(ico);
+    var nm=document.createElement('div');nm.className='dest-name';nm.textContent=c.name||key;card.appendChild(nm);
+    var rsk=document.createElement('div');rsk.className='dest-risk '+riskCls;rsk.textContent=(c.risk||'Medium')+' Risk';card.appendChild(rsk);
+    (function(ck){
+      card.addEventListener('click',function(){
+        scSelectedDest=ck;scamRenderGrid();
+        var btn=document.getElementById('sc-show-btn');
+        if(btn){btn.style.transform='scale(1.03)';setTimeout(function(){btn.style.transform='';},180);}
+      });
+    })(sk);
+    grid.appendChild(card);
+  });
+}
+
+function scamFilter(val){
+  var v=(val||'').toLowerCase();
+  document.querySelectorAll('#sc-dest-grid .dest-card').forEach(function(card){
+    var name=card.querySelector('.dest-name');
+    var match=!v||name.textContent.toLowerCase().includes(v);
+    card.style.display=match?'':'none';
+  });
+}
+
+function scamPickDest(key){scSelectedDest=key;scamRenderGrid();}
+
+function scamDeleteCity(key){
+  e.stopPropagation();
+  const custom=scamGetCustom();
+  delete custom[key];
+  scamSaveCustom(custom);
+  if(scSelectedDest===key)scSelectedDest='chicago';
+  scamRenderGrid();
+  showToast('City removed');
+}
+
+function scamShow(){
+  const data=scamAllCities()[scSelectedDest];
+  if(!data){showToast('Pick a city first');return;}
+  document.getElementById('sc-results').style.display='block';
+  document.getElementById('sc-dest-display').textContent=data.name;
+  document.getElementById('sc-alert-text').textContent=data.alertText||`${data.risk} risk destination.`;
+
+  let html='<div class="scam-hdr">⚠️ Tourist Traps & Fair Prices</div>';
+  (data.scams||[]).forEach(s=>{
+    html+=`<div class="scam-item"><div class="scam-title">${s.title}</div><div class="scam-desc">${s.desc}</div><div class="price-row"><div class="price-item"><span class="price-label">Tourist:</span><span class="tourist-price">${s.touristPrice}</span></div><div class="price-item"><span class="price-label">Local:</span><span class="local-price">${s.localPrice}</span></div></div><div class="scam-tip-box">✓ ${s.tip}</div></div>`;
+  });
+  document.getElementById('sc-scam-list').innerHTML=html;
+  document.getElementById('sc-tips-grid').innerHTML=(data.tips||[]).map(t=>`<div class="tip-mini"><div class="tip-ico">${t.ico||'💡'}</div><div class="tip-title-sm">${t.title}</div><div class="tip-text-sm">${t.text}</div></div>`).join('');
+  document.getElementById('sc-results').scrollIntoView({behavior:'smooth'});
+}
+
+function scamCopy(){
+  const data=scamAllCities()[scSelectedDest];
+  if(!data)return;
+  const text=`SCAM SHIELD — ${data.name}\nRisk: ${data.risk}\n\n`+(data.scams||[]).map(s=>`${s.title}\nTourist: ${s.touristPrice} | Local: ${s.localPrice}\nAvoid: ${s.tip}`).join('\n\n');
+  navigator.clipboard.writeText(text).then(()=>showToast('Copied!'));
+}
+function scamReset(){document.getElementById('sc-results').style.display='none';window.scrollTo({top:0,behavior:'smooth'});}
+
+
+
+// ── AI CITY AUTO-FILL ──
+function ncCityTyped(val){}
+
+function ncAIGenerate(){
+  var city=document.getElementById('nc-name').value.trim();
+  if(!city){showToast('Enter a city name first');return;}
+  var btn=document.getElementById('nc-ai-btn');
+  var status=document.getElementById('nc-ai-status');
+  btn.textContent='⏳ GENERATING...';
+  btn.disabled=true;
+  status.style.display='block';
+  status.textContent='Asking AI about '+city+' scams and tips...';
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      messages:[{role:'user',content:'Generate tourist scam data for '+city+' as JSON only, no markdown, no backticks. Format: {"emoji":"🌍","risk":"Medium","riskNote":"brief risk description","scams":[{"title":"emoji + title","desc":"description","touristPrice":"$X","localPrice":"$Y","tip":"how to avoid"}],"tips":[{"ico":"emoji","title":"short title","text":"tip text"}]} Include 3-4 scams and 4 tips. Use real local knowledge. Risk must be Low, Medium, or High. Respond with only the JSON object, nothing else.'}]
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    try{
+      var text=data.content[0].text.trim();
+      // Strip any markdown if present
+      text=text.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim();
+      var d=JSON.parse(text);
+      // Fill emoji
+      if(d.emoji) document.getElementById('nc-emoji').value=d.emoji;
+      // Fill risk
+      if(d.risk){
+        var riskSel=document.getElementById('nc-risk');
+        for(var i=0;i<riskSel.options.length;i++){
+          if(riskSel.options[i].value===d.risk){riskSel.selectedIndex=i;break;}
+        }
+      }
+      if(d.riskNote) document.getElementById('nc-riskdesc').value=d.riskNote;
+      // Clear existing scam entries
+      document.getElementById('nc-scam-entries').innerHTML='';
+      ncScamCount=0;
+      // Fill scams
+      (d.scams||[]).slice(0,5).forEach(function(s){
+        ncAddScam();
+        var n=ncScamCount;
+        var el=function(id){return document.getElementById(id);};
+        if(el('ncs'+n+'-title')) el('ncs'+n+'-title').value=s.title||'';
+        if(el('ncs'+n+'-desc')) el('ncs'+n+'-desc').value=s.desc||'';
+        if(el('ncs'+n+'-tourist')) el('ncs'+n+'-tourist').value=s.touristPrice||'';
+        if(el('ncs'+n+'-local')) el('ncs'+n+'-local').value=s.localPrice||'';
+        if(el('ncs'+n+'-tip')) el('ncs'+n+'-tip').value=s.tip||'';
+      });
+      // Clear existing tips
+      document.getElementById('nc-tip-entries').innerHTML='';
+      ncTipCount=0;
+      // Fill tips
+      (d.tips||[]).slice(0,4).forEach(function(t){
+        ncAddTip();
+        var n=ncTipCount;
+        var el=function(id){return document.getElementById(id);};
+        if(el('nct'+n+'-ico')) el('nct'+n+'-ico').value=t.ico||'💡';
+        if(el('nct'+n+'-title')) el('nct'+n+'-title').value=t.title||'';
+        if(el('nct'+n+'-text')) el('nct'+n+'-text').value=t.text||'';
+      });
+      status.textContent='✅ Auto-filled! Review and edit below, then hit Save.';
+      status.style.color='var(--green)';
+      btn.textContent='⚡ AUTO-FILL WITH AI';
+      btn.disabled=false;
+    }catch(err){
+      status.textContent='❌ Could not parse AI response. Fill in manually below.';
+      status.style.color='var(--red)';
+      btn.textContent='⚡ AUTO-FILL WITH AI';
+      btn.disabled=false;
+    }
+  })
+  .catch(function(err){
+    status.textContent='❌ AI unavailable. Fill in manually below.';
+    status.style.color='var(--red)';
+    btn.textContent='⚡ AUTO-FILL WITH AI';
+    btn.disabled=false;
+  });
+}
+
+function ncAddScam(){
+  const c=document.getElementById('nc-scam-entries');
+  if(c.querySelectorAll('.scam-entry').length>=5){showToast('Max 5 scam entries');return;}
+  ncScamCount++;const n=ncScamCount;
+  const div=document.createElement('div');div.className='scam-entry';div.id=`ncs-${n}`;
+  div.innerHTML=`<div class="scam-entry-hdr"><span class="scam-entry-title">Scam #${c.querySelectorAll('.scam-entry').length+1}</span><button class="entry-del-btn" data-rmid="ncs-${n}">Remove</button></div><div class="row" style="margin-bottom:9px"><div class="fld"><label>Title (include emoji)</label><input type="text" id="ncs${n}-title" placeholder="e.g. 🚕 Airport Taxi Overcharge"></div></div><div class="row" style="margin-bottom:9px"><div class="fld"><label>Description</label><textarea id="ncs${n}-desc" rows="2" placeholder="What happens and why it's a problem"></textarea></div></div><div class="row c2" style="margin-bottom:9px"><div class="fld"><label>Tourist Price</label><input type="text" id="ncs${n}-tourist" placeholder="e.g. $50–$80"></div><div class="fld"><label>Local Price</label><input type="text" id="ncs${n}-local" placeholder="e.g. $15–$20"></div></div><div class="row"><div class="fld"><label>How to Avoid</label><input type="text" id="ncs${n}-tip" placeholder="e.g. Use Grab app"></div></div>`;
+  c.appendChild(div);
+}
+
+function ncAddTip(){
+  const c=document.getElementById('nc-tip-entries');
+  if(c.querySelectorAll('.scam-entry').length>=4){showToast('Max 4 tips');return;}
+  ncTipCount++;const n=ncTipCount;
+  const div=document.createElement('div');div.className='scam-entry';div.id=`nct-${n}`;
+  div.innerHTML=`<div class="scam-entry-hdr"><span class="scam-entry-title">Tip #${c.querySelectorAll('.scam-entry').length+1}</span><button class="entry-del-btn" data-rmid="nct-${n}">Remove</button></div><div class="row c3" style="margin-bottom:9px"><div class="fld"><label>Emoji</label><input type="text" id="nct${n}-ico" placeholder="🚗" maxlength="4"></div><div class="fld" style="grid-column:span 2"><label>Title</label><input type="text" id="nct${n}-title" placeholder="e.g. Use Grab App"></div></div><div class="row"><div class="fld"><label>Detail</label><input type="text" id="nct${n}-text" placeholder="e.g. Pre-set pricing, avoids all taxi scams"></div></div>`;
+  c.appendChild(div);
+}
+
+function ncSave(){
+  const name=document.getElementById('nc-name').value.trim();
+  const emoji=document.getElementById('nc-emoji').value.trim()||'🌍';
+  const risk=document.getElementById('nc-risk').value;
+  const riskDesc=document.getElementById('nc-riskdesc').value.trim();
+  if(!name){showToast('Enter a city name');return;}
+
+  const scams=[];
+  document.querySelectorAll('#nc-scam-entries .scam-entry').forEach(el=>{
+    const n=el.id.replace('ncs-','');
+    const title=(document.getElementById(`ncs${n}-title`)?document.getElementById(`ncs${n}-title`).value:'').trim();
+    const desc=(document.getElementById(`ncs${n}-desc`)?document.getElementById(`ncs${n}-desc`).value:'').trim();
+    const tourist=(document.getElementById(`ncs${n}-tourist`)?document.getElementById(`ncs${n}-tourist`).value:'').trim();
+    const local=(document.getElementById(`ncs${n}-local`)?document.getElementById(`ncs${n}-local`).value:'').trim();
+    const tip=(document.getElementById(`ncs${n}-tip`)?document.getElementById(`ncs${n}-tip`).value:'').trim();
+    if(title)scams.push({title,desc,touristPrice:tourist,localPrice:local,tip});
+  });
+
+  const tips=[];
+  document.querySelectorAll('#nc-tip-entries .scam-entry').forEach(el=>{
+    const n=el.id.replace('nct-','');
+    const ico=(document.getElementById(`nct${n}-ico`)?document.getElementById(`nct${n}-ico`).value:'💡').trim();
+    const title=(document.getElementById(`nct${n}-title`)?document.getElementById(`nct${n}-title`).value:'').trim();
+    const text=(document.getElementById(`nct${n}-text`)?document.getElementById(`nct${n}-text`).value:'').trim();
+    if(title)tips.push({ico,title,text});
+  });
+
+  const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  const custom=scamGetCustom();
+  custom[key]={name,ico:emoji,risk,alertText:riskDesc||`${risk} risk — stay alert and verify prices before paying.`,scams,tips};
+  scamSaveCustom(custom);
+  scSelectedDest=key;
+
+  document.getElementById('nc-name').value='';
+  document.getElementById('nc-emoji').value='';
+  document.getElementById('nc-riskdesc').value='';
+  document.getElementById('nc-scam-entries').innerHTML='';
+  document.getElementById('nc-tip-entries').innerHTML='';
+  ncScamCount=0;ncTipCount=0;
+
+  scamRenderGrid();
+  showToast(name + ' saved ✓');
+  // Auto-show scams for newly saved city
+  setTimeout(function(){
+    scamShow();
+    var results=document.getElementById('sc-results');
+    if(results)results.scrollIntoView({behavior:'smooth',block:'start'});
+  },150);
+}
+
+// ══════════════════════════════════════
+//  MODULE 4 — PRICE WAR ROOM
+// ══════════════════════════════════════
+let warRoutes=[];
+let warAlerts=[];
+let warNextId=1;
+let warSelectedPill=null;
+
+function warLoadFares(){
+  const o=document.getElementById('w-origin').value;
+  const d=document.getElementById('w-dest').value;
+  const container=document.getElementById('w-fare-pills');
+  warSelectedPill=null;
+  if(!o||!d||o===d){container.innerHTML='<span class="no-fares">Select two different airports</span>';return;}
+  const key=getRouteKey(o,d);
+  if(!key){container.innerHTML='<span class="no-fares">No direct fare data for this route.</span>';return;}
+  const fares=sharedRouteFares[key];
+  const sorted=Object.entries(fares).sort((a,b)=>a[1]-b[1]);
+  container.innerHTML=sorted.map(([code,price])=>{
+    const rt=price*2;
+    const isCheap=price===sorted[0][1];
+    return `<div class="fare-pill ${isCheap?'on':''}" id="wp-${code}" data-wcode="${code}" data-wrt="${rt}"><span>${(splitAirlines[code]&&splitAirlines[code].name?splitAirlines[code].name:code)}</span><span class="pill-price">$${rt}</span><span style="font-size:8px;color:var(--muted)">RT</span></div>`;
+  }).join('');
+  // Attach listeners - no dynamic onclick
+  container.querySelectorAll('.fare-pill').forEach(function(pill){
+    pill.addEventListener('click',function(){
+      warSelectPill(pill.dataset.wcode, parseFloat(pill.dataset.wrt));
+    });
+  });
+  if(sorted.length>0){warSelectedPill={code:sorted[0][0],price:sorted[0][1]*2};}
+}
+
+function warSelectPill(code,rtPrice){
+  document.querySelectorAll('.fare-pill').forEach(p=>p.classList.remove('on'));
+  document.getElementById(`wp-${code}`).classList.add('on');
+  warSelectedPill={code,price:rtPrice};
+}
+
+function warAdd(){
+  const o=document.getElementById('w-origin').value;
+  const d=document.getElementById('w-dest').value;
+  const target=parseFloat(document.getElementById('w-target').value);
+  const travelers=parseInt(document.getElementById('w-travelers').value);
+  if(!o||!d||o===d){showToast('Select valid route');return;}
+  if(!warSelectedPill){showToast('Select an airline fare pill');return;}
+  if(!target){showToast('Enter your target price');return;}
+
+  const key=getRouteKey(o,d);
+  const allFares=key?sharedRouteFares[key]:{};
+  const current=warSelectedPill.price;
+
+  const now=new Date();
+  const dateStr=(now.getMonth()+1)+'/'+(now.getDate())+' '+(now.getHours())+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  const log=[{date:dateStr,price:current}];
+  warRoutes.push({id:warNextId++,origin:o,dest:d,airlineCode:warSelectedPill.code,airlineName:splitAirlines[warSelectedPill.code]&&splitAirlines[warSelectedPill.code].name?splitAirlines[warSelectedPill.code].name:warSelectedPill.code,current,target,log,travelers,allFares});
+
+  if(current<=target){warPushAlert('green','🟢',`Deal — ${o}→${d} ${(splitAirlines[warSelectedPill.code]?splitAirlines[warSelectedPill.code].name:'')}`,`$${current} is at or below your $${target} target. Book now.`);}
+  else{warPushAlert('orange','📡',`Now Tracking — ${o}→${d}`,`Watching $${current} for drop to $${target}.`);}
+
+  document.getElementById('w-target').value='';
+  warSelectedPill=null;
+  warLoadFares();
+  warRenderAll();
+}
+
+function warRemove(id){warRoutes=warRoutes.filter(r=>r.id!==id);warRenderAll();}
+
+function warUpdate(id){
+  var r=warRoutes.find(function(x){return x.id===id;});
+  if(!r)return;
+  var ex=document.getElementById('wup-'+id);
+  if(ex){ex.remove();return;}
+  var wrap=document.createElement('div');
+  wrap.id='wup-'+id;wrap.style.cssText='display:flex;gap:8px;margin-top:10px;';
+  var inp=document.createElement('input');
+  inp.type='number';inp.placeholder='New price $';
+  inp.style.cssText='flex:1;background:var(--card);border:1.5px solid var(--accent);border-radius:8px;padding:9px 12px;color:var(--text);font-size:16px;outline:none;';
+  var sb=document.createElement('button');
+  sb.textContent='Save';
+  sb.style.cssText='background:var(--accent);color:#000;border:none;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer;font-size:13px;touch-action:manipulation;';
+  sb.addEventListener('click',function(){
+    var p=parseFloat(inp.value);
+    if(!p||isNaN(p)||p<=0){showToast('Enter a valid price');return;}
+    var prev=r.current;r.current=p;var nd=new Date();r.log=r.log||[];r.log.unshift({date:(nd.getMonth()+1)+'/'+(nd.getDate())+' '+(nd.getHours())+':'+(nd.getMinutes()<10?'0':'')+nd.getMinutes(),price:p});if(r.log.length>10)r.log.pop();
+    if(p<prev)warPushAlert('green','drop','Price Drop','Dropped from $'+prev+' to $'+p+(p<=r.target?' - AT TARGET':''));
+    else warPushAlert('orange','up','Price Up','Rose from $'+prev+' to $'+p+'.');
+    warRenderAll();
+  });
+  wrap.appendChild(inp);wrap.appendChild(sb);
+  var ub=document.querySelector('[data-wupdate="'+id+'"]');
+  if(ub)ub.closest('.track-card').appendChild(wrap);
+  setTimeout(function(){inp.focus();},50);
+}
+
+function warPushAlert(type,ico,title,desc){warAlerts.unshift({type,ico,title,desc,time:'Just now'});if(warAlerts.length>10)warAlerts.pop();}
+
+function warGetStatus(r){return r.current<=r.target?'deal':((r.current-r.target)/r.target)<=0.3?'watch':'track';}
+function warBarColor(s){return s==='deal'?'#3dd68c':s==='watch'?'#f08040':'#5b8ef0';}
+function warHBarCls(v,min,max){const p=(v-min)/(max-min||1);return p<=0.33?'low':p<=0.66?'mid':'high-b';}
+
+function warRenderAll(){
+  const wrap=document.getElementById('w-tracks');
+  if(warRoutes.length===0){wrap.innerHTML=`<div class="empty-state"><div class="empty-ico">✈️</div><div class="empty-text">No routes tracked yet.<br>Add a route above to start watching.</div></div>`;
+  }else{
+    wrap.innerHTML=warRoutes.map(r=>{
+      const status=warGetStatus(r);
+      const pct=Math.min(100,Math.round((r.target/r.current)*100));
+      const bc=warBarColor(status);
+
+      const faresHtml=Object.entries(r.allFares).sort((a,b)=>a[1]-b[1]).map(([code,ow],i)=>{const rt=ow*2;const isL=i===0;const diff=rt-Object.values(r.allFares).sort((a,b)=>a-b)[0]*2;return `<div class="fares-row${isL?' lowest':''}"><span class="fares-airline">${(splitAirlines[code]&&splitAirlines[code].name?splitAirlines[code].name:code)}</span><span class="fares-price">$${rt}</span><span class="fares-diff">${isL?'CHEAPEST':'+$'+diff}</span></div>`;}).join('');
+      const bookUrl=airlineBookUrls[r.airlineCode]||'https://www.google.com/flights';
+      return `<div class="track-card ${status}">
+        <div class="track-top"><div><div class="track-route">${r.origin} → ${r.dest}</div><div class="track-detail"><span class="track-airline">${r.airlineName} · ${r.travelers} traveler(s)</span><span class="track-badge ${status==='deal'?'badge-deal':status==='watch'?'badge-watch':'badge-track'}">${status==='deal'?'✓ BOOK NOW':status==='watch'?'GETTING CLOSE':'WATCHING'}</span></div></div><div class="track-right"><div class="track-current">$${r.current}</div><div class="track-target-label">Target: $${r.target}</div></div></div>
+        <div class="track-bar-wrap"><div class="track-bar-labels"><span>To target</span><span>${pct}%</span></div><div class="track-bar-bg"><div class="track-bar-fill" style="width:${pct}%;background:${bc}"></div></div></div>
+        <div class="history-wrap"><div class="history-title" style="color:var(--sub);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Price Log</div><div id="plog-${r.id}" style="font-size:11px;color:var(--sub);">${r.log&&r.log.length>0?r.log.map(function(e){return'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(40,40,60,0.4);"><span>'+e.date+'</span><span style="color:var(--accent);font-weight:700;">$'+e.price+'</span></div>';}).join(''):"No price entries yet. Use Update to log prices."}</div></div>
+        ${Object.keys(r.allFares).length>1?`<div style="margin-bottom:9px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:5px;">All Airlines This Route</div><div class="fares-table">${faresHtml}</div></div>`:''}
+        <div class="track-actions"><button class="track-btn book" data-bookurl="${bookUrl}">🔗 Book</button><button class="track-btn" data-wupdate="${r.id}">🔄 Update</button><button class="track-btn remove" data-wremove="${r.id}">✕ Remove</button></div>
+      </div>`;
+    }).join('');
+  }
+
+  const alertWrap=document.getElementById('w-alerts');
+  if(warAlerts.length===0){alertWrap.innerHTML=`<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px;">No alerts yet. Add a route to start monitoring.</div>`;}
+  else{alertWrap.innerHTML=warAlerts.map(a=>`<div class="alert-item ${a.type}"><div class="alert-ico">${a.ico}</div><div><div class="alert-title">${a.title}</div><div class="alert-desc">${a.desc}</div><div class="alert-time">${a.time}</div></div></div>`).join('');}
+
+  // Single assigned handler for track actions - no stacking
+  var tracksEl=document.getElementById('w-tracks');
+  if(tracksEl){
+    tracksEl.onclick=function(e){
+      var bookBtn=e.target.closest('[data-bookurl]');
+      if(bookBtn){try{window.open(bookBtn.dataset.bookurl,'_blank');}catch(x){}return;}
+      var updBtn=e.target.closest('[data-wupdate]');
+      if(updBtn){warUpdate(parseInt(updBtn.dataset.wupdate));return;}
+      var remBtn=e.target.closest('[data-wremove]');
+      if(remBtn){warRemove(parseInt(remBtn.dataset.wremove));return;}
+    };
+  }
+  document.getElementById('w-stat-tracking').textContent=warRoutes.length;
+  document.getElementById('w-stat-deals').textContent=warRoutes.filter(r=>warGetStatus(r)==='deal').length;
+  document.getElementById('w-stat-airlines').textContent=new Set(warRoutes.map(r=>r.airlineCode)).size;
+}
+
+// ══════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════
+
+// ── EXTENDED SCAM CITY DATABASE ──
+var extraCities = {
+  amsterdam:{name:'Amsterdam',ico:'🇳🇱',risk:'Medium',alertText:'Medium — Bike rental scams and tourist zone markups are the main traps.',scams:[{title:'🚲 Fake Bike Rentals',desc:'Unlicensed rental shops charge 3× market rate and demand cash deposits.',touristPrice:'€30–€50/day',localPrice:'€10–€15 at MacBike or Yellow Bike',tip:'Only rent from established chains like MacBike or your hotel concierge.'},{title:'🍺 Heineken Experience Area Bars',desc:'Bars immediately near tourist attractions mark up 200–300%.',touristPrice:'€8–€12 per beer',localPrice:'€3–€5 at a brown café (bruine kroeg)',tip:'Walk 3+ blocks from any tourist attraction. Brown cafés are local and half the price.'},{title:'💊 Street Drug Offers',desc:'Illegal substances sold near Leidseplein — entrapment risk in some areas.',touristPrice:'Legal and personal safety risk',localPrice:'Coffee shops only — licensed only',tip:'Only enter licensed coffee shops. Never buy from street dealers.'},{title:'💱 Currency Exchange Kiosks',desc:'Airport and tourist area exchange booths charge 8–15% fees.',touristPrice:'10–15% above market',localPrice:'ABN AMRO or ING ATM',tip:'Use your bank ATM. Never exchange at tourist kiosks.'}],tips:[{ico:'🚲',title:'Get an OV-Chip Card',text:'Public transit card covers trams, buses, metro. €2.90 per ride.'},{ico:'🏘️',title:'Eat in De Pijp',text:'Local neighborhood — better food, real prices, no tourists.'},{ico:'💳',title:'Cards Everywhere',text:'Amsterdam is nearly cashless. Cards accepted almost everywhere.'},{ico:'🚫',title:'Lock Your Bike',text:'Bike theft is extremely common. Use two locks minimum.'}]},
+  london:{name:'London',ico:'🇬🇧',risk:'Medium',alertText:'Medium — Tourist zone restaurants and black cab overcharging are the main traps.',scams:[{title:'🚕 Black Cab Overcharging',desc:'Unlicensed minicabs outside clubs and stations charge 5–10× meter rates.',touristPrice:'£50–£100 unmetered ride',localPrice:'£15–£25 on Uber or licensed cab',tip:'Use the Uber app or official black cabs with the meter running. Never take unlicensed minicabs.'},{title:'🍽️ Covent Garden Restaurants',desc:'Tourist zone restaurants charge £20–£35 for basic meals.',touristPrice:'£28/main',localPrice:'£12–£18 in Soho or Borough Market',tip:'Walk toward Soho or Borough Market. 10 minutes = dramatically better food and prices.'},{title:'🎭 West End "Discount" Tickets',desc:'Street vendors near Leicester Square sell overpriced or fake theatre tickets.',touristPrice:'2–3× face value',localPrice:'TKTS booth — official day seats at discount',tip:'Only buy from the official TKTS booth on Leicester Square or the theatre box office directly.'},{title:'📸 Buckingham Palace Photo Scam',desc:'People in costumes near attractions demand £10–£20 for photos.',touristPrice:'£10–£20 demanded',localPrice:'Zero — walk past',tip:'If you didn\'t ask for the photo, you don\'t owe payment. Keep walking.'}],tips:[{ico:'🚇',title:'Oyster Card',text:'Load it up. London transit is excellent and covers everything.'},{ico:'🏙️',title:'Eat in Shoreditch',text:'Best food scene in London. Half the West End prices.'},{ico:'🏛️',title:'Free Museums',text:'British Museum, National Gallery, Tate Modern — all completely free.'},{ico:'💷',title:'Contactless Everywhere',text:'Tap your card on every bus and tube — no Oyster needed.'}]},
+  paris:{name:'Paris',ico:'🇫🇷',risk:'Medium',alertText:'Medium — Pickpockets near Eiffel Tower and tourist restaurant markups are most common.',scams:[{title:'🏗️ Eiffel Tower Pickpockets',desc:'Professional pickpocket teams work the queues and surrounding areas.',touristPrice:'Wallet, phone, passport',localPrice:'Zero — stay alert, front pockets only',tip:'Front pockets or money belt only. Avoid crowds on the approach to the tower.'},{title:'🌹 Friendship Bracelet Scam',desc:'Men tie bracelets on your wrist without permission then demand €10–€20.',touristPrice:'€10–€20 demanded',localPrice:'Zero — refuse firmly',tip:'Say "Non merci" firmly and walk away. Never let anyone put anything on your wrist.'},{title:'🍽️ Champs-Élysées Restaurants',desc:'Restaurants on or immediately near the Champs-Élysées charge 2–3× normal prices.',touristPrice:'€25–€40/plat principal',localPrice:'€12–€18 in Le Marais or Montmartre',tip:'Eat in Le Marais, Montmartre, or Oberkampf. Better food, real prices.'},{title:'🚕 Airport Taxi Overcharge',desc:'CDG to Paris should be a fixed rate. Some drivers take scenic routes.',touristPrice:'€80–€120 scenic route',localPrice:'€55–€65 fixed legal rate',tip:'Fixed rate from CDG to central Paris is legally set. Insist on it or use RER B train (€11.80).'}],tips:[{ico:'🚇',title:'Metro t+ Ticket',text:'Carnet of 10 tickets saves money. Covers all zones 1–2.'},{ico:'🥐',title:'Eat at Boulangeries',text:'Grab a sandwich jambon at any bakery — €4–€6 and often excellent.'},{ico:'🏛️',title:'Museum Pass',text:'Paris Museum Pass covers 50+ sites. Pays off after 3–4 visits.'},{ico:'💧',title:'Free Water',text:'Paris tap water is excellent. Wallace fountains throughout the city — free.'}]},
+  tokyo:{name:'Tokyo',ico:'🇯🇵',risk:'Low',alertText:'Low — One of the safest cities for tourists. Minor traps exist near Shinjuku.',scams:[{title:'🍣 Shinjuku Kabukicho Bars',desc:'Hostess bars and some clubs charge cover charges not disclosed upfront.',touristPrice:'¥5,000–¥20,000 unexpected bill',localPrice:'Stick to listed izakayas with menus outside',tip:'Only enter bars that display prices outside. Never follow someone who approaches you on the street.'},{title:'🚕 Taxi to Narita Airport',desc:'Narita is 60km from Tokyo. Taxi costs ¥20,000–¥30,000. Train is ¥3,000.',touristPrice:'¥20,000–¥30,000 taxi',localPrice:'¥3,000 Narita Express or Keisei Skyliner',tip:'Take the Narita Express or Keisei Skyliner to Shinjuku or Ueno. Fast, cheap, comfortable.'},{title:'💱 Airport Currency Exchange',desc:'Narita and Haneda airport exchange rates are 5–8% worse than city ATMs.',touristPrice:'5–8% above market rate',localPrice:'7-Eleven or Japan Post ATMs at city center',tip:'Withdraw yen from 7-Eleven or Japan Post ATMs. Best rates and low fees.'},{title:'🎎 Tourist Souvenir Shops Near Temples',desc:'Shops immediately adjacent to Senso-ji charge 2–3× the price of shops 1 block away.',touristPrice:'¥2,000–¥5,000 per item',localPrice:'Same items ¥600–¥1,500 one street back',tip:'Walk one block away from the main approach. Same products, fraction of the price.'}],tips:[{ico:'🚇',title:'IC Card (Suica/Pasmo)',text:'Load it up. Works on all trains, buses, and convenience stores.'},{ico:'🍜',title:'Eat at Convenience Stores',text:'7-Eleven and FamilyMart food is genuinely excellent and costs ¥300–¥600.'},{ico:'📶',title:'Pocket Wi-Fi',text:'Rent at the airport. Cheaper than international data and faster.'},{ico:'🏯',title:'Free Temples',text:'Many Tokyo shrines and parks are free. Meiji Jingu, Yanaka Cemetery, Shinjuku Gyoen (¥500).'}]},
+  medellin:{name:'Medellín',ico:'🇨🇴',risk:'Medium',alertText:'Medium — Much safer than its reputation. Scopolamine and fake taxi remain real risks.',scams:[{title:'💊 Scopolamine (Burundanga)',desc:'Drug slipped into drinks causing memory loss and compliance. Real risk in nightlife areas.',touristPrice:'Everything you have',localPrice:'Zero — never accept drinks from strangers',tip:'Never accept open drinks from strangers. Cover your drink. Go to reputable bars only.'},{title:'🚕 Fake Taxis',desc:'Unmarked cars pose as taxis and overcharge or worse.',touristPrice:'Overcharge + safety risk',localPrice:'InDriver or Uber — app pricing only',tip:'Use InDriver or Uber exclusively. Never hail a street taxi.'},{title:'💃 Nightclub Overcharging',desc:'Some Parque Lleras clubs charge inflated entry and drink minimums not disclosed upfront.',touristPrice:'$50–$100 unexpected minimum',localPrice:'Check entry fees before you enter',tip:'Research clubs beforehand. El Poblado is tourist-heavy — prices are inflated accordingly.'},{title:'📸 Street Photography Scam',desc:'Locals offer to take photos then demand payment.',touristPrice:'$5–$20 demanded',localPrice:'Zero — take your own photos',tip:'Politely decline photo offers from strangers. Keep your phone secure.'}],tips:[{ico:'🚗',title:'InDriver or Uber Only',text:'Never take street taxis. Apps only, always.'},{ico:'🏘️',title:'El Poblado is Safe',text:'Stay in El Poblado. Laureles and Envigado are also excellent.'},{ico:'📱',title:'eSIM Before You Go',text:'Get an eSIM loaded with local data before arrival.'},{ico:'💵',title:'Pesos Only',text:'Withdraw COP from Bancolombia ATMs. Never exchange on the street.'}]},
+  lisbon:{name:'Lisbon',ico:'🇵🇹',risk:'Low',alertText:'Low — Generally honest. Pickpockets on Tram 28 and taxi overcharging are the main issues.',scams:[{title:'🚃 Tram 28 Pickpockets',desc:'Famous tram route is extremely crowded. Professional pickpocket teams work it constantly.',touristPrice:'Wallet and phone',localPrice:'Zero — front pockets, money belt',tip:'Take an Uber or walk the Alfama. Tram 28 is for locals going short distances, not tourists hauling bags.'},{title:'🚕 Airport Taxi Overcharge',desc:'Some airport taxis take longer routes to inflate the meter.',touristPrice:'€25–€40',localPrice:'€15–€20 fixed zone rate or Metro',tip:'Ask for the fixed zone rate to Lisbon center. Or take the Metro for €1.65.'},{title:'🎵 Fado Show Add-Ons',desc:'Some Fado restaurants add service charges, cover charges, and mandatory food minimums.',touristPrice:'€50–€80 unexpected total',localPrice:'€25–€35 at a proper adega with upfront pricing',tip:'Research Fado restaurants on TripAdvisor first. Ask for all charges upfront before sitting.'},{title:'🍷 Alfama Restaurant Tourist Menus',desc:'Restaurants on the main Alfama tourist drag charge 2× the neighborhood price.',touristPrice:'€18–€25/prato principal',localPrice:'€9–€14 two streets off the main drag',tip:'Walk off the main streets. Lisbon\'s food is excellent everywhere — the best is always away from the crowds.'}],tips:[{ico:'🚇',title:'Viva Viagem Card',text:'Transit card for Metro and bus. €0.50 card + load credit.'},{ico:'🐟',title:'Eat Bacalhau',text:'Salt cod in 1,000 preparations. Best meal you\'ll eat for €8–€12.'},{ico:'🏄',title:'Day Trip to Cascais',text:'€2.30 train, beach town, zero tourist traps. Better than Sintra crowds.'},{ico:'☀️',title:'Go in Spring',text:'April–June: perfect weather, smaller crowds, lower hotel prices.'}]},
+  barcelona:{name:'Barcelona',ico:'🇪🇸',risk:'Medium',alertText:'Medium — Highest pickpocket rate in Europe. Las Ramblas is a hotspot.',scams:[{title:'👜 Las Ramblas Pickpockets',desc:'World-renowned pickpocket corridor. Teams work every 20 feet on the main strip.',touristPrice:'Wallet, phone, passport',localPrice:'Zero — money belt, front pockets only',tip:'Never put anything in your back pockets on Las Ramblas. Front pockets, money belt, or hotel safe.'},{title:'🃏 Shell Game on Las Ramblas',desc:'Crowds gather around card games. They are rigged and run by organized teams.',touristPrice:'€20–€100 lost instantly',localPrice:'Zero — walk past',tip:'It is impossible to win. The crowd watching is part of the scam. Keep walking.'},{title:'🍺 Barceloneta Beach Vendors',desc:'Unlicensed vendors sell warm beer and mojitos on the beach at inflated prices.',touristPrice:'€5–€10 for warm drinks',localPrice:'€2–€3 at a proper chiringuito bar',tip:'Go to a proper beach bar (chiringuito). Better drinks, colder, same beach experience.'},{title:'🚕 Taxi from Airport',desc:'Some drivers take the AP-7 toll route without asking, adding €4–€6.',touristPrice:'€35–€45 with toll',localPrice:'€25–€30 without toll or Aerobus for €6',tip:'Ask driver explicitly "no toll road please" or take the Aerobus to Plaça Catalunya for €6.'}],tips:[{ico:'🚇',title:'T-Casual Card',text:'10 trips on Metro, buses, and FGC. Buy at any Metro station.'},{ico:'🏖️',title:'Go to Barceloneta Early',text:'Before 10 AM — locals only, parking easy, no crowds.'},{ico:'🍕',title:'Avoid Las Ramblas Restaurants',text:'Every restaurant on Las Ramblas is overpriced. Walk two blocks.'},{ico:'🎵',title:'Free Concerts',text:'Palau de la Música has free lunchtime concerts regularly. Check their calendar.'}]},
+  cancun_intl:{name:'Cancun (Int\'l Zone)',ico:'🌊',risk:'High',alertText:'High — Hotel Zone is one of the most tourist-trapped areas in the Americas.',scams:[{title:'🏨 All-Inclusive Hidden Charges',desc:'All-inclusive resorts charge extra for premium alcohol, specialty restaurants, and excursions.',touristPrice:'$50–$150/day in extras',localPrice:'Read the contract — ask what\'s NOT included',tip:'Before booking, ask exactly what is excluded from all-inclusive. Premium brands, specialty dining, and spas are usually extra.'},{title:'🏖️ Beach Vendor Harassment',desc:'Vendors on public beaches are aggressive. Prices are 3–5× market value.',touristPrice:'$40–$80 for souvenirs',localPrice:'Same items downtown for $8–$15',tip:'Walk downtown to Mercado 28. Everything is 70–80% cheaper and you can negotiate.'},{title:'🍹 Hotel Zone Restaurants',desc:'Non-resort restaurants in the Hotel Zone charge resort-level prices.',touristPrice:'$25–$45/entree',localPrice:'$8–$12 downtown or Puerto Morelos',tip:'Take a colectivo (shared van) downtown for 12 pesos. Eat there. Come back full and $40 richer.'},{title:'🎫 Airport Transfer Upsell',desc:'Representatives in arrivals push expensive private transfers.',touristPrice:'$35–$60 private transfer',localPrice:'ADO bus $10 or colectivo $12',tip:'Walk past all representatives in arrivals. Take the ADO bus or colectivo outside.'}],tips:[{ico:'🚌',title:'Colectivos Everywhere',text:'Shared vans run the whole Hotel Zone for 12 pesos. Use them.'},{ico:'🌮',title:'Eat Downtown',text:'Parque Las Palapas has excellent cheap food. 20 min from Hotel Zone.'},{ico:'📅',title:'Book Excursions Online',text:'Viator or GetYourGuide. Same tours for 60–80% less than resort desk.'},{ico:'🏖️',title:'Public Beaches',text:'All beaches in Mexico are legally public. You can use any beach for free.'}]},
+  jamaica:{name:'Jamaica',ico:'🇯🇲',risk:'Medium',alertText:'Medium — Resort zones are safe. Outside resort areas requires more awareness.',scams:[{title:'🌿 Drug Offers Near Beaches',desc:'Vendors approach tourists near beaches offering marijuana. Police presence is variable.',touristPrice:'Legal risk + overcharging',localPrice:'Only at licensed dispensaries where legal',tip:'Marijuana was recently decriminalized but selling to tourists is still heavily penalized. Decline street offers.'},{title:'🚕 Taxi from Montego Bay Airport',desc:'JUTA taxis are licensed and metered. Unlicensed drivers charge 2–5× more.',touristPrice:'$50–$80 unlicensed',localPrice:'$20–$35 JUTA licensed taxi',tip:'Use only JUTA or JUTC licensed taxis from the official stand at MBJ airport.'},{title:'🏖️ Vendor Pressure on Negril Beach',desc:'Vendors along Seven Mile Beach are persistent and prices are heavily inflated for tourists.',touristPrice:'$40–$80 for souvenirs',localPrice:'Same items at Crafts Market in Montego Bay for $5–$15',tip:'Visit the Hip Strip or Crafts Market in Montego Bay for real local pricing.'},{title:'🎭 "Official" Tour Guide Scams',desc:'Men approach claiming to be official guides at tourist sites. They are not.',touristPrice:'$30–$100 for "guiding"',localPrice:'Official guides available at entry booths',tip:'Only hire guides from official site entrance booths or through your resort.'}],tips:[{ico:'🏨',title:'All-Inclusive Makes Sense Here',text:'Outside resort zones requires more care. All-inclusive simplifies everything.'},{ico:'🫙',title:'Jerk Chicken Roadside',text:'Best food in Jamaica is from roadside jerk stands. $5–$8 for a full plate.'},{ico:'🌊',title:'Visit Rick\'s Café Sunset',text:'Yes it\'s touristy. The cliff jumping and sunset are still worth it.'},{ico:'🚐',title:'Route Taxis',text:'Shared route taxis go everywhere for $1–$3. Ask your resort how to use them safely.'}]},
+  nassau:{name:'Nassau / Bahamas',ico:'🇧🇸',risk:'Medium',alertText:'Medium — Port area is heavily tourist-priced. Bay Street vendors use aggressive tactics.',scams:[{title:'💎 Straw Market Pressure',desc:'Vendors grab your arm and aggressively push products. Opening prices are 5–10× real value.',touristPrice:'Whatever they quote first',localPrice:'20–30% of opening ask after negotiating',tip:'Enter with intention to negotiate. Start at 15–20% of their ask. Walking away always works.'},{title:'🦞 Nassau Restaurant Overpricing',desc:'Restaurants near Prince George Wharf charge cruise ship prices.',touristPrice:'$25–$45/entree',localPrice:'$12–$18 at Arawak Cay (Fish Fry)',tip:'Take a $5 cab to Arawak Cay (The Fish Fry). Best conch salad and grilled fish in Nassau at real prices.'},{title:'🚕 Taxi from Airport',desc:'Taxis from LPIA have government-set rates but some drivers add luggage fees.',touristPrice:'$30–$40 with added fees',localPrice:'$27 fixed government rate to Nassau center',tip:'Government fixed taxi rates are posted at the airport. Refuse any charges above the posted rate.'},{title:'🤿 Water Sports Overpricing',desc:'Beach water sports vendors near Cable Beach charge 3× online prices.',touristPrice:'$80–$120 per activity',localPrice:'$30–$50 booked through your hotel',tip:'Book all water activities through your hotel or a licensed operator. Street prices are non-negotiable and inflated.'}],tips:[{ico:'🐟',title:'Arawak Cay Fish Fry',text:'Best food in Nassau. Conch salad, grilled fish, cracked conch. $8–$15 a plate.'},{ico:'🏖️',title:'Cable Beach Over Nassau Beach',text:'Cable Beach is cleaner, less crowded, and more accessible.'},{ico:'🚤',title:'Blue Lagoon Island',text:'Day trip with snorkeling — book online ahead for best price.'},{ico:'💵',title:'USD Works Everywhere',text:'Bahamian dollar is 1:1 with USD. Both accepted everywhere.'}]},
+  us_virgin_islands:{name:'US Virgin Islands',ico:'🏝️',risk:'Medium',alertText:'Medium - Tourist pricing on St Thomas is heavy. St John is beautiful but expensive.',scams:[{title:'🚕 St Thomas Taxi Overcharge',desc:'Taxis are unmetered. Drivers quote whatever they want to tourists.',touristPrice:'$20-$40 for short rides',localPrice:'$8-$15 agreed upfront',tip:'Always agree on price BEFORE getting in. Ask resort staff what fair rates are.'},{title:'🛍️ Charlotte Amalie Duty-Free',desc:'Duty-free shopping is marketed heavily but prices are not always better than mainland.',touristPrice:'Marketed as 50% off',localPrice:'Check Amazon before buying',tip:'Verify US prices on Amazon before purchasing. Electronics sometimes cheaper stateside.'},{title:'🤿 Beach Vendor Water Sports',desc:'Vendors on Magens Bay charge 2-3x what licensed tour operators charge.',touristPrice:'$80-$120 per activity',localPrice:'$30-$60 booked through Viator',tip:'Book activities through Viator or directly with licensed operators before arrival.'},{title:'🍹 Resort Bar Pricing',desc:'Beachside resort bars charge $18-$25 per cocktail.',touristPrice:'$20 rum punch',localPrice:'$8-$10 at a local bar in Cruz Bay',tip:'Walk into Cruz Bay or Christiansted for local bars at half the resort price.'}],tips:[{ico:'🇺🇸',title:'No Passport Needed',text:'US citizens just need a valid ID. No passport, no customs.'},{ico:'🚤',title:'Ferry to St John',text:'$14 round trip from Red Hook. Best beaches and no cruise crowds.'},{ico:'🌊',title:'Go Off-Season',text:'May-June: hotels drop 40-50%. Hurricane season Aug-Oct - get travel insurance.'},{ico:'🐠',title:'Trunk Bay',text:'Best snorkeling in the Caribbean. Arrive before 10 AM to beat cruise crowds.'}]},
+  nashville:{name:'Nashville',ico:'🎸',risk:'Low',alertText:'Low - Broadway is heavy tourist pricing. Two blocks off and everything normalizes.',scams:[{title:'🎸 Broadway Cover Charges',desc:'Some bars on Lower Broadway now add cover charges not disclosed upfront.',touristPrice:'$10-$20 surprise cover',localPrice:'Ask before entering - most still free',tip:'Ask about cover charge before stepping inside. Walk out if they surprise you.'},{title:'🍽️ Broadway Restaurant Markup',desc:'Restaurants directly on Broadway charge tourist prices.',touristPrice:'$25-$40/entree',localPrice:'$14-$20 in Germantown or 12South',tip:'Walk to 12South, Germantown, or East Nashville for better food at real prices.'},{title:'🚕 Pedal Tavern Tip Pressure',desc:'Party bike tours pressure passengers for large tips beyond the booked rate.',touristPrice:'$20+ tip per person pushed',localPrice:'$5-$10 is perfectly normal',tip:'Tip what you feel is fair. The price you booked is what you owe. Nothing more.'},{title:'🏨 Convention Week Hotels',desc:'During CMA Fest prices triple overnight.',touristPrice:'$400-$600/night standard rooms',localPrice:'$120-$180 booked 60+ days ahead',tip:'Check Nashville event calendar before booking. Avoid convention weeks or book way ahead.'}],tips:[{ico:'🎵',title:'Free Live Music',text:'Robert\'s Western World and Tootsie\'s have free music all day. Buy a beer, enjoy the show.'},{ico:'🚶',title:'Walk Broadway',text:'Everything on Lower Broadway is walkable. Skip Uber between honky tonks.'},{ico:'🍗',title:'Hot Chicken',text:'Prince\'s and Hattie B\'s are the real deal. Lines worth it at $10-$15.'},{ico:'📅',title:'Avoid CMA Week',text:'First week of June - prices triple and the city is wall to wall tourists.'}]},
+  denver:{name:'Denver',ico:'🏔️',risk:'Low',alertText:'Low - Honest city. Main traps are altitude, overpriced dispensaries near tourist zones, and event parking.',scams:[{title:'🌿 Tourist Zone Dispensaries',desc:'Dispensaries near 16th Street Mall charge significantly more than neighborhood shops.',touristPrice:'$20-$25 per gram',localPrice:'$10-$15 at neighborhood shops',tip:'Walk 4-5 blocks from tourist zones. Check menus online before you go.'},{title:'🚗 Event Night Parking',desc:'Lots near Ball Arena and Coors Field charge $30-$50 on event nights.',touristPrice:'$40 event lot',localPrice:'$10-$15 via SpotHero 2-3 blocks away',tip:'Pre-book with SpotHero. Save $20-$30 every time.'},{title:'🏔️ Altitude Hits Hard',desc:'Denver is at 5,280 feet. First-timers get sick fast especially with alcohol.',touristPrice:'Ruined trip if you ignore it',localPrice:'Hydrate before drinking - free',tip:'Drink a full water bottle before any alcohol. Effects of altitude are fast and real.'},{title:'🎿 Ski Resort Upsells',desc:'Resort ski rental and food are 2-3x what you pay booking separately in Denver.',touristPrice:'$120-$180 resort rental package',localPrice:'$40-$60 at a Denver ski shop',tip:'Rent gear from a Denver shop before heading to the mountain. Return in town.'}],tips:[{ico:'🚊',title:'Light Rail from DIA',text:'$10.50 each way from Denver International to Union Station. Skip the $50+ taxi.'},{ico:'🌿',title:'Legal Here',text:'Cannabis is fully legal. Licensed dispensaries only - never street sellers.'},{ico:'🏔️',title:'Hydrate Day 1',text:'Altitude hits hard. Water before alcohol, no exceptions.'},{ico:'🎿',title:'Book Ski Trips Early',text:'Vail and Breckenridge sell out. Book lodging 60+ days out for winter.'}]},
+  houston:{name:'Houston',ico:'🤠',risk:'Low',alertText:'Low — Honest city. Main traps are food near tourist zones and airport taxi overcharging.',scams:[{title:'🚕 IAH Airport Taxi',desc:'George Bush Intercontinental is far from downtown. Unlicensed taxis charge flat rates 2-3x the fair price.',touristPrice:'$60-$80 to downtown',localPrice:'$35-$45 on Uber/Lyft',tip:'Use the designated rideshare zone at IAH Terminal B. Hobby Airport is closer to downtown and cheaper.'},{title:'🍔 Uptown Galleria Restaurants',desc:'Restaurants around the Galleria mall charge tourist premium on everything.',touristPrice:'$25-$40/entree',localPrice:'$12-$20 in Midtown or Montrose',tip:'Midtown and Montrose have Houston\'s best food at real prices. One Uber ride saves you $20 per meal.'},{title:'🌡️ Summer Heat Costs',desc:'Houston summers average 95-100°F with extreme humidity. Outdoor plans turn into expensive alternatives.',touristPrice:'$40-$80 rearranging plans',localPrice:'Plan indoor activities June-August',tip:'Schedule outdoor activities for early morning only. Museums, NASA Space Center, and indoor attractions are the smart summer play.'},{title:'🐊 Bayou Boat Tour Overpricing',desc:'Tourist boat tours on Buffalo Bayou charge 2-3x what kayak rentals cost.',touristPrice:'$45-$65 per person tour',localPrice:'$20-$25 kayak rental',tip:'Rent a kayak from Buffalo Bayou Partnership for a fraction of the tour price.'}],tips:[{ico:'🚀',title:'NASA Space Center',text:'Book online for 10-15% off. Weekdays are dramatically less crowded.'},{ico:'🍜',title:'Eat in Montrose',text:'Best restaurant district in Houston. Every cuisine, real prices, no tourists.'},{ico:'🚇',title:'METRORail',text:'Light rail connects downtown to museums and medical center. $1.25/ride.'},{ico:'🌡️',title:'Go Oct-April',text:'Houston weather is beautiful outside summer. Hurricane season ends November.'}]},
+  dallas:{name:'Dallas',ico:'⭐',risk:'Low',alertText:'Low — Very tourist-friendly city. Main traps are Uptown pricing and highway toll confusion.',scams:[{title:'🛣️ Toll Road Confusion',desc:'Dallas has extensive toll roads. Rental cars without toll transponders incur massive per-trip fees from rental companies.',touristPrice:'$10-$15 per toll crossing from rental company',localPrice:'$1-$2 actual toll cost',tip:'Ask your rental company about toll transponder options upfront. Or use Google Maps to route toll-free.'},{title:'🍽️ Uptown Restaurant Markup',desc:'The Uptown neighborhood is Dallas\'s highest-end tourist zone with prices to match.',touristPrice:'$35-$55/entree',localPrice:'$15-$25 in Deep Ellum or Bishop Arts',tip:'Deep Ellum and Bishop Arts District have Dallas\'s best food at half the Uptown prices.'},{title:'🎟️ Sixth Floor Museum Parking',desc:'Parking near the Sixth Floor Museum in Dealey Plaza is heavily marked up by private lots.',touristPrice:'$20-$30 private lot',localPrice:'$8-$12 on SpotHero 2 blocks away',tip:'Pre-book via SpotHero. Street parking is also available on weekends within walking distance.'},{title:'🚕 DFW Airport to Downtown',desc:'DFW is one of the largest airports in the world. Taxis charge premium flat rates.',touristPrice:'$60-$80 taxi to downtown',localPrice:'$35-$45 Uber or DART rail $2.50',tip:'Take the DART Orange Line from DFW to downtown for $2.50. Takes 45 minutes and is very reliable.'}],tips:[{ico:'🚊',title:'DART Rail',text:'From DFW airport to downtown for $2.50. Also connects to Deep Ellum, Bishop Arts, and Uptown.'},{ico:'🎸',title:'Deep Ellum',text:'Best neighborhood in Dallas. Live music, real food, local bars. No tourist markup.'},{ico:'🤠',title:'Stockyards in Fort Worth',text:'Free to walk, authentic, 45 min from Dallas. Way better than anything purely tourist in Dallas itself.'},{ico:'🌞',title:'Weather Warning',text:'Dallas summers hit 105°F. November through April is when this city is at its best.'}]},
+  san_antonio:{name:'San Antonio',ico:'🏰',risk:'Low',alertText:'Low — River Walk area is tourist-priced but the city is generally honest and very affordable.',scams:[{title:'🌊 River Walk Restaurant Markup',desc:'Restaurants directly on the River Walk charge a significant premium for the view.',touristPrice:'$25-$40/entree on the walk',localPrice:'$10-$18 two blocks away',tip:'Walk two blocks in any direction from the River Walk. Same city, dramatically better prices and usually better food.'},{title:'🏰 Alamo Area Parking',desc:'Private lots near the Alamo charge $15-$25. Free parking exists nearby.',touristPrice:'$20 private lot near Alamo',localPrice:'Free at Travis Park lot on Sundays',tip:'The city garage on Villita Street is $5-$8. Travis Park has free parking on weekends.'},{title:'🎫 River Walk Boat Tour Markup',desc:'Boat tours booked through hotel concierge add 20-30% over booking directly.',touristPrice:'$15 per person via hotel',localPrice:'$10 per person direct at the dock',tip:'Book at the Yanaguana Cruises dock directly. Same boat, same tour, 30% cheaper.'},{title:'🌮 Market Square Tourist Pricing',desc:'Restaurants inside Market Square cater to tourists with higher prices than surrounding areas.',touristPrice:'$15-$22 combo plate',localPrice:'$8-$12 at nearby authentic spots',tip:'Walk two blocks north of Market Square. The Westside has San Antonio\'s best and most authentic Mexican food.'}],tips:[{ico:'🏰',title:'Alamo is Free',text:'Admission to the Alamo is completely free. The surrounding grounds and gardens are also free.'},{ico:'🌊',title:'Walk the River Walk',text:'Walking the River Walk is free. Only pay for food or boat tours if you choose to.'},{ico:'🌮',title:'Eat on the Westside',text:'Authentic Mexican food at real prices. This is what San Antonio actually eats.'},{ico:'🎭',title:'Free First Fridays',text:'First Friday of every month, galleries and venues in the arts district are free and open late.'}]},
+  charlotte:{name:'Charlotte',ico:'🏦',risk:'Low',alertText:'Low — Business-friendly city. Main traps are Uptown event pricing and rideshare surge during Panthers games.',scams:[{title:'🏈 Game Day Surge Pricing',desc:'Panthers and Charlotte FC game days cause 3-5x Uber/Lyft surge pricing in Uptown.',touristPrice:'$35-$60 rideshare during game',localPrice:'$8-$15 CATS light rail',tip:'Take the CATS Blue Line light rail to Uptown for game days. $2.20 each way, no surge, drops you right downtown.'},{title:'🍺 Uptown Bar Prices',desc:'Bars in Uptown Charlotte charge nightclub prices on weekends.',touristPrice:'$14-$18 cocktail in Uptown',localPrice:'$8-$10 in NoDa or Plaza Midwood',tip:'NoDa and Plaza Midwood are Charlotte\'s real nightlife. Better bars, better crowds, half the Uptown price.'},{title:'🏨 Hotel Parking Uptown',desc:'Uptown hotels charge $30-$45 per night for parking.',touristPrice:'$40/night hotel parking',localPrice:'$10-$15 at a city deck',tip:'City of Charlotte parking decks are $10-$15/day. Walk or light rail to your destination.'},{title:'🎵 Concert Venue Drinks',desc:'Spectrum Center and PNC Music Pavilion charge arena prices on all beverages.',touristPrice:'$14-$18 per drink',localPrice:'Pre-game at a bar, drink water inside',tip:'Eat and drink before any arena event. Or visit the family-friendly beverage stations which are slightly cheaper.'}],tips:[{ico:'🚊',title:'CATS Light Rail',text:'Blue Line covers Uptown, South End, and University area. $2.20/ride, no surge ever.'},{ico:'🏭',title:'South End',text:'Best neighborhood in Charlotte. Breweries, restaurants, art. No tourist markup.'},{ico:'🏦',title:'Free NASCAR Museum',text:'NASCAR Hall of Fame is worth it. Book online, skip the line, get the discount.'},{ico:'🌿',title:'U.S. National Whitewater Center',text:'Day pass includes kayaking, hiking, zip lines. $24-$44 depending on activities. Genuinely great value.'}]},
+  phoenix:{name:'Phoenix',ico:'🌵',risk:'Low',alertText:'Low — Very tourist-friendly. Main traps are resort fees, summer heat costs, and Old Town Scottsdale pricing.',scams:[{title:'🏨 Resort Fees',desc:'Phoenix and Scottsdale resorts have some of the highest mandatory resort fees in the US.',touristPrice:'$40-$65/night resort fee on top',localPrice:'Book direct and negotiate or find no-fee hotels',tip:'Call the hotel directly and ask to waive the resort fee. Mention you\'ll book direct. Works about 30% of the time.'},{title:'🌡️ Summer Heat - Real Danger',desc:'Phoenix averages 115°F in July. Outdoor plans become impossible and emergency costs are real.',touristPrice:'$200+ in ruined plans and emergency supplies',localPrice:'Visit October through April',tip:'If you must visit summer, plan 100% of activities for before 9 AM or after 8 PM. Zero outdoor exposure midday.'},{title:'🍽️ Old Town Scottsdale Prices',desc:'Old Town Scottsdale is one of the most expensive dining areas in Arizona.',touristPrice:'$35-$55/entree',localPrice:'$15-$25 in Downtown Phoenix or Roosevelt Row',tip:'Roosevelt Row in Downtown Phoenix has better food, local art scene, and real prices.'},{title:'🚗 Rental Car Fees',desc:'Phoenix Sky Harbor airport adds significant taxes and fees on top of rental car base prices.',touristPrice:'70-90% above the advertised rate in fees',localPrice:'Compare all-in price not base rate',tip:'Always get a total quote including all fees before confirming. Costco Travel often has the best all-in rental car prices.'}],tips:[{ico:'🌵',title:'Desert Botanical Garden',text:'Best attraction in Phoenix. Especially magical at sunset. Buy tickets online in advance.'},{ico:'🏊',title:'Free Splash Pads',text:'Dozens of free city splash pads open May-September for cooling off with kids.'},{ico:'🌄',title:'Camelback Mountain',text:'Free hike, world-class views. Go before 7 AM in summer or you\'ll turn back.'},{ico:'🍻',title:'Roosevelt Row',text:'Downtown Phoenix arts and bar district. Real food, local crowd, no resort pricing.'}]},
+  seattle:{name:'Seattle',ico:'🌧️',risk:'Low',alertText:'Low — Honest city. Tourist zone pricing near Pike Place and parking downtown are the main traps.',scams:[{title:'🐟 Pike Place Market Restaurants',desc:'Restaurants immediately inside or adjacent to Pike Place Market charge tourist-zone premium.',touristPrice:'$22-$35/entree at market restaurants',localPrice:'$12-$20 in Capitol Hill or Ballard',tip:'Walk to Capitol Hill, Ballard, or Fremont. Seattle has an exceptional restaurant scene everywhere except tourist zones.'},{title:'🚗 Downtown Parking',desc:'Downtown Seattle parking is some of the most expensive on the West Coast.',touristPrice:'$30-$50/day downtown',localPrice:'Park in First Hill or Capitol Hill and walk or take Link',tip:'Park-and-ride at any Link Light Rail station for $3/day and take the train downtown for $3.'},{title:'🎫 Space Needle Markup',desc:'Space Needle tickets bought same-day at the booth are significantly more expensive.',touristPrice:'$34-$45 same-day adult',localPrice:'$24-$32 booked online in advance',tip:'Book Space Needle tickets at least 48 hours ahead online. Always cheaper, always guaranteed entry.'},{title:'☔ Weather Gear Markup',desc:'Tourist shops near Pike Place charge premium for Seattle-branded rain gear.',touristPrice:'$35-$60 for a branded rain jacket',localPrice:'$15-$25 at REI or Target',tip:'Buy rain gear at REI (headquartered in Seattle) or any Target/Walmart if caught unprepared.'}],tips:[{ico:'🚇',title:'Link Light Rail',text:'Runs from airport to downtown to Capitol Hill. $3/ride. Use it for everything.'},{ico:'🐟',title:'Pike Place Free to Walk',text:'Walking through Pike Place Market is free. Only pay if you buy something.'},{ico:'⛵',title:'Free Ferry to Bainbridge',text:'Walk onto the Bainbridge Island ferry for $9. One of the best views in the US.'},{ico:'☕',title:'Skip Starbucks Reserve',text:'Every neighborhood has better local coffee at half the Reserve price. Seattle is a coffee city.'}]},
+  cabo:{name:'Cabo San Lucas',ico:'🌊',risk:'Medium',alertText:'Medium — Spring break pricing and vendor pressure on the beach are common. Zone of tourist prices.',scams:[{title:'🏖️ Medano Beach Vendors',desc:'Beach vendors on Medano Beach aggressively sell time-shares, tours, and merchandise at heavily inflated prices.',touristPrice:'$80-$150 for activities quoted on beach',localPrice:'$30-$60 booked through reputable operators',tip:'Never buy anything on the beach. Walk to the Marina for legitimate tour operators at real prices.'},{title:'🍹 Cabo Wabo and Tourist Strip Prices',desc:'Bars and restaurants on the main tourist strip charge premium on everything.',touristPrice:'$18-$25 per cocktail',localPrice:'$8-$12 at local restaurants in Cabo San Jose',tip:'Take a $5 taxi to San Jose del Cabo. Better food, authentic atmosphere, half the price.'},{title:'🚕 Airport Transfer Overcharge',desc:'Private transfer companies at Los Cabos airport charge 2-3x the legitimate rate.',touristPrice:'$60-$90 private transfer',localPrice:'$20-$30 shared shuttle',tip:'Book a shared shuttle before you arrive through your hotel or a verified site like Los Cabos Shuttle.'},{title:'🤿 Snorkel Tour Beach Booking',desc:'Tours booked directly on Medano Beach cost significantly more than online.',touristPrice:'$70-$100 beach booking',localPrice:'$35-$60 booked via Viator or direct with operator',tip:'Book all water activities on Viator before arrival. Same boats, same snorkel spots, 40-50% less.'}],tips:[{ico:'🌊',title:'Lovers Beach',text:'Access by water taxi only ($20 RT). Best beach in Cabo and far from the vendors.'},{ico:'🌮',title:'Eat in San Jose del Cabo',text:'20 minutes from Cabo. Authentic food, real prices, better vibe. Take a local taxi.'},{ico:'🐋',title:'Whale Watching Dec-April',text:'Humpback and gray whales in the bay. Book directly with tour operators at the Marina dock.'},{ico:'🍺',title:'Grocery Store Beer',text:'Caguama 32oz Pacifico at any OXXO or grocery store is $2. Skip the $15 resort beer.'}]},
+  puerto_vallarta:{name:'Puerto Vallarta',ico:'🇲🇽',risk:'Medium',alertText:'Medium — Malecon tourist zone is heavily priced. Romantic Zone is authentic and affordable.',scams:[{title:'🚕 Airport Taxi Overcharge',desc:'Official-looking taxis outside PVR airport charge 2-3x the authorized rate.',touristPrice:'$35-$50 to hotel zone',localPrice:'$15-$20 pre-paid taxi booth inside terminal',tip:'Buy your taxi ticket at the official booth INSIDE the terminal before exiting. Never negotiate with drivers outside.'},{title:'🏖️ Timeshare Breakfast Scam',desc:'Offers of free breakfast or tours in exchange for sitting through a timeshare presentation.',touristPrice:'2-3 hours of your vacation',localPrice:'Skip it entirely',tip:'There is no free breakfast. Say no and keep walking. Any offer that requires your time has a cost.'},{title:'🛍️ Malecon Souvenir Prices',desc:'Vendors on the Malecon quote tourist prices 3-4x what you should pay.',touristPrice:'$25-$40 for souvenirs',localPrice:'$5-$12 after negotiating or in local markets',tip:'Offer 25-30% of the asking price. Walk away. The vendor will follow with a better price almost every time.'},{title:'🍽️ Hotel Zone Restaurants',desc:'Restaurants in the hotel zone charge resort prices.',touristPrice:'$25-$40 per main course',localPrice:'$8-$15 in the Romantic Zone or 5 de Diciembre',tip:'The Romantic Zone (Zona Romantica) is 10 minutes by local bus. Authentic food, real prices, better atmosphere.'}],tips:[{ico:'🚌',title:'Local Bus',text:'Runs along the entire hotel strip for 10 pesos ($0.50). Best transportation deal in Mexico.'},{ico:'🌮',title:'Romantic Zone',text:'Old Town Puerto Vallarta. Best food, best vibe, lowest prices. Stay here if possible.'},{ico:'🐋',title:'Whale Season',text:'December through March. Book whale watching directly with Marina operators for best price.'},{ico:'🏖️',title:'Sayulita Day Trip',text:'45 min north by bus. Surf town, great food, zero resort pricing. Best day trip from PV.'}]},
+  destin:{name:'Destin',ico:'🎣',risk:'Low',alertText:'Low — Beach town with moderate tourist pricing. Vacation rental fees and seafood restaurant markups are the main traps.',scams:[{title:'🦐 Harbor Boardwalk Seafood',desc:'Restaurants directly on Destin Harbor charge 40–60% more than similar spots a few blocks away.',touristPrice:'$28–$45/entree',localPrice:'$16–$24 at local spots off the boardwalk',tip:'Walk away from the boardwalk. Local favorites like AJ\u2019s back patio or Dewey Destin waterfront are better value.'},{title:'🏖️ Beach Chair Rental Markups',desc:'Chair and umbrella rentals on public beaches can vary wildly. Some vendors charge double.',touristPrice:'$40–$60/day for 2 chairs and umbrella',localPrice:'$25–$35 booked in advance online',tip:'Book rentals online the night before. Walk-up prices on busy weekends are significantly higher.'},{title:'🏠 Vacation Rental Hidden Fees',desc:'VRBO and Airbnb listings show attractive nightly rates but cleaning fees, service fees, and parking can add 40–60%.',touristPrice:'$150/night becomes $240+ all-in',localPrice:'Call rental companies directly — fewer fees',tip:'Use local rental companies like Destin Vacation Rentals or ResortQuest direct. Fewer platform fees.'},{title:'🎣 Deep Sea Fishing Charter Upsells',desc:'Charter boats near the harbor upsell ice, bait, fish cleaning, and photos separately.',touristPrice:'$120/person then $40 more in extras',localPrice:'Ask upfront what is included — everything',tip:'Ask before booking exactly what is included. Reputable charters include bait and basic cleaning.'}],tips:[{ico:'🌊',title:'Henderson Beach State Park',text:'$8 vehicle entry. Best beach in Destin with no vendors, no crowds, pristine water.'},{ico:'🐟',title:'AJ\u2019s or Dewey Destin',text:'Best waterfront food at fair prices. Skip the tourist-facing Harbor Walk restaurants.'},{ico:'🛍️',title:'Silver Sands Outlet',text:'Major outlet mall 10 minutes away. Better shopping than any beach souvenir shop.'},{ico:'🌅',title:'Go Shoulder Season',text:'May or October — perfect weather, 30–40% lower prices, no spring break crowds.'}]},
+  panama_city_beach:{name:'Panama City Beach',ico:'🌴',risk:'Medium',alertText:'Medium — Spring break destination with heavy tourist pricing March–April. Pier Park area is marked up year-round.',scams:[{title:'🍽️ Pier Park Restaurant Prices',desc:'All restaurants directly in and around Pier Park charge tourist-zone premium year-round.',touristPrice:'$25–$40/entree',localPrice:'$14–$20 on Back Beach Road or in Lynn Haven',tip:'Drive 10 minutes to Lynn Haven or Thomas Drive local spots. Far better food at real prices.'},{title:'🏖️ Beach Vendor Jet Ski Rentals',desc:'Walk-up jet ski rentals on the beach are 40–60% more than booked online.',touristPrice:'$100–$140/hour walk-up',localPrice:'$65–$85 booked online in advance',tip:'Book water sports through Groupon or the operator website the night before.'},{title:'🏠 Vacation Rental Spring Break Surge',desc:'Spring break weeks (mid-March to mid-April) see rental prices triple with minimum stays.',touristPrice:'$500–$800/night spring break',localPrice:'$150–$250/night same unit in May or October',tip:'Go in May or October. Identical weather, drastically cheaper, no crowds.'},{title:'🎡 Pier Park Parking',desc:'Pier Park private lots charge $10–$20 during peak hours.',touristPrice:'$15 private lot',localPrice:'Free street parking 3 blocks away',tip:'Free parking exists on the side streets north of Pier Park. 3-minute walk, zero cost.'}],tips:[{ico:'🌊',title:'St Andrews State Park',text:'$8 vehicle entry. Clearest water in PCB, snorkeling, no beach vendors or crowds.'},{ico:'🍕',title:'Sharky\u2019s or Schooners',text:'Best beachfront bars with honest pricing and live music. Local institution.'},{ico:'🎢',title:'Skip Spring Break',text:'March–April prices triple and the beach becomes wall-to-wall people. May is identical weather.'},{ico:'🐬',title:'Shell Island',text:'Take the ferry from St Andrews State Park for $15 RT. Uninhabited barrier island, dolphins everywhere.'}]}
+};
+
+document.addEventListener("DOMContentLoaded",function(){
+(function init(){
+  // Merge extended cities first — must happen before scamRenderGrid
+  Object.assign(scamBuiltIn, extraCities);
+  // Skip onboard if returning user
+  if(Store.get('tt_onboarded')==='1'){
+    document.getElementById('onboard').style.display='none';
+  }
+  populateBothAirportDropdowns();
+  scamRenderGrid();
+  if(typeof updateDots==='function')updateDots('calc');
+  // Ensure correct page shown on load
+  document.querySelectorAll('.page').forEach(function(p){p.style.display='none';});
+  var startPage=document.getElementById('page-calc');
+  if(startPage){
+    startPage.style.display='block';
+    startPage.style.visibility='visible';
+    startPage.style.opacity='1';
+    startPage.classList.add('active');
+  }
+  warRenderAll();
+  ncAddScam();
+  ncAddTip();
+  // Restore last calculation inputs
+  try{var lc=Store.get('tt_last_calc');if(lc){var s=JSON.parse(lc);var flds=[['c-origin','origin'],['c-dest','dest'],['c-depart','depart'],['c-ret','ret'],['c-travelers','travelers'],['c-nights','nights'],['c-hotel-rate','hotelRate'],['c-food','food'],['c-activities','activities']];flds.forEach(function(f){if(s[f[1]])document.getElementById(f[0]).value=s[f[1]];});if(s.airline){calcAirline=s.airline;document.querySelectorAll('.al-card').forEach(function(c){c.classList.remove('on');});var ac=document.querySelector('[onclick*="'+s.airline+'"]');if(ac)ac.classList.add('on');}if(s.customPrice>0){calcPrices.custom=parseFloat(s.customPrice);document.getElementById('c-custom-disp').textContent='$'+s.customPrice;}}}catch(e){}
+  // Set default page
+  var calcBtn=document.querySelector('.nav-btn');
+  goPage('calc', calcBtn);
+})();
+});
+
+</script>
+</body>
+</html>
