@@ -958,6 +958,10 @@ function goPage(id,btn){
   var mod=document.getElementById('hdr-mod');
   if(mod){mod.textContent=modNames[id]||id;}
   if(typeof updateDots==='function'){updateDots(id);}
+  // Scroll to top after page switch
+  setTimeout(function(){
+    try{window.scrollTo(0,0);document.body.scrollTop=0;document.documentElement.scrollTop=0;}catch(e){}
+  },10);
 }
 
 function toggleSOP(id) {
