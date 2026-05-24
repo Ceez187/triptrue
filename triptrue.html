@@ -64,6 +64,10 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
 .sec-title{font-size:15px;font-weight:700;color:var(--text);flex:1;}
 .sec-ico{font-size:17px;}
 .sec-body{background:var(--card2);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:14px;}
+.sec-body.collapsed{display:none;}
+.sec-hdr{cursor:pointer;}
+.sec-toggle{font-size:11px;color:var(--sub);transition:transform 0.2s;display:inline-block;}
+.sec-toggle.open{transform:rotate(180deg);}
 
 .row{display:grid;gap:10px;margin-bottom:10px;}
 .row.c2{grid-template-columns:1fr 1fr;}
@@ -389,6 +393,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   <div class="hero">
     <h2>💰 Real Cost Calculator</h2>
     <p>Enter your trip details and see every fee, tax, and hidden charge — not just the advertised price.</p>
+    <button onclick="calcSampleTrip()" style="margin-top:10px;background:rgba(245,196,24,0.15);border:1px solid rgba(245,196,24,0.4);border-radius:8px;padding:8px 14px;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;width:100%;">⚡ Try a Sample Trip — See How It Works</button>
   </div>
 
   <div class="sop">
@@ -410,12 +415,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   <div class="sec">
     <div class="sec-hdr"><span class="sec-num">01</span><span class="sec-title">Flight</span><span class="sec-ico">✈️</span></div>
     <div class="sec-body">
-      <div class="airline-grid">
-        <div class="al-card on" onclick="calcPickAirline(this,'allegiant',140)"><div class="al-name">Allegiant</div><div class="al-price">$140</div><div class="al-note">Sample · Nonstop RT</div><a class="al-check-live" href="https://www.allegiantair.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a></div>
-        <div class="al-card" onclick="calcPickAirline(this,'southwest',378)"><div class="al-name">Southwest</div><div class="al-price">$378</div><div class="al-note">Sample · Nonstop RT</div><a class="al-check-live" href="https://www.southwest.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a></div>
-        <div class="al-card" onclick="calcPickAirline(this,'split',260)"><div class="al-name">Split Fare ✦</div><div class="al-price">$260</div><div class="al-note">Allegiant out · SW back</div></div>
-        <div class="al-card" onclick="calcPickAirline(this,'custom',0)"><div class="al-name">My Price</div><div class="al-price" id="c-custom-disp">$—</div><div class="al-note">Enter your real fare</div><a class="al-check-live" href="https://www.google.com/flights" target="_blank" onclick="event.stopPropagation()">Find it →</a></div>
-      </div>
+      <div class="airline-grid" id="c-airline-grid"></div>
       <div class="sub-fld" id="c-custom-fld"><div class="fld"><label>Your Round Trip Price ($)</label><input type="number" id="c-custom-price" placeholder="e.g. 220" oninput="calcSetCustom(this.value)"></div></div>
       <div class="price-disc">⚠️ Prices above are <strong>sample estimates only</strong> — not live fares. Look up your actual price first, then select "My Price" and enter it. <strong>Check live:</strong> <a href="https://www.allegiantair.com" target="_blank" style="color:var(--accent)">Allegiant</a> · <a href="https://www.southwest.com" target="_blank" style="color:var(--accent)">Southwest</a> · <a href="https://www.google.com/flights" target="_blank" style="color:var(--accent)">Google Flights</a> · <a href="https://www.kayak.com" target="_blank" style="color:var(--accent)">Kayak</a></div>
       <div class="row c3">
@@ -430,8 +430,8 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
     <div class="sec-hdr"><span class="sec-num">02</span><span class="sec-title">Trip Basics</span><span class="sec-ico">🗺️</span></div>
     <div class="sec-body">
       <div class="row c2">
-        <div class="fld"><label>From</label><input type="text" id="c-origin" value="VPS — Fort Walton Beach"></div>
-        <div class="fld"><label>To</label><input type="text" id="c-dest" value="MDW — Chicago Midway"></div>
+        <div class="fld"><label>From</label><select id="c-origin" onchange="calcLoadAirlines()"><option value="">-- Origin --</option></select></div>
+        <div class="fld"><label>To</label><select id="c-dest" onchange="calcLoadAirlines()"><option value="">-- Destination --</option></select></div>
       </div>
       <div class="row c2">
         <div class="fld"><label>Depart</label><input type="date" id="c-depart"></div>
@@ -446,8 +446,8 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
 
   <div class="sec">
-    <div class="sec-hdr"><span class="sec-num">03</span><span class="sec-title">Hotel & Hidden Fees</span><span class="sec-ico">🏨</span></div>
-    <div class="sec-body">
+    <div class="sec-hdr" onclick="toggleSec('03')" style="cursor:pointer;"><span class="sec-num">03</span><span class="sec-title">Hotel & Hidden Fees</span><span class="sec-ico">🏨</span></div>
+    <div class="sec-body collapsed" id="sec-body-03">
       <div class="row c2">
         <div class="fld"><label>Nightly Rate ($)</label><input type="number" id="c-hotel-rate" value="120"></div>
         <div class="fld"><label>Booked On</label><select id="c-platform"><option value="booking">Booking.com</option><option value="airbnb">Airbnb</option><option value="direct">Direct</option><option value="vrbo">VRBO</option></select></div>
@@ -462,8 +462,8 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
 
   <div class="sec">
-    <div class="sec-hdr"><span class="sec-num">04</span><span class="sec-title">Ground Transport</span><span class="sec-ico">🚕</span></div>
-    <div class="sec-body">
+    <div class="sec-hdr" onclick="toggleSec('04')" style="cursor:pointer;"><span class="sec-num">04</span><span class="sec-toggle" id="sec-arrow-03">▼</span><span class="sec-title">Ground Transport</span><span class="sec-ico">🚕</span><span class="sec-toggle" id="sec-arrow-04">▼</span></div>
+    <div class="sec-body collapsed" id="sec-body-04">
       <div class="row c2">
         <div class="fld"><label>Transfer Type</label><select id="c-transport-type"><option>Uber</option><option>Lyft</option><option>Rideshare</option><option>Taxi</option><option>Shuttle</option><option>Rental Car</option><option>Hotel Shuttle</option><option>Transit</option><option>Friend/Family Pickup</option></select></div>
         <div class="fld"><label>Cost Each Way ($)</label><input type="number" id="c-transport-cost" value="35"></div>
@@ -481,8 +481,8 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
 
   <div class="sec">
-    <div class="sec-hdr"><span class="sec-num">05</span><span class="sec-title">Food & Activities</span><span class="sec-ico">🍔</span></div>
-    <div class="sec-body">
+    <div class="sec-hdr" onclick="toggleSec('05')" style="cursor:pointer;"><span class="sec-num">05</span><span class="sec-title">Food & Activities</span><span class="sec-ico">🍔</span></div>
+    <div class="sec-body collapsed" id="sec-body-05">
       <div class="row c2">
         <div class="fld"><label>Daily Food / Person</label><select id="c-food"><option value="30">Budget — $30</option><option value="60" selected>Moderate — $60</option><option value="100">Comfortable — $100</option><option value="150">Splurge — $150</option></select></div>
         <div class="fld"><label>Activities Total ($)</label><input type="number" id="c-activities" value="150"></div>
@@ -491,8 +491,8 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
 
   <div class="sec">
-    <div class="sec-hdr"><span class="sec-num">06</span><span class="sec-title">Add-Ons & Savings</span><span class="sec-ico">⭐</span></div>
-    <div class="sec-body">
+    <div class="sec-hdr" onclick="toggleSec('06')" style="cursor:pointer;"><span class="sec-num">06</span><span class="sec-toggle" id="sec-arrow-05">▼</span><span class="sec-title">Add-Ons & Savings</span><span class="sec-ico">⭐</span><span class="sec-toggle" id="sec-arrow-06">▼</span></div>
+    <div class="sec-body collapsed" id="sec-body-06">
       <div class="tog-row" onclick="togExtra('c-ins-tog')"><div class="tog-info"><div class="tog-name">Travel Insurance</div><div class="tog-desc">~$55 per person</div></div><div class="tog-sw" id="c-ins-tog"></div></div>
       <div class="tog-row" onclick="togExtra('c-mil-tog')"><div class="tog-info"><div class="tog-name">Military Discount Mode ⭐</div><div class="tog-desc">Allegiant Honors + hotel military rates</div></div><div class="tog-sw" id="c-mil-tog"></div></div>
       <div class="tog-row" onclick="togExtra('c-fx-tog')"><div class="tog-info"><div class="tog-name">No Foreign Transaction Fee Card</div><div class="tog-desc">Saves 3% — Chase Sapphire or Capital One Venture</div></div><div class="tog-sw" id="c-fx-tog"></div></div>
@@ -500,8 +500,8 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
 
   <div class="sec">
-    <div class="sec-hdr"><span class="sec-num">07</span><span class="sec-title">Cruise Costs</span><span class="sec-ico">🚢</span></div>
-    <div class="sec-body">
+    <div class="sec-hdr" onclick="toggleSec('07')" style="cursor:pointer;"><span class="sec-num">07</span><span class="sec-title">Cruise Costs</span><span class="sec-ico">🚢</span></div>
+    <div class="sec-body collapsed" id="sec-body-07">
       <div class="tog-row" onclick="togFee('c-cruise-fld','c-cruise-tog')"><div class="tog-info"><div class="tog-name">Add Cruise to Trip</div><div class="tog-desc">Replaces hotel — enter cruise fare instead</div></div><div class="tog-sw" id="c-cruise-tog"></div></div>
       <div class="sub-fld" id="c-cruise-fld">
         <div class="row c2">
@@ -541,8 +541,8 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
 
   <div class="sec">
-    <div class="sec-hdr"><span class="sec-num">08</span><span class="sec-title">Package vs. Direct</span><span class="sec-ico">📦</span></div>
-    <div class="sec-body">
+    <div class="sec-hdr" onclick="toggleSec('08')" style="cursor:pointer;"><span class="sec-num">08</span><span class="sec-toggle" id="sec-arrow-07">▼</span><span class="sec-title">Package vs. Direct</span><span class="sec-ico">📦</span><span class="sec-toggle" id="sec-arrow-08">▼</span></div>
+    <div class="sec-body collapsed" id="sec-body-08">
       <div class="row c2">
         <div class="fld"><label>Package Price (All-In $)</label><input type="number" id="c-pkg-price" placeholder="e.g. 1200" value="0"></div>
         <div class="fld"><label>Package Source</label><select id="c-pkg-source"><option value="">Not comparing</option><option value="expedia">Expedia</option><option value="cheapcaribbean">CheapCaribbean</option><option value="costco">Costco Travel</option><option value="applevac">Apple Vacations</option><option value="swvac">Southwest Vacations</option><option value="deltavac">Delta Vacations</option><option value="aavac">AA Vacations</option><option value="priceline">Priceline</option><option value="other">Other</option></select></div>
@@ -556,7 +556,9 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   <div id="c-results" style="display:none;">
     <div class="divider"><div class="div-line"></div><div class="div-text">Real Cost Breakdown</div><div class="div-line"></div></div>
     <div class="mil-banner" id="c-mil-banner">⭐ Military Mode Active — Allegiant Honors + Hotel Military Rates Applied</div>
-    <div class="total-card fade d1"><div class="total-eye">Your Trip Will Actually Cost</div><div class="total-num" id="c-total">$0</div><div class="total-sub" id="c-sub">all fees included</div></div>
+    <div class="total-card fade d1"><div class="total-eye">Your Trip Will Actually Cost</div><div class="total-num" id="c-total">$0</div><div class="total-sub" id="c-sub">all fees included</div>
+      <div style="margin-top:8px;font-size:12px;color:var(--sub);" id="c-per-day"></div></div>
+    <button class="share-btn fade d1" id="c-share-btn" onclick="shareCard()" style="margin-bottom:12px;">📤 SHARE THIS BREAKDOWN</button>
     <div class="vs-row fade d2">
       <div class="vs-card win"><div class="vs-eye">Your Fare</div><div class="vs-airline" id="c-vs-l-al">Allegiant</div><div class="vs-price" id="c-vs-l-p">$140</div><div class="win-badge">✓ Selected</div></div>
       <div class="vs-card"><div class="vs-eye">vs. Alternative</div><div class="vs-airline" id="c-vs-r-al">Southwest</div><div class="vs-price" id="c-vs-r-p">$378</div><div class="vs-note" id="c-vs-note"></div></div>
@@ -569,16 +571,44 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
     <div class="book-card fade d6">
       <div class="book-card-title">🔗 Book Your Trip — Verified Sites Only</div>
       <div style="font-size:11px;color:var(--sub);margin-bottom:10px;">Now that you know the real cost, book directly. These are official sites — no third-party markups.</div>
-      <div class="book-links">
-        <a class="book-link" href="https://www.allegiantair.com" target="_blank"><span class="bl-ico">✈️</span>Allegiant Air</a>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:8px;">✈️ Airlines</div>
+      <div class="book-links" style="margin-bottom:14px;">
+        <a class="book-link" href="https://www.aa.com" target="_blank"><span class="bl-ico">✈️</span>American</a>
+        <a class="book-link" href="https://www.delta.com" target="_blank"><span class="bl-ico">✈️</span>Delta</a>
+        <a class="book-link" href="https://www.united.com" target="_blank"><span class="bl-ico">✈️</span>United</a>
         <a class="book-link" href="https://www.southwest.com" target="_blank"><span class="bl-ico">✈️</span>Southwest</a>
+        <a class="book-link" href="https://www.jetblue.com" target="_blank"><span class="bl-ico">✈️</span>JetBlue</a>
+        <a class="book-link" href="https://www.alaskaair.com" target="_blank"><span class="bl-ico">✈️</span>Alaska</a>
+        <a class="book-link" href="https://www.allegiantair.com" target="_blank"><span class="bl-ico">✈️</span>Allegiant</a>
+        <a class="book-link" href="https://www.flyfrontier.com" target="_blank"><span class="bl-ico">✈️</span>Frontier</a>
+        <a class="book-link" href="https://www.spirit.com" target="_blank"><span class="bl-ico">✈️</span>Spirit</a>
+        <a class="book-link" href="https://www.suncountry.com" target="_blank"><span class="bl-ico">✈️</span>Sun Country</a>
+        <a class="book-link" href="https://www.hawaiianairlines.com" target="_blank"><span class="bl-ico">✈️</span>Hawaiian</a>
+        <a class="book-link" href="https://www.breeze.com" target="_blank"><span class="bl-ico">✈️</span>Breeze</a>
+      </div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:8px;">🔍 Search & Compare</div>
+      <div class="book-links" style="margin-bottom:14px;">
         <a class="book-link" href="https://www.google.com/flights" target="_blank"><span class="bl-ico">🔍</span>Google Flights</a>
         <a class="book-link" href="https://www.kayak.com" target="_blank"><span class="bl-ico">🔍</span>Kayak</a>
+        <a class="book-link" href="https://www.skiplagged.com" target="_blank"><span class="bl-ico">🏙️</span>Skiplagged</a>
+        <a class="book-link" href="https://www.going.com" target="_blank"><span class="bl-ico">⚡</span>Going (Deals)</a>
+        <a class="book-link" href="https://www.secretflying.com" target="_blank"><span class="bl-ico">🎯</span>Secret Flying</a>
+        <a class="book-link" href="https://www.theflightdeal.com" target="_blank"><span class="bl-ico">💸</span>The Flight Deal</a>
+      </div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:8px;">🏨 Hotels & Stays</div>
+      <div class="book-links" style="margin-bottom:14px;">
         <a class="book-link" href="https://www.booking.com" target="_blank"><span class="bl-ico">🏨</span>Booking.com</a>
         <a class="book-link" href="https://www.airbnb.com" target="_blank"><span class="bl-ico">🏠</span>Airbnb</a>
+        <a class="book-link" href="https://www.hotels.com" target="_blank"><span class="bl-ico">🏨</span>Hotels.com</a>
+        <a class="book-link" href="https://www.vrbo.com" target="_blank"><span class="bl-ico">🏡</span>VRBO</a>
+        <a class="book-link" href="https://www.hilton.com" target="_blank"><span class="bl-ico">🏨</span>Hilton Direct</a>
+        <a class="book-link" href="https://www.marriott.com" target="_blank"><span class="bl-ico">🏨</span>Marriott Direct</a>
+      </div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:8px;">📦 Packages & Cruises</div>
+      <div class="book-links">
+        <a class="book-link" href="https://www.expedia.com" target="_blank"><span class="bl-ico">🌐</span>Expedia</a>
         <a class="book-link" href="https://www.cheapcaribbean.com" target="_blank"><span class="bl-ico">🌴</span>CheapCaribbean</a>
         <a class="book-link" href="https://www.costcotravel.com" target="_blank"><span class="bl-ico">📦</span>Costco Travel</a>
-        <a class="book-link" href="https://www.expedia.com" target="_blank"><span class="bl-ico">🌐</span>Expedia Pkg</a>
         <a class="book-link" href="https://www.carnival.com" target="_blank"><span class="bl-ico">🚢</span>Carnival</a>
         <a class="book-link" href="https://www.royalcaribbean.com" target="_blank"><span class="bl-ico">🚢</span>Royal Caribbean</a>
         <a class="book-link" href="https://www.cruisedirect.com" target="_blank"><span class="bl-ico">🚢</span>CruiseDirect</a>
@@ -627,7 +657,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
         <div class="sc-footer-url">ceez187.github.io/triptrue</div>
       </div>
     </div>
-    <button class="share-btn fade d6" id="c-share-btn" onclick="shareCard()">📤 SHARE THIS BREAKDOWN</button>
+
     <div class="act-row fade d6"><button class="act-btn" onclick="calcCopy()">📋 Copy Summary</button><button class="act-btn" onclick="calcReset()">🔄 Reset</button></div>
   </div>
 </div>
@@ -735,8 +765,9 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   <div class="sec">
     <div class="sec-hdr"><span class="sec-num">01</span><span class="sec-title">Where Are You Going?</span><span class="sec-ico">🌍</span></div>
     <div class="sec-body">
+
       <div class="fld" style="margin-bottom:12px;">
-        <label>Search Cities</label>
+        <label>Search All Cities</label>
         <input type="text" id="sc-search" placeholder="Type a city name..." oninput="scamFilter(this.value)" style="font-size:16px;">
       </div>
       <div class="dest-grid" id="sc-dest-grid"></div>
@@ -996,6 +1027,106 @@ const calcPrices = {allegiant:140,southwest:378,split:260,custom:0};
   document.getElementById('c-ret').value=d2.toISOString().split('T')[0];
 })();
 
+function calcLoadAirlines(){
+  var o=document.getElementById('c-origin').value;
+  var d=document.getElementById('c-dest').value;
+  var grid=document.getElementById('c-airline-grid');
+  if(!grid)return;
+
+  // Reset selection
+  calcAirline='custom';
+  calcPrices.custom=0;
+
+  // Build cards
+  var cards=[];
+  var key=o&&d?getRouteKey(o,d):null;
+  var fares=key?sharedRouteFares[key]:{};
+  var sorted=Object.entries(fares).sort(function(a,b){return a[1]-b[1];});
+
+  // Best split fare
+  var bestSplit=null;
+  if(sorted.length>=2){
+    var cheapOW=sorted[0][1];
+    var cheapReturn=sorted[0][1];
+    // Find cheapest combo
+    var splitTotal=(sorted[0][1]+sorted[sorted.length>1?1:0][1]);
+    bestSplit={price:splitTotal,out:sorted[0][0],ret:sorted[sorted.length>1?1:0][0]};
+  }
+
+  // Airline cards from route data
+  sorted.forEach(function(entry,i){
+    var code=entry[0],ow=entry[1],rt=ow*2;
+    var name=(splitAirlines[code]&&splitAirlines[code].name)?splitAirlines[code].name:code;
+    var url=airlineBookUrls[code]||'https://www.google.com/flights';
+    if(i===0){calcAirline=code;calcPrices[code]=rt;}
+    calcPrices[code]=rt;
+    cards.push({code:code,name:name,price:rt,note:'Sample · Nonstop RT',url:url,selected:i===0});
+  });
+
+  // Add split fare if 2+ airlines
+  if(bestSplit&&sorted.length>=2){
+    var outName=(splitAirlines[bestSplit.out]&&splitAirlines[bestSplit.out].name)?splitAirlines[bestSplit.out].name:bestSplit.out;
+    var retName=(splitAirlines[bestSplit.ret]&&splitAirlines[bestSplit.ret].name)?splitAirlines[bestSplit.ret].name:bestSplit.ret;
+    calcPrices.split=bestSplit.price;
+    cards.push({code:'split',name:'Split Fare ✦',price:bestSplit.price,note:outName+' out · '+retName+' back',url:null,selected:false});
+  }
+
+  // Always add My Price last
+  cards.push({code:'custom',name:'My Price',price:0,note:'Enter your real fare',url:'https://www.google.com/flights',selected:cards.length===0});
+
+  // If no cards from route, add Google Flights link
+  if(cards.length===1){
+    // No route data - show message + My Price
+    grid.innerHTML='<div style="grid-column:span 2;font-size:12px;color:var(--sub);padding:8px 0;">No fare data for this route — enter your price using My Price or <a href="https://www.google.com/flights" target="_blank" style="color:var(--accent)">search Google Flights</a>.</div>';
+    calcAirline='custom';
+  } else {
+    grid.innerHTML='';
+  }
+
+  // Build and append cards
+  cards.forEach(function(c){
+    var div=document.createElement('div');
+    div.className='al-card'+(c.selected?' on':'');
+    div.id='alc-'+c.code;
+
+    var nm=document.createElement('div');nm.className='al-name';nm.textContent=c.name;div.appendChild(nm);
+    var pr=document.createElement('div');
+    pr.className='al-price';
+    if(c.code==='custom'){pr.id='c-custom-disp';pr.textContent=calcPrices.custom>0?'$'+calcPrices.custom:'$—';}
+    else{pr.textContent=c.price?'$'+c.price:'$—';}
+    div.appendChild(pr);
+    var nt=document.createElement('div');nt.className='al-note';nt.textContent=c.note;div.appendChild(nt);
+    if(c.url){
+      var lnk=document.createElement('a');
+      lnk.className='al-check-live';
+      lnk.href=c.url;lnk.target='_blank';
+      lnk.textContent=c.code==='custom'?'Find it →':'Check live price →';
+      lnk.addEventListener('click',function(e){e.stopPropagation();});
+      div.appendChild(lnk);
+    }
+    (function(card){
+      div.addEventListener('click',function(){
+        document.querySelectorAll('.al-card').forEach(function(el){el.classList.remove('on');});
+        div.classList.add('on');
+        calcAirline=card.code;
+        if(card.code==='custom'){
+          document.getElementById('c-custom-fld').classList.add('show');
+        } else {
+          document.getElementById('c-custom-fld').classList.remove('show');
+        }
+      });
+    })(c);
+    grid.appendChild(div);
+  });
+
+  // Set default selection
+  if(cards.length>0&&cards[0].code!=='custom'){
+    calcAirline=cards[0].code;
+    calcPrices[cards[0].code]=cards[0].price;
+  }
+}
+
+
 function calcPickAirline(el,name) {
   document.querySelectorAll('.al-card').forEach(c=>c.classList.remove('on'));
   el.classList.add('on'); calcAirline=name;
@@ -1005,6 +1136,41 @@ function calcPickAirline(el,name) {
 function calcSetCustom(val) {
   calcPrices.custom=parseFloat(val)||0;
   document.getElementById('c-custom-disp').textContent=val?`$${val}`:'$—';
+}
+
+function calcSampleTrip(){
+  // Pre-fill a VPS->MDW trip so user sees how the app works
+  var orig=document.getElementById('c-origin');
+  var dest=document.getElementById('c-dest');
+  if(orig)orig.value='VPS';
+  if(dest)dest.value='MDW';
+  calcLoadAirlines();
+  document.getElementById('c-nights').value='4';
+  document.getElementById('c-travelers').value='2';
+  document.getElementById('c-hotel-rate').value='120';
+  document.getElementById('c-food').value='60';
+  document.getElementById('c-activities').value='200';
+  document.getElementById('c-transport-cost').value='35';
+  document.getElementById('c-daily-transport').value='20';
+  // Open sections so user can see what was filled
+  ['03','04','05'].forEach(function(id){
+    var body=document.getElementById('sec-body-'+id);
+    var arrow=document.getElementById('sec-arrow-'+id);
+    if(body){body.classList.remove('collapsed');}
+    if(arrow){arrow.classList.add('open');}
+  });
+  // Run calculation
+  setTimeout(function(){calcRun();},100);
+  showToast('Sample trip loaded — Fort Walton Beach → Chicago');
+}
+
+function toggleSec(id){
+  var body=document.getElementById('sec-body-'+id);
+  var arrow=document.getElementById('sec-arrow-'+id);
+  if(!body)return;
+  var isOpen=!body.classList.contains('collapsed');
+  body.classList.toggle('collapsed',isOpen);
+  if(arrow)arrow.classList.toggle('open',!isOpen);
 }
 
 function calcRun() {
@@ -1077,6 +1243,8 @@ function calcRun() {
   document.getElementById('c-results').style.display='block';
   document.getElementById('c-total').textContent=`$${Math.round(grand).toLocaleString()}`;
   document.getElementById('c-sub').textContent=travelers>1?`total for ${travelers} people · $${perP.toLocaleString()} per person`:'per person · all fees included';
+  var cpd=document.getElementById('c-per-day');
+  if(cpd){var perDay=Math.round(grand/(nights+1));cpd.textContent='$'+perDay.toLocaleString()+' per day · '+nights+' nights';}
 
   const alt=calcAirline==='allegiant'?'southwest':'allegiant';
   document.getElementById('c-vs-l-al').textContent=calcAirline.charAt(0).toUpperCase()+calcAirline.slice(1);
@@ -1461,12 +1629,21 @@ function populateBothAirportDropdowns(){
     if(!el)return;
     sorted.forEach(a=>{el.innerHTML+=`<option value="${a.code}">${a.name}</option>`;});
   });
+  // Also populate calc dropdowns
+  ['c-origin','c-dest'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el)return;
+    sorted.forEach(function(a){el.innerHTML+='<option value="'+a.code+'">'+a.name+'</option>';});
+  });
   document.getElementById('s-origin').value='VPS';
   document.getElementById('s-dest').value='MDW';
   document.getElementById('w-origin').value='VPS';
   document.getElementById('w-dest').value='MDW';
+  document.getElementById('c-origin').value='VPS';
+  document.getElementById('c-dest').value='MDW';
   splitLoadFares();
   warLoadFares();
+  calcLoadAirlines();
 }
 
 function splitLoadFares(){
@@ -1485,8 +1662,11 @@ function splitLoadFares(){
 }
 
 function splitToggleCheck(code){
-  const checked=document.getElementById(`sc-${code}`).checked;
-  document.getElementById(`sl-${code}`).classList.toggle('on',checked);
+  var checked=document.getElementById('sc-'+code).checked;
+  document.getElementById('sl-'+code).classList.toggle('on',checked);
+  // Auto-run if 2+ airlines selected
+  var total=document.querySelectorAll('#s-airline-checks input[type=checkbox]:checked').length;
+  if(total>=2) splitRun();
 }
 
 function splitRun(){
@@ -1564,12 +1744,40 @@ const scamBuiltIn={
   panama_city_beach:{name:'Panama City Beach',ico:'🌴',risk:'Medium',alertText:'Medium — Spring break destination with heavy tourist pricing March–April. Pier Park area is marked up year-round.',scams:[{title:'🍽️ Pier Park Restaurant Prices',desc:'All restaurants directly in and around Pier Park charge tourist-zone premium year-round.',touristPrice:'$25–$40/entree',localPrice:'$14–$20 on Back Beach Road or in Lynn Haven',tip:'Drive 10 minutes to Lynn Haven or Thomas Drive local spots. Far better food at real prices.'},{title:'🏖️ Beach Vendor Jet Ski Rentals',desc:'Walk-up jet ski rentals on the beach are 40–60% more than booked online.',touristPrice:'$100–$140/hour walk-up',localPrice:'$65–$85 booked online in advance',tip:'Book water sports through Groupon or the operator website the night before.'},{title:'🏠 Vacation Rental Spring Break Surge',desc:'Spring break weeks (mid-March to mid-April) see rental prices triple with minimum stays.',touristPrice:'$500–$800/night spring break',localPrice:'$150–$250/night same unit in May or October',tip:'Go in May or October. Identical weather, drastically cheaper, no crowds.'},{title:'🎡 Pier Park Parking',desc:'Pier Park private lots charge $10–$20 during peak hours.',touristPrice:'$15 private lot',localPrice:'Free street parking 3 blocks away',tip:'Free parking exists on the side streets north of Pier Park. 3-minute walk, zero cost.'}],tips:[{ico:'🦈',title:'St. Andrews State Park',text:'$8 vehicle entry. Clearest water in PCB, snorkeling, shell island ferry, zero beach vendors.'},{ico:'🐬',title:'Shell Island Ferry',text:'$15 RT from St. Andrews State Park. Uninhabited barrier island. Dolphins in the channel guaranteed.'},{ico:'🎢',title:'Ripley’s Believe It or Not',text:'Skip it — overpriced tourist trap. Spend that $25 on a kayak rental in St. Andrews instead.'},{ico:'🍕',title:'Schooner’s Last Local Beach Club',text:'Best beachfront bar in PCB. Live music, honest prices, local crowd. The real PCB.'},{ico:'🌊',title:'Avoid Spring Break',text:'Mid-March through mid-April: wall-to-wall crowds, triple hotel prices, packed beaches. May is identical weather at 40% the cost.'},{ico:'🐠',title:'Snorkeling at St. Andrews',text:'Rent snorkel gear for $10, wade into the Gulf near the jetties. Flounder, stingrays, and tropical fish right from shore.'}]},
   pensacola:{name:'Pensacola',ico:'⚓',risk:'Low',alertText:'Low — Military city with honest pricing. Pensacola Beach bridge toll and vacation rental fees are the main traps.',scams:[{title:'🌉 Pensacola Beach Bridge Toll',desc:'$1 each way. Some visitors get hit with rental car toll processing fees of $15-$25 for a $1 toll.',touristPrice:'$15-$25 rental car fee',localPrice:'$1 each way — use cash or SunPass',tip:'Pay cash at the toll booth. Never let a rental car process tolls electronically — fee is 15-25x the actual toll.'},{title:'🏖️ Vacation Rental Hidden Fees',desc:'VRBO and Airbnb listings on Pensacola Beach add cleaning fees, service fees, and parking that inflate the rate 40-60%.',touristPrice:'$180/night becomes $280 all-in',localPrice:'Call local rental companies directly — fewer fees',tip:'Use local companies like ResortQuest or Vacasa direct. Fewer platform fees than VRBO or Airbnb.'},{title:'🍽️ Pensacola Beach Strip Restaurants',desc:'Restaurants on the main Pensacola Beach strip charge tourist premiums especially on weekends.',touristPrice:'$28-$40/entree on the strip',localPrice:'$14-$22 on Palafox Street downtown',tip:'Eat on Palafox Street in downtown Pensacola. Better food, local crowd, real prices. 15-minute drive.'},{title:'🚤 Jet Ski and Water Sports Walk-Up',desc:'Walk-up jet ski rentals on the beach are 40-60% more than booked in advance online.',touristPrice:'$100-$130/hour walk-up',localPrice:'$65-$85 booked online',tip:'Book water sports the night before on Groupon or direct with operators. Walk-up prices are always inflated.'}],tips:[{ico:'🏖️',title:'Fort Pickens',text:'$25/vehicle, valid 7 days. Inside Gulf Islands National Seashore. Best undeveloped beach in Florida with Civil War fort.'},{ico:'⚓',title:'National Naval Aviation Museum',text:'Completely free. One of the best aviation museums in the world. Blue Angels practice here Tuesday and Wednesday mornings.'},{ico:'🎵',title:'Palafox Street',text:'Downtown Pensacola dining and nightlife. Real prices, local crowd, live music on weekends. Far better than the beach strip.'},{ico:'🌊',title:'Perdido Key',text:'30 minutes west. Less crowded than Pensacola Beach, same emerald water, lower rental prices.'},{ico:'🚗',title:'Avoid Spring Break',text:'March-April prices spike 2-3x. May and October are identical weather at 30-40% lower cost.'},{ico:'🌅',title:'Casino Beach at Sunrise',text:'Free parking before 8 AM. The most photographed beach in Florida with almost no people at dawn.'}]},
   fort_walton_beach:{name:'Fort Walton Beach',ico:'🎣',risk:'Low',alertText:'Low — Laid-back military community. Okaloosa Island tourist strip has moderate markups.',scams:[{title:'🍽️ Okaloosa Island Strip Pricing',desc:'Restaurants directly on the Okaloosa Island strip charge tourist premiums year-round.',touristPrice:'$25-$38/entree on the strip',localPrice:'$12-$20 on Miracle Mile or downtown FWB',tip:'Eat on Miracle Mile or in downtown Fort Walton Beach. Local spots with far better prices.'},{title:'🏠 Vacation Rental Fees',desc:'Short-term rentals in Okaloosa Island area pile on cleaning fees and service charges.',touristPrice:'$160/night becomes $240+ with fees',localPrice:'Book direct with owner when possible',tip:'Search for owner-direct rentals on local Facebook groups. Avoid platform fees.'},{title:'🚤 Charter Fishing Walk-Up',desc:'Walk-up charter fishing prices at the Destin/FWB harbor are premium. Online is always cheaper.',touristPrice:'$120-$150/person walk-up party boat',localPrice:'$65-$90 booked online',tip:'Book party boat fishing online at least 24 hours ahead. Same boats, same fish, 30-40% less.'},{title:'🎡 The Track Amusements',desc:'Go-karts and amusements on the strip charge premium prices with limited value.',touristPrice:'$8-$15 per ride',localPrice:'Skip it — beach is free',tip:'Skip the amusement strip. Eglin AFB recreation areas offer similar activities at military prices if you have access.'}],tips:[{ico:'🏖️',title:'Okaloosa Island Park',text:'Free beach access at the state-managed area. Same emerald water as Destin with less crowding.'},{ico:'✈️',title:'Air Force Armament Museum',text:'Free. F-117 Stealth Fighter, SR-71 Blackbird, and 30+ aircraft on display. Located at Eglin AFB entrance.'},{ico:'🦞',title:'Staff of Life',text:'Local institution for fresh gulf seafood at real prices. Not on the tourist strip.'},{ico:'🎣',title:'Party Boat Fishing',text:'$65-$90 online for a half-day trip. Fort Walton Harbor has some of the best fishing access on the Gulf.'},{ico:'🌊',title:'Go in May or September',text:'Shoulder season — identical weather, 30-40% cheaper hotels and rentals, uncrowded beaches.'},{ico:'🏊',title:'Fred Gannon Rocky Bayou',text:'$4 state park entry. Freshwater swimming, kayaking, camping. Locals go here to escape the beach crowds.'}]},
-  gulf_shores:{name:'Gulf Shores / Orange Beach',ico:'🦀',risk:'Low',alertText:'Low — Alabama beach town with honest pricing. Spring break crowds and rental fees are the main issues.',scams:[{title:'🏠 Vacation Rental Hidden Fees',desc:'Condos on Gulf Shores add cleaning fees, damage waivers, parking, and service fees that inflate listed rates 50-70%.',touristPrice:'$200/night becomes $320 all-in',localPrice:'Book direct with management companies',tip:'Call Meyer Real Estate or Brett-Robinson directly. Local companies have far fewer fees than VRBO or Airbnb.'},{title:'🍽️ Gulf Place Strip Restaurants',desc:'Restaurants in the tourist strip near the Alabama/Florida line charge beach town premiums.',touristPrice:'$28-$40/entree',localPrice:'$14-$22 in downtown Orange Beach or Foley',tip:'Drive to Foley or Orange Beach main strip for local restaurants at real prices.'},{title:'🦀 Souvenir Shops on Beach Road',desc:'Beach souvenir shops on Highway 59 charge 3-4x what you can buy in Foley outlets.',touristPrice:'$25-$40 for branded gear',localPrice:'$8-$15 at Foley Tanger Outlets',tip:'Tanger Outlets in Foley is 15 minutes north. Same brands, 40-60% less.'},{title:'🚙 Spring Break Surge',desc:'March-April hotel and rental prices triple. Traffic on Highway 59 becomes gridlock.',touristPrice:'$400+/night condos in March',localPrice:'$150-$200/night same unit in May',tip:'Visit in May, September, or October. Identical beach, dramatically lower prices, no spring break chaos.'}],tips:[{ico:'🐚',title:'Gulf State Park',text:'$10/vehicle. 6,000 acres, 2.5 miles of pristine beach, fishing pier, bike trails. Best value in Gulf Shores.'},{ico:'🦈',title:'Alabama Gulf Coast Zoo',text:'$18 adults. Small but hands-on. Feed giraffes and interact with animals closer than any major zoo.'},{ico:'🎣',title:'Fishing Pier at Gulf State Park',text:'$10 fishing fee, no rod license needed on the pier. Best shore fishing on the Alabama Gulf Coast.'},{ico:'🛍️',title:'Foley Tanger Outlets',text:'200+ stores, 15 minutes from the beach. Far better shopping than any beach souvenir shop at real prices.'},{ico:'🌊',title:'Bon Secour National Wildlife Refuge',text:'Free. Undeveloped barrier island beaches, sea turtle nesting, and hiking with zero crowds.'},{ico:'🍺',title:'LuLu’s Restaurant',text:'Jimmy Buffett’s sister owns this. Great Gulf seafood, live music, tiki bar. Book ahead — always packed.'}]}
+  gulf_shores:{name:'Gulf Shores / Orange Beach',ico:'🦀',risk:'Low',alertText:'Low — Alabama beach town with honest pricing. Spring break crowds and rental fees are the main issues.',scams:[{title:'🏠 Vacation Rental Hidden Fees',desc:'Condos on Gulf Shores add cleaning fees, damage waivers, parking, and service fees that inflate listed rates 50-70%.',touristPrice:'$200/night becomes $320 all-in',localPrice:'Book direct with management companies',tip:'Call Meyer Real Estate or Brett-Robinson directly. Local companies have far fewer fees than VRBO or Airbnb.'},{title:'🍽️ Gulf Place Strip Restaurants',desc:'Restaurants in the tourist strip near the Alabama/Florida line charge beach town premiums.',touristPrice:'$28-$40/entree',localPrice:'$14-$22 in downtown Orange Beach or Foley',tip:'Drive to Foley or Orange Beach main strip for local restaurants at real prices.'},{title:'🦀 Souvenir Shops on Beach Road',desc:'Beach souvenir shops on Highway 59 charge 3-4x what you can buy in Foley outlets.',touristPrice:'$25-$40 for branded gear',localPrice:'$8-$15 at Foley Tanger Outlets',tip:'Tanger Outlets in Foley is 15 minutes north. Same brands, 40-60% less.'},{title:'🚙 Spring Break Surge',desc:'March-April hotel and rental prices triple. Traffic on Highway 59 becomes gridlock.',touristPrice:'$400+/night condos in March',localPrice:'$150-$200/night same unit in May',tip:'Visit in May, September, or October. Identical beach, dramatically lower prices, no spring break chaos.'}],tips:[{ico:'🐚',title:'Gulf State Park',text:'$10/vehicle. 6,000 acres, 2.5 miles of pristine beach, fishing pier, bike trails. Best value in Gulf Shores.'},{ico:'🦈',title:'Alabama Gulf Coast Zoo',text:'$18 adults. Small but hands-on. Feed giraffes and interact with animals closer than any major zoo.'},{ico:'🎣',title:'Fishing Pier at Gulf State Park',text:'$10 fishing fee, no rod license needed on the pier. Best shore fishing on the Alabama Gulf Coast.'},{ico:'🛍️',title:'Foley Tanger Outlets',text:'200+ stores, 15 minutes from the beach. Far better shopping than any beach souvenir shop at real prices.'},{ico:'🌊',title:'Bon Secour National Wildlife Refuge',text:'Free. Undeveloped barrier island beaches, sea turtle nesting, and hiking with zero crowds.'},{ico:'🍺',title:'LuLu’s Restaurant',text:'Jimmy Buffett’s sister owns this. Great Gulf seafood, live music, tiki bar. Book ahead — always packed.'}]},
+  thirty_a:{name:'30A Florida',ico:'🏄',risk:'Low',alertText:'Low — Upscale beach corridor. Vacation rental fees and restaurant markups are the main traps. One of the most beautiful coastlines in America.',scams:[{title:'🏠 Vacation Rental Hidden Fees',desc:'30A vacation rentals are premium-priced and add cleaning fees, damage waivers, linen fees, and service charges that inflate the nightly rate 50-70%.',touristPrice:'$400/night becomes $650+ all-in',localPrice:'Call rental companies directly — ask for all-in rate',tip:'Use local companies like 360 Blue, Corcoran Vacations, or ResortQuest direct. Always ask for the total all-in price before booking.'},{title:'🍽️ Rosemary Beach and Seaside Restaurant Prices',desc:'Restaurants in the Rosemary Beach and Seaside town centers charge resort-level prices year-round.',touristPrice:'$35-$55/entree',localPrice:'$18-$28 in Santa Rosa Beach or Inlet Beach',tip:'Drive 10 minutes off 30A to Santa Rosa Beach or Inlet Beach. Same quality food at 40% less.'},{title:'🚲 Bike Rental Walk-Up Prices',desc:'Bike rental shops along 30A charge premium walk-up rates especially in summer.',touristPrice:'$40-$60/day per bike walk-up',localPrice:'$25-$35 booked online the night before',tip:'Book bike rentals online through local shops like Wheel Fun Rentals or 30A Bike Rentals. Online pricing is always lower.'},{title:'🌊 Summer Crowd Surge',desc:'30A in June-August is wall-to-wall traffic, overflowing beaches, and peak rental prices.',touristPrice:'$500-$900/night peak summer',localPrice:'$250-$400 same property in October',tip:'Go in May, September, or October. Identical weather, 30-50% lower prices, uncrowded beaches, and the water is still perfect.'}],tips:[{ico:'🏖️',title:'Grayton Beach State Park',text:'$5 vehicle entry. One of the top 10 beaches in America. Pristine dunes, no vendors, no crowds. Park opens at 8 AM.'},{ico:'🚲',title:'Bike the Scenic 30A Trail',text:'19-mile paved trail connecting every beach community. Rent bikes and ride from Seaside to Rosemary Beach. Best way to see 30A.'},{ico:'🌅',title:'Seaside is Worth Seeing',text:'The original New Urbanism town and filming location for The Truman Show. Walk around for free — just avoid eating there.'},{ico:'🦞',title:'Eat in Santa Rosa Beach',text:'Local restaurants on 98 and 393 serve excellent Gulf seafood at real prices. Local Catch Bar and Grill is a standout.'},{ico:'🎨',title:'Eden Gardens State Park',text:'$4 entry. Historic white-columned mansion, moss-draped oaks, freshwater swimming. Hidden gem 10 minutes from 30A.'},{ico:'🌊',title:'Go in May or October',text:'Water is 75-80F, air is perfect, no crowds, prices drop 40%. May and October are the locals secret for visiting 30A.'}]},
+  allys_beach:{name:"Alys Beach",ico:'🏛️',risk:'Low',alertText:'Low — The most exclusive community on 30A. Ultra-premium pricing on everything. Beautiful to walk through but budget accordingly.',scams:[{title:'🍽️ Restaurant Pricing',desc:'The few restaurants in Alys Beach are among the most expensive on the entire Gulf Coast.',touristPrice:'$45-$75/entree',localPrice:'$18-$28 in Inlet Beach 5 min away',tip:'Walk or bike to Inlet Beach or Rosemary Beach for comparable food at half the price.'},{title:'🏠 Rental Sticker Shock',desc:'Alys Beach vacation rentals are among the most expensive in Florida — and fees pile on top.',touristPrice:'$800-$3,000/night with fees',localPrice:'Same 30A experience in Seagrove or WaterColor for $250-$500',tip:'Stay in Seagrove Beach, WaterColor, or Waterscape for the same 30A access at a fraction of the price.'},{title:'🅿️ Parking',desc:'Parking near Alys Beach is extremely limited and monitored. Getting towed is common.',touristPrice:'$75-$150 tow fee',localPrice:'Park in Inlet Beach and bike or walk',tip:'Park at the public lot in Inlet Beach and ride the 30A bike trail over. Free parking, no towing risk.'},{title:'🛍️ Boutique Shops',desc:'Alys Beach boutiques sell curated merchandise at luxury resort prices.',touristPrice:'$80-$300 for clothing items',localPrice:'Same brands online or in Destin Commons for 40-60% less',tip:'Window shop in Alys Beach and buy elsewhere. The architecture is the attraction — not the shopping.'}],tips:[{ico:'🏛️',title:'Walk the White Buildings',text:'Alys Beach is designed after Bermudian and Caribbean architecture. Walking the streets is completely free and genuinely stunning.'},{ico:'🚲',title:'Bike From Rosemary Beach',text:'30A bike trail connects directly. Ride in, explore the courtyards and alleys, ride out. Best free experience on 30A.'},{ico:'🌊',title:'The Beach is Public',text:'All Florida beaches are public. The beach in front of Alys Beach is as accessible as any other — just walk down the public beach access.'},{ico:'🌅',title:'Sunset Views',text:'The rooftop terraces are private but the beach at sunset here rivals anywhere in the world. Bring a chair and enjoy for free.'},{ico:'📸',title:'Architecture Photography',text:'The white Bermudian-style buildings are extraordinary. Best photography early morning before the crowds and heat.'},{ico:'🍦',title:'Neat Ice Cream',text:'The one affordable indulgence in Alys Beach. Local ice cream shop with reasonable prices and a beautiful courtyard.'}]}
 };
 
 function scamGetCustom(){try{return JSON.parse(Store.get('triptrue_cities')||'{}');}catch{return {};}}
 function scamSaveCustom(obj){Store.set('triptrue_cities',JSON.stringify(obj));}
 function scamAllCities(){return Object.assign({},scamBuiltIn,typeof extraCities!=="undefined"?extraCities:{},scamGetCustom());}
+
+function scamRenderPopular(){
+  var popular=['vegas','cancun','miami','nyc','orlando','chicago','destin','panama_city_beach','thirty_a','bali','rome','bangkok'];
+  var el=document.getElementById('sc-popular');
+  if(!el)return;
+  el.innerHTML='';
+  var allC=scamAllCities();
+  popular.forEach(function(key){
+    var c=allC[key];
+    if(!c)return;
+    var btn=document.createElement('button');
+    btn.style.cssText='background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;touch-action:manipulation;white-space:nowrap;';
+    btn.textContent=c.ico+' '+c.name;
+    btn.addEventListener('click',function(){
+      scSelectedDest=key;
+      scamRenderGrid();
+      document.getElementById('sc-show-btn').style.transform='scale(1.03)';
+      setTimeout(function(){document.getElementById('sc-show-btn').style.transform='';},180);
+    });
+    if(scSelectedDest===key){
+      btn.style.borderColor='var(--accent)';
+      btn.style.color='var(--accent)';
+    }
+    el.appendChild(btn);
+  });
+}
 
 function scamRenderGrid(){
   var custom=scamGetCustom();
@@ -1577,6 +1785,7 @@ function scamRenderGrid(){
   var grid=document.getElementById('sc-dest-grid');
   if(!grid)return;
   while(grid.firstChild)grid.removeChild(grid.firstChild);
+  scamRenderPopular();
   Object.keys(allC).forEach(function(key){
     var c=allC[key];
     var sk=(key||'').toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,40);
@@ -1632,7 +1841,7 @@ function scamDeleteCity(key){
 }
 
 function scamShow(){
-  const data=scamAllCities()[scSelectedDest];
+  var data=scamAllCities()[scSelectedDest];
   if(!data){showToast('Pick a city first');return;}
   document.getElementById('sc-results').style.display='block';
   document.getElementById('sc-dest-display').textContent=data.name;
@@ -1953,6 +2162,8 @@ function warRenderAll(){
   document.getElementById('w-stat-tracking').textContent=warRoutes.length;
   document.getElementById('w-stat-deals').textContent=warRoutes.filter(r=>warGetStatus(r)==='deal').length;
   document.getElementById('w-stat-airlines').textContent=new Set(warRoutes.map(r=>r.airlineCode)).size;
+  // Persist war routes
+  try{Store.set('tt_war_routes',JSON.stringify(warRoutes));Store.set('tt_war_next_id',warNextId);}catch(e){}
 }
 
 // ══════════════════════════════════════
@@ -1983,6 +2194,13 @@ document.addEventListener("DOMContentLoaded",function(){
     startPage.style.opacity='1';
     startPage.classList.add('active');
   }
+  // Load persisted war routes
+  try{
+    var wr=Store.get('tt_war_routes');
+    if(wr){warRoutes=JSON.parse(wr);}
+    var wn=Store.get('tt_war_next_id');
+    if(wn){warNextId=parseInt(wn)||1;}
+  }catch(e){}
   warRenderAll();
   ncAddScam();
   ncAddTip();
