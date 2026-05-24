@@ -410,12 +410,7 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   <div class="sec">
     <div class="sec-hdr"><span class="sec-num">01</span><span class="sec-title">Flight</span><span class="sec-ico">✈️</span></div>
     <div class="sec-body">
-      <div class="airline-grid">
-        <div class="al-card on" onclick="calcPickAirline(this,'allegiant',140)"><div class="al-name">Allegiant</div><div class="al-price">$140</div><div class="al-note">Sample · Nonstop RT</div><a class="al-check-live" href="https://www.allegiantair.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a></div>
-        <div class="al-card" onclick="calcPickAirline(this,'southwest',378)"><div class="al-name">Southwest</div><div class="al-price">$378</div><div class="al-note">Sample · Nonstop RT</div><a class="al-check-live" href="https://www.southwest.com" target="_blank" onclick="event.stopPropagation()">Check live price →</a></div>
-        <div class="al-card" onclick="calcPickAirline(this,'split',260)"><div class="al-name">Split Fare ✦</div><div class="al-price">$260</div><div class="al-note">Allegiant out · SW back</div></div>
-        <div class="al-card" onclick="calcPickAirline(this,'custom',0)"><div class="al-name">My Price</div><div class="al-price" id="c-custom-disp">$—</div><div class="al-note">Enter your real fare</div><a class="al-check-live" href="https://www.google.com/flights" target="_blank" onclick="event.stopPropagation()">Find it →</a></div>
-      </div>
+      <div class="airline-grid" id="c-airline-grid"></div>
       <div class="sub-fld" id="c-custom-fld"><div class="fld"><label>Your Round Trip Price ($)</label><input type="number" id="c-custom-price" placeholder="e.g. 220" oninput="calcSetCustom(this.value)"></div></div>
       <div class="price-disc">⚠️ Prices above are <strong>sample estimates only</strong> — not live fares. Look up your actual price first, then select "My Price" and enter it. <strong>Check live:</strong> <a href="https://www.allegiantair.com" target="_blank" style="color:var(--accent)">Allegiant</a> · <a href="https://www.southwest.com" target="_blank" style="color:var(--accent)">Southwest</a> · <a href="https://www.google.com/flights" target="_blank" style="color:var(--accent)">Google Flights</a> · <a href="https://www.kayak.com" target="_blank" style="color:var(--accent)">Kayak</a></div>
       <div class="row c3">
@@ -430,8 +425,8 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
     <div class="sec-hdr"><span class="sec-num">02</span><span class="sec-title">Trip Basics</span><span class="sec-ico">🗺️</span></div>
     <div class="sec-body">
       <div class="row c2">
-        <div class="fld"><label>From</label><input type="text" id="c-origin" value="VPS — Fort Walton Beach"></div>
-        <div class="fld"><label>To</label><input type="text" id="c-dest" value="MDW — Chicago Midway"></div>
+        <div class="fld"><label>From</label><select id="c-origin" onchange="calcLoadAirlines()"><option value="">-- Origin --</option></select></div>
+        <div class="fld"><label>To</label><select id="c-dest" onchange="calcLoadAirlines()"><option value="">-- Destination --</option></select></div>
       </div>
       <div class="row c2">
         <div class="fld"><label>Depart</label><input type="date" id="c-depart"></div>
@@ -651,6 +646,34 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
       <div class="sop-tip"><strong>Pro Tip:</strong> Southwest includes 2 free checked bags. Allegiant/Spirit/Frontier bags often cost more than the base fare.</div>
       <div class="sop-tip" style="margin-top:8px;"><strong style="color:var(--accent);">&#x1F5FA;&#xFE0F; Hidden Route Strategies:</strong> Beyond splitting airlines, consider: (1) <strong>Nearby departure airports</strong> — VPS, PNS, ECP, MOB, and MSY can all differ by $50–$150 on the same date. Check all 5 before committing. (2) <strong>Hidden city ticketing</strong> — booking a connecting flight through your destination and skipping the last leg. Only works with carry-on only and you cannot check bags. (3) <strong>One-way on two separate airlines</strong> is almost always cheaper than round-trip on one airline when one carrier has a sale on only one direction. (4) <strong>Positioning flights</strong> — drive to a bigger hub (MSY, ATL) and catch a nonstop. The gas + parking can still beat the connecting fare from VPS.</div>
       <div class="sop-tip" style="margin-top:8px;background:rgba(91,142,240,0.07);border-color:rgba(91,142,240,0.25);"><strong style="color:var(--blue);">&#x1F3AB; Fare Class Reality:</strong> Airlines sell the same seat at 8–12 different price levels called fare buckets. The cheapest bucket (usually 2–4 seats) sells out first. When you see a price and come back tomorrow, you may find the next bucket which is $30–$80 more. This is why you set a target and track — the low bucket appears again when cancellations happen or the airline runs a promotion. Basic economy is the cheapest bucket but has the most restrictions. Main cabin is the next bucket. Always check both before buying.</div>
+      <div class="sop-tip" style="margin-top:8px;background:rgba(61,214,140,0.07);border-color:rgba(61,214,140,0.25);">
+        <strong style="color:var(--green);">🗓️ 1. Cheapest Booking Window</strong><br>
+        <span style="color:var(--text);font-size:12px;">Tuesday and Wednesday departures are 15–25% cheaper than Friday and Sunday. Book on Tuesday at 1 AM EST — airlines drop fares Monday night and competitors match by Tuesday morning. For domestic flights, 3–6 weeks out is the sweet spot. International: 2–6 months.</span>
+      </div>
+      <div class="sop-tip" style="margin-top:8px;background:rgba(61,214,140,0.07);border-color:rgba(61,214,140,0.25);">
+        <strong style="color:var(--green);">📅 2. Flexible Dates Hack</strong><br>
+        <span style="color:var(--text);font-size:12px;">On Google Flights, click the calendar grid view to see every date combo color-coded by price. Shifting your trip by 1–2 days can save $50–$200. The cheapest combo is almost always: depart Tuesday or Wednesday, return Monday or Tuesday. Avoid Friday outbound and Sunday return — that combo is priced for business travelers who expense it.</span>
+      </div>
+      <div class="sop-tip" style="margin-top:8px;background:rgba(61,214,140,0.07);border-color:rgba(61,214,140,0.25);">
+        <strong style="color:var(--green);">✈️ 3. Nearby Airport Savings</strong><br>
+        <span style="color:var(--text);font-size:12px;">Always check airports within 1–2 hours of both your origin and destination. From NW Florida: VPS, PNS, ECP, and MOB can differ by $80–$150 on the same date. At the destination: Chicago has ORD and MDW, New York has JFK, LGA, and EWR, Dallas has DFW and DAL. The savings almost always exceed gas and parking costs for the alternate airport.</span>
+      </div>
+      <div class="sop-tip" style="margin-top:8px;background:rgba(245,196,24,0.07);border-color:rgba(245,196,24,0.25);">
+        <strong style="color:var(--accent);">🏙️ 4. Hidden City Loophole</strong><br>
+        <span style="color:var(--text);font-size:12px;">Sometimes a connecting flight through your destination is cheaper than flying there directly. Book the through-ticket and simply exit at your destination layover. Rules: carry-on bags ONLY (checked bags go to final destination), no return ticket on the same booking, one-time use only (airlines flag repeat users). Use Skiplagged.com to find these. Airlines hate it but it is legal.</span>
+      </div>
+      <div class="sop-tip" style="margin-top:8px;background:rgba(245,196,24,0.07);border-color:rgba(245,196,24,0.25);">
+        <strong style="color:var(--accent);">🗺️ 5. Multi-City / Open-Jaw</strong><br>
+        <span style="color:var(--text);font-size:12px;">An open-jaw ticket flies you into one city and out of another — and often costs less than round-tripping. Example: fly into Chicago, train to Milwaukee, fly home from Milwaukee. Or fly VPS→Vegas, drive to LA, fly LAX→VPS. Book each leg as one-way on separate airlines. Use Google Flights multi-city search to find these combinations.</span>
+      </div>
+      <div class="sop-tip" style="margin-top:8px;background:rgba(240,64,96,0.07);border-color:rgba(240,64,96,0.25);">
+        <strong style="color:var(--red);">⚡ 6. Mistake Fare Sniper</strong><br>
+        <span style="color:var(--text);font-size:12px;">Airlines accidentally publish fares $200–$800 below normal. They last 2–24 hours. Track them at: <strong>Secret Flying</strong> (secretflying.com), <strong>The Flight Deal</strong> (theflightdeal.com), <strong>Scott's Cheap Flights</strong> (now Going.com), <strong>Airfarewatchdog</strong>. Set email alerts for your home airport. When a mistake fare drops — book immediately, cancel your plans later. Most airlines honor them.</span>
+      </div>
+      <div class="sop-tip" style="margin-top:8px;background:rgba(91,142,240,0.07);border-color:rgba(91,142,240,0.25);">
+        <strong style="color:var(--blue);">💱 7. Currency / Region Pricing Exploit</strong><br>
+        <span style="color:var(--text);font-size:12px;">The same flight can cost less on an airline's website when priced in a different country's currency. Use a VPN set to the destination country, then book on that country's version of the airline site. Works best on international routes. Also: some airlines price differently by region — Turkish Airlines, Avianca, and Qatar Airways are known for significant regional price gaps. Always check before buying at face value.</span>
+      </div>
     </div>
   </div>
   <div class="sec">
@@ -795,7 +818,18 @@ body{background:#0c0c14;color:#f2f2fc;background:var(--bg);color:var(--text);fon
   </div>
   <div style="margin:0 16px 20px;background:#14141e;border-radius:12px;padding:14px;border:1px solid #28283c;">
     <div style="font-size:11px;font-weight:700;color:#f5c418;margin-bottom:10px;">💡 Price Tracking &amp; Search Strategy</div>
-    <div style="font-size:13px;color:#f2f2fc;line-height:2.0;"><strong>Search incognito always</strong> — airlines inflate prices on repeated searches.<br><strong>Tuesday 7–10 AM</strong> — best time to find fare drops.<br><strong>21-day rule</strong> — lowest fares appear 3 weeks before departure.<br><strong>Never book Friday or Sunday</strong> — fares inflate 15–25%.<br><strong>6–8 weeks out</strong> — sweet spot for domestic booking.<br><strong>Nearby airports</strong> — VPS vs PNS vs ECP can differ $50–$100.<br><strong>Hidden city trick</strong> — book through destination, skip last leg. Carry-on only.</div>
+    <div style="font-size:12px;color:#f2f2fc;line-height:1.9;">
+      <strong style="color:#f5c418;">🔍 Always search incognito</strong> — airlines track repeat searches and inflate prices. New incognito window every search.<br>
+      <strong style="color:#f5c418;">📅 Tuesday 7–10 AM EST</strong> — airlines drop fares Monday night, competitors match Tuesday morning. Best window to find drops.<br>
+      <strong style="color:#f5c418;">⏱️ 21-day rule</strong> — lowest domestic fares appear 3 weeks before departure as unsold seats get discounted.<br>
+      <strong style="color:#f5c418;">🚫 Never Friday or Sunday</strong> — business travel demand inflates fares 15–25% on these days.<br>
+      <strong style="color:#f5c418;">🎯 6–8 weeks out</strong> — sweet spot for domestic booking. International: 2–6 months out.<br>
+      <strong style="color:#f5c418;">✈️ Check all nearby airports</strong> — VPS, PNS, ECP, and MOB can differ $50–$150 on the same date. Always compare all 4.<br>
+      <strong style="color:#f5c418;">🏙️ Hidden city trick</strong> — book a connecting flight through your destination, exit at layover. Carry-on only. Use Skiplagged.com.<br>
+      <strong style="color:#f5c418;">⚡ Mistake fares</strong> — secretflying.com, theflightdeal.com, and Going.com (Scott's Cheap Flights). Book immediately when found.<br>
+      <strong style="color:#f5c418;">💱 Currency exploit</strong> — same flight, different country's site, cheaper price. Use VPN + destination airline site.<br>
+      <strong style="color:#f5c418;">📊 Set a target and hold</strong> — when you add a route to this War Room, stop checking obsessively. Set your price, get alerted, book when it hits.
+    </div>
   </div>
 </div>
 
@@ -956,6 +990,106 @@ const calcPrices = {allegiant:140,southwest:378,split:260,custom:0};
   document.getElementById('c-depart').value=d1.toISOString().split('T')[0];
   document.getElementById('c-ret').value=d2.toISOString().split('T')[0];
 })();
+
+function calcLoadAirlines(){
+  var o=document.getElementById('c-origin').value;
+  var d=document.getElementById('c-dest').value;
+  var grid=document.getElementById('c-airline-grid');
+  if(!grid)return;
+
+  // Reset selection
+  calcAirline='custom';
+  calcPrices.custom=0;
+
+  // Build cards
+  var cards=[];
+  var key=o&&d?getRouteKey(o,d):null;
+  var fares=key?sharedRouteFares[key]:{};
+  var sorted=Object.entries(fares).sort(function(a,b){return a[1]-b[1];});
+
+  // Best split fare
+  var bestSplit=null;
+  if(sorted.length>=2){
+    var cheapOW=sorted[0][1];
+    var cheapReturn=sorted[0][1];
+    // Find cheapest combo
+    var splitTotal=(sorted[0][1]+sorted[sorted.length>1?1:0][1]);
+    bestSplit={price:splitTotal,out:sorted[0][0],ret:sorted[sorted.length>1?1:0][0]};
+  }
+
+  // Airline cards from route data
+  sorted.forEach(function(entry,i){
+    var code=entry[0],ow=entry[1],rt=ow*2;
+    var name=(splitAirlines[code]&&splitAirlines[code].name)?splitAirlines[code].name:code;
+    var url=airlineBookUrls[code]||'https://www.google.com/flights';
+    if(i===0){calcAirline=code;calcPrices[code]=rt;}
+    calcPrices[code]=rt;
+    cards.push({code:code,name:name,price:rt,note:'Sample · Nonstop RT',url:url,selected:i===0});
+  });
+
+  // Add split fare if 2+ airlines
+  if(bestSplit&&sorted.length>=2){
+    var outName=(splitAirlines[bestSplit.out]&&splitAirlines[bestSplit.out].name)?splitAirlines[bestSplit.out].name:bestSplit.out;
+    var retName=(splitAirlines[bestSplit.ret]&&splitAirlines[bestSplit.ret].name)?splitAirlines[bestSplit.ret].name:bestSplit.ret;
+    calcPrices.split=bestSplit.price;
+    cards.push({code:'split',name:'Split Fare ✦',price:bestSplit.price,note:outName+' out · '+retName+' back',url:null,selected:false});
+  }
+
+  // Always add My Price last
+  cards.push({code:'custom',name:'My Price',price:0,note:'Enter your real fare',url:'https://www.google.com/flights',selected:cards.length===0});
+
+  // If no cards from route, add Google Flights link
+  if(cards.length===1){
+    // No route data - show message + My Price
+    grid.innerHTML='<div style="grid-column:span 2;font-size:12px;color:var(--sub);padding:8px 0;">No fare data for this route — enter your price using My Price or <a href="https://www.google.com/flights" target="_blank" style="color:var(--accent)">search Google Flights</a>.</div>';
+    calcAirline='custom';
+  } else {
+    grid.innerHTML='';
+  }
+
+  // Build and append cards
+  cards.forEach(function(c){
+    var div=document.createElement('div');
+    div.className='al-card'+(c.selected?' on':'');
+    div.id='alc-'+c.code;
+
+    var nm=document.createElement('div');nm.className='al-name';nm.textContent=c.name;div.appendChild(nm);
+    var pr=document.createElement('div');
+    pr.className='al-price';
+    if(c.code==='custom'){pr.id='c-custom-disp';pr.textContent=calcPrices.custom>0?'$'+calcPrices.custom:'$—';}
+    else{pr.textContent=c.price?'$'+c.price:'$—';}
+    div.appendChild(pr);
+    var nt=document.createElement('div');nt.className='al-note';nt.textContent=c.note;div.appendChild(nt);
+    if(c.url){
+      var lnk=document.createElement('a');
+      lnk.className='al-check-live';
+      lnk.href=c.url;lnk.target='_blank';
+      lnk.textContent=c.code==='custom'?'Find it →':'Check live price →';
+      lnk.addEventListener('click',function(e){e.stopPropagation();});
+      div.appendChild(lnk);
+    }
+    (function(card){
+      div.addEventListener('click',function(){
+        document.querySelectorAll('.al-card').forEach(function(el){el.classList.remove('on');});
+        div.classList.add('on');
+        calcAirline=card.code;
+        if(card.code==='custom'){
+          document.getElementById('c-custom-fld').classList.add('show');
+        } else {
+          document.getElementById('c-custom-fld').classList.remove('show');
+        }
+      });
+    })(c);
+    grid.appendChild(div);
+  });
+
+  // Set default selection
+  if(cards.length>0&&cards[0].code!=='custom'){
+    calcAirline=cards[0].code;
+    calcPrices[cards[0].code]=cards[0].price;
+  }
+}
+
 
 function calcPickAirline(el,name) {
   document.querySelectorAll('.al-card').forEach(c=>c.classList.remove('on'));
@@ -1323,6 +1457,92 @@ const sharedRouteFares = {
   'TPA-ORD':{WN:99,AA:109,DL:119,NK:59},'TPA-LAS':{WN:149,AA:159,DL:169,NK:79},
   'CLT-LAX':{AA:149,DL:169,UA:179},'CLT-MCO':{AA:79,DL:89,WN:99},
   'PHL-MIA':{AA:89,DL:109,UA:99,B6:79},'PHL-MCO':{AA:79,DL:99,UA:89,B6:69,WN:99},
+  'PNS-MDW':{G4:79,WN:199},'PNS-LAS':{G4:69,WN:209},'PNS-ATL':{WN:99,DL:109,AA:119},
+  'PNS-DFW':{AA:119,WN:139},'PNS-MCO':{WN:89,G4:85},'PNS-DEN':{G4:69,WN:159},
+  'ECP-MDW':{G4:75,WN:189},'ECP-ATL':{WN:89,DL:99},'ECP-MCO':{G4:79,WN:95},
+  'ECP-DEN':{G4:65},'ECP-LAS':{G4:65},
+  'MOB-ATL':{WN:89,DL:99,AA:109},'MOB-DFW':{AA:109,WN:129},'MOB-MDW':{WN:149},
+  'MSY-LAX':{WN:149,AA:159,DL:169,NK:89},'MSY-LAS':{WN:139,AA:149,NK:79},
+  'MSY-MIA':{WN:99,AA:109,DL:119},'MSY-JFK':{WN:119,AA:129,DL:139,B6:99},
+  'MSY-MCO':{WN:89,AA:99,DL:109,NK:59},'MSY-DFW':{AA:99,WN:119,DL:129},
+  'MSY-DEN':{WN:109,AA:119,DL:129,F9:69},'MSY-PHX':{WN:119,AA:129,F9:79},
+  'MSY-BOS':{WN:119,AA:129,DL:139},'MSY-SEA':{WN:149,AA:159,DL:169},
+  'BNA-ATL':{WN:79,DL:89,AA:99},'BNA-DFW':{AA:89,WN:109,DL:119},
+  'BNA-DEN':{WN:99,AA:109,DL:119,F9:69},'BNA-LAS':{WN:129,AA:139,DL:149,F9:79},
+  'BNA-MIA':{WN:109,AA:119,DL:129},'BNA-ORD':{WN:89,AA:99,DL:109,UA:119},
+  'BNA-JFK':{WN:99,AA:109,DL:119,B6:89},'BNA-PHX':{WN:119,AA:129,F9:79},
+  'BNA-SEA':{WN:149,AA:159,AS:149},'BNA-SFO':{WN:149,AA:159,UA:169},
+  'AUS-ATL':{WN:89,DL:99,AA:109},'AUS-ORD':{WN:99,AA:109,UA:119,DL:129},
+  'AUS-LAS':{WN:119,AA:129,DL:139,F9:69},'AUS-JFK':{WN:119,AA:129,DL:139,B6:109},
+  'AUS-MIA':{WN:109,AA:119,DL:129},'AUS-SEA':{WN:149,AA:159,AS:149},
+  'AUS-SFO':{WN:129,AA:139,UA:149},'AUS-PHX':{WN:99,AA:109,DL:119,F9:59},
+  'HOU-ATL':{WN:89,DL:99,AA:109},'HOU-MCO':{WN:89,AA:99},'HOU-LAS':{WN:119,AA:129},
+  'HOU-LAX':{WN:129,AA:139},'HOU-DEN':{WN:99,AA:109,F9:59},'HOU-ORD':{WN:99,AA:109,UA:119},
+  'IAH-LAX':{UA:139,AA:149,DL:159,WN:169},'IAH-ORD':{UA:99,AA:109,DL:119,WN:129},
+  'IAH-JFK':{UA:119,AA:129,DL:139,WN:149},'IAH-MIA':{UA:109,AA:119,DL:129,WN:149},
+  'IAH-LAS':{UA:129,AA:139,DL:149,WN:159},'IAH-DEN':{UA:89,AA:99,DL:109,WN:119,F9:59},
+  'IAH-ATL':{UA:99,AA:109,DL:99,WN:119},'IAH-SEA':{UA:149,AA:159,AS:149},
+  'IAH-SFO':{UA:139,AA:149,DL:159},'IAH-PHX':{UA:99,AA:109,DL:119,F9:59},
+  'DAL-ATL':{WN:89,DL:99},'DAL-MCO':{WN:89},'DAL-LAS':{WN:119},'DAL-DEN':{WN:99},
+  'DAL-LAX':{WN:129},'DAL-ORD':{WN:99},'DAL-MIA':{WN:109},'DAL-PHX':{WN:99},
+  'CLT-ATL':{AA:69,DL:79,WN:89},'CLT-DFW':{AA:89,WN:109},'CLT-ORD':{AA:79,UA:89,WN:99},
+  'CLT-MIA':{AA:89,DL:99,WN:109},'CLT-LAS':{AA:129,DL:149,WN:159},'CLT-DEN':{AA:99,UA:109,WN:119},
+  'CLT-JFK':{AA:79,DL:89,UA:99,B6:69},'CLT-BOS':{AA:79,DL:89,UA:99},'CLT-SEA':{AA:149,AS:149},
+  'RDU-ATL':{DL:79,AA:89,WN:99},'RDU-ORD':{AA:89,UA:99,DL:109,WN:119},'RDU-MIA':{AA:89,DL:99,WN:109},
+  'RDU-DFW':{AA:89,WN:109},'RDU-LAS':{AA:129,DL:149,WN:159},'RDU-DEN':{AA:99,UA:109,WN:119},
+  'RDU-JFK':{AA:79,DL:89,UA:99,B6:69},'RDU-BOS':{AA:69,DL:79,UA:89},'RDU-LAX':{AA:149,DL:159,UA:169},
+  'BHM-ATL':{DL:69,WN:79,AA:89},'BHM-ORD':{WN:89,AA:99,DL:109},'BHM-MCO':{WN:79,AA:89},
+  'BHM-LAS':{WN:119,AA:129},'BHM-DFW':{AA:89,WN:109},'BHM-DEN':{WN:99,F9:69},
+  'MEM-ATL':{DL:69,WN:79,AA:89},'MEM-ORD':{WN:89,AA:99,DL:109},'MEM-DFW':{AA:79,WN:99},
+  'MEM-MCO':{WN:79,AA:89},'MEM-LAS':{WN:109,AA:119},'MEM-DEN':{WN:99,F9:69},
+  'JAX-ATL':{DL:69,WN:79,AA:89},'JAX-ORD':{WN:89,AA:99,DL:109},'JAX-DFW':{AA:89,WN:109},
+  'JAX-LAS':{WN:119,AA:129},'JAX-DEN':{WN:99,AA:109},'JAX-BOS':{WN:89,AA:99,DL:109},
+  'SAV-ATL':{DL:59,WN:79},'SAV-ORD':{WN:89,AA:99},'SAV-DFW':{AA:89,WN:109},
+  'CHS-ATL':{DL:69,WN:79,AA:89},'CHS-ORD':{WN:89,AA:99,DL:109},'CHS-DFW':{AA:89,WN:109},
+  'CLE-ATL':{DL:79,WN:89,AA:99},'CLE-MIA':{AA:89,DL:99,WN:109},'CLE-MCO':{WN:79,AA:89,DL:99},
+  'CLE-LAS':{WN:119,AA:129,DL:149},'CLE-DFW':{AA:89,WN:109},'CLE-DEN':{WN:99,AA:109,F9:69},
+  'IND-ATL':{DL:79,WN:89,AA:99},'IND-MCO':{WN:79,AA:89},'IND-LAS':{WN:119,AA:129},
+  'IND-DFW':{AA:89,WN:109},'IND-DEN':{WN:99,AA:109,F9:69},'IND-MIA':{WN:99,AA:109},
+  'STL-ATL':{WN:79,DL:89,AA:99},'STL-MCO':{WN:79,AA:89},'STL-LAS':{WN:109,AA:119,F9:69},
+  'STL-DFW':{AA:79,WN:99},'STL-DEN':{WN:89,AA:99,F9:59},'STL-MIA':{WN:99,AA:109},
+  'MCI-ATL':{WN:79,DL:89,AA:99},'MCI-MCO':{WN:79,AA:89},'MCI-LAS':{WN:109,AA:119,F9:69},
+  'MCI-DFW':{AA:79,WN:99},'MCI-DEN':{WN:79,AA:89,F9:49},'MCI-LAX':{WN:129,AA:139},
+  'OKC-DFW':{AA:69,WN:89},'OKC-DEN':{WN:89,AA:99,F9:59},'OKC-LAS':{WN:99,AA:109},
+  'OKC-ATL':{WN:89,AA:99},'OKC-LAX':{WN:129,AA:139},'OKC-MCO':{WN:89,AA:99},
+  'ABQ-LAX':{AA:99,WN:119,DL:129},'ABQ-DFW':{AA:79,WN:99},'ABQ-DEN':{WN:79,AA:89,F9:49},
+  'ABQ-LAS':{WN:89,AA:99,F9:49},'ABQ-PHX':{AA:69,WN:79},'ABQ-ATL':{WN:99,AA:109},
+  'SLC-LAX':{DL:99,AA:109,UA:119,WN:119},'SLC-DEN':{DL:69,AA:79,UA:89,WN:89,F9:49},
+  'SLC-LAS':{DL:79,AA:89,UA:99,WN:99,F9:49},'SLC-PHX':{DL:79,AA:89,UA:99,WN:89},
+  'SLC-SEA':{DL:89,AA:99,AS:89,UA:99},'SLC-ORD':{DL:99,AA:109,UA:119,WN:129},
+  'SLC-DFW':{AA:89,DL:99,UA:109},'SLC-ATL':{DL:99,AA:109,WN:119},
+  'PDX-LAX':{AA:99,UA:109,DL:119,AS:99,WN:119},'PDX-LAS':{AA:89,UA:99,DL:109,AS:89,WN:99,F9:59},
+  'PDX-SFO':{AA:79,UA:69,DL:89,AS:69,WN:89},'PDX-DEN':{AA:89,UA:99,DL:109,AS:99,WN:109,F9:59},
+  'PDX-PHX':{AA:89,UA:99,DL:109,AS:89,WN:99},'PDX-ORD':{AA:109,UA:119,DL:129,AS:119},
+  'PDX-DFW':{AA:109,UA:119,DL:129},'PDX-ATL':{DL:129,AA:139,WN:149},
+  'SAN-LAX':{AA:59,UA:69,DL:79,WN:79,AS:69},'SAN-LAS':{AA:69,UA:79,DL:89,WN:89,F9:39,NK:39},
+  'SAN-DEN':{AA:89,UA:99,DL:109,WN:109,F9:59},'SAN-PHX':{AA:59,UA:69,DL:79,WN:79,F9:39},
+  'SAN-SFO':{AA:69,UA:59,DL:79,WN:79,AS:69},'SAN-SEA':{AA:99,UA:109,DL:119,AS:89,WN:119},
+  'SAN-ORD':{AA:129,UA:139,DL:149,WN:159},'SAN-DFW':{AA:109,UA:119,DL:129},
+  'SAN-ATL':{DL:139,AA:149,WN:159},'SAN-JFK':{AA:149,UA:159,DL:169,B6:129},
+  'BWI-MIA':{WN:89,AA:99,DL:109},'BWI-MCO':{WN:79,AA:89,DL:99,B6:69},
+  'BWI-ATL':{WN:89,DL:99,AA:109},'BWI-LAS':{WN:119,AA:129,DL:149},
+  'BWI-LAX':{WN:149,AA:159,UA:169},'BWI-DEN':{WN:99,AA:109,UA:119,F9:69},
+  'DCA-ATL':{DL:79,AA:89,WN:99},'DCA-MIA':{AA:89,DL:99,WN:109},'DCA-MCO':{AA:79,DL:89,WN:99},
+  'DCA-ORD':{AA:79,UA:89,DL:99,WN:109},'DCA-LAS':{AA:129,DL:149,UA:149},
+  'IAD-ATL':{UA:89,DL:99,AA:99},'IAD-MIA':{UA:99,AA:109,DL:119},'IAD-MCO':{UA:89,AA:99,DL:109},
+  'IAD-LAX':{UA:149,AA:159,DL:169},'IAD-LAS':{UA:129,AA:139,DL:149},
+  'PHL-ATL':{AA:79,DL:89,WN:99},'PHL-ORD':{AA:79,UA:89,DL:99,WN:109},
+  'PHL-LAS':{AA:129,UA:149,DL:149,WN:159},'PHL-LAX':{AA:149,UA:159,DL:169},
+  'PHL-DFW':{AA:89,WN:109},'PHL-DEN':{AA:99,UA:109,DL:119,WN:119},
+  'DTW-ATL':{DL:69,WN:89,AA:99},'DTW-MIA':{DL:89,AA:99,WN:109},'DTW-MCO':{DL:79,WN:89,AA:99},
+  'DTW-LAS':{DL:119,AA:129,WN:149},'DTW-LAX':{DL:139,AA:149,UA:159},'DTW-DFW':{DL:89,AA:99,WN:109},
+  'DTW-DEN':{DL:89,AA:99,UA:109,WN:109,F9:69},'DTW-ORD':{DL:69,AA:79,UA:89,WN:89},
+  'RSW-ATL':{DL:69,WN:79,AA:89},'RSW-ORD':{WN:89,AA:99,DL:109},'RSW-LAS':{WN:119,AA:129},
+  'RSW-DFW':{AA:89,WN:109},'RSW-DEN':{WN:99,AA:109},'RSW-JFK':{AA:89,DL:99,B6:79},
+  'MSP-ATL':{DL:89,WN:99,AA:109},'MSP-MIA':{DL:99,AA:109,WN:119},'MSP-MCO':{DL:89,WN:99,AA:109},
+  'MSP-LAS':{DL:119,WN:129,AA:139,F9:79},'MSP-LAX':{DL:139,AA:149,UA:159,WN:159},
+  'MSP-DFW':{DL:89,AA:99,WN:119},'MSP-PHX':{DL:99,AA:109,UA:119,WN:119,F9:69},
+  'MSP-SEA':{DL:99,AA:109,AS:99,UA:109},'MSP-DEN':{DL:79,AA:89,UA:99,WN:99,F9:49},
 };
 
 const airlineBookUrls={AA:'https://www.aa.com',DL:'https://www.delta.com',UA:'https://www.united.com',WN:'https://www.southwest.com',B6:'https://www.jetblue.com',AS:'https://www.alaskaair.com',F9:'https://www.flyfrontier.com',NK:'https://www.spirit.com',G4:'https://www.allegiantair.com',SY:'https://www.suncountry.com',HA:'https://www.hawaiianairlines.com',OO:'https://www.skywest.com'};
@@ -1336,12 +1556,21 @@ function populateBothAirportDropdowns(){
     if(!el)return;
     sorted.forEach(a=>{el.innerHTML+=`<option value="${a.code}">${a.name}</option>`;});
   });
+  // Also populate calc dropdowns
+  ['c-origin','c-dest'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el)return;
+    sorted.forEach(function(a){el.innerHTML+='<option value="'+a.code+'">'+a.name+'</option>';});
+  });
   document.getElementById('s-origin').value='VPS';
   document.getElementById('s-dest').value='MDW';
   document.getElementById('w-origin').value='VPS';
   document.getElementById('w-dest').value='MDW';
+  document.getElementById('c-origin').value='VPS';
+  document.getElementById('c-dest').value='MDW';
   splitLoadFares();
   warLoadFares();
+  calcLoadAirlines();
 }
 
 function splitLoadFares(){
@@ -1439,7 +1668,9 @@ const scamBuiltIn={
   panama_city_beach:{name:'Panama City Beach',ico:'🌴',risk:'Medium',alertText:'Medium — Spring break destination with heavy tourist pricing March–April. Pier Park area is marked up year-round.',scams:[{title:'🍽️ Pier Park Restaurant Prices',desc:'All restaurants directly in and around Pier Park charge tourist-zone premium year-round.',touristPrice:'$25–$40/entree',localPrice:'$14–$20 on Back Beach Road or in Lynn Haven',tip:'Drive 10 minutes to Lynn Haven or Thomas Drive local spots. Far better food at real prices.'},{title:'🏖️ Beach Vendor Jet Ski Rentals',desc:'Walk-up jet ski rentals on the beach are 40–60% more than booked online.',touristPrice:'$100–$140/hour walk-up',localPrice:'$65–$85 booked online in advance',tip:'Book water sports through Groupon or the operator website the night before.'},{title:'🏠 Vacation Rental Spring Break Surge',desc:'Spring break weeks (mid-March to mid-April) see rental prices triple with minimum stays.',touristPrice:'$500–$800/night spring break',localPrice:'$150–$250/night same unit in May or October',tip:'Go in May or October. Identical weather, drastically cheaper, no crowds.'},{title:'🎡 Pier Park Parking',desc:'Pier Park private lots charge $10–$20 during peak hours.',touristPrice:'$15 private lot',localPrice:'Free street parking 3 blocks away',tip:'Free parking exists on the side streets north of Pier Park. 3-minute walk, zero cost.'}],tips:[{ico:'🦈',title:'St. Andrews State Park',text:'$8 vehicle entry. Clearest water in PCB, snorkeling, shell island ferry, zero beach vendors.'},{ico:'🐬',title:'Shell Island Ferry',text:'$15 RT from St. Andrews State Park. Uninhabited barrier island. Dolphins in the channel guaranteed.'},{ico:'🎢',title:'Ripley’s Believe It or Not',text:'Skip it — overpriced tourist trap. Spend that $25 on a kayak rental in St. Andrews instead.'},{ico:'🍕',title:'Schooner’s Last Local Beach Club',text:'Best beachfront bar in PCB. Live music, honest prices, local crowd. The real PCB.'},{ico:'🌊',title:'Avoid Spring Break',text:'Mid-March through mid-April: wall-to-wall crowds, triple hotel prices, packed beaches. May is identical weather at 40% the cost.'},{ico:'🐠',title:'Snorkeling at St. Andrews',text:'Rent snorkel gear for $10, wade into the Gulf near the jetties. Flounder, stingrays, and tropical fish right from shore.'}]},
   pensacola:{name:'Pensacola',ico:'⚓',risk:'Low',alertText:'Low — Military city with honest pricing. Pensacola Beach bridge toll and vacation rental fees are the main traps.',scams:[{title:'🌉 Pensacola Beach Bridge Toll',desc:'$1 each way. Some visitors get hit with rental car toll processing fees of $15-$25 for a $1 toll.',touristPrice:'$15-$25 rental car fee',localPrice:'$1 each way — use cash or SunPass',tip:'Pay cash at the toll booth. Never let a rental car process tolls electronically — fee is 15-25x the actual toll.'},{title:'🏖️ Vacation Rental Hidden Fees',desc:'VRBO and Airbnb listings on Pensacola Beach add cleaning fees, service fees, and parking that inflate the rate 40-60%.',touristPrice:'$180/night becomes $280 all-in',localPrice:'Call local rental companies directly — fewer fees',tip:'Use local companies like ResortQuest or Vacasa direct. Fewer platform fees than VRBO or Airbnb.'},{title:'🍽️ Pensacola Beach Strip Restaurants',desc:'Restaurants on the main Pensacola Beach strip charge tourist premiums especially on weekends.',touristPrice:'$28-$40/entree on the strip',localPrice:'$14-$22 on Palafox Street downtown',tip:'Eat on Palafox Street in downtown Pensacola. Better food, local crowd, real prices. 15-minute drive.'},{title:'🚤 Jet Ski and Water Sports Walk-Up',desc:'Walk-up jet ski rentals on the beach are 40-60% more than booked in advance online.',touristPrice:'$100-$130/hour walk-up',localPrice:'$65-$85 booked online',tip:'Book water sports the night before on Groupon or direct with operators. Walk-up prices are always inflated.'}],tips:[{ico:'🏖️',title:'Fort Pickens',text:'$25/vehicle, valid 7 days. Inside Gulf Islands National Seashore. Best undeveloped beach in Florida with Civil War fort.'},{ico:'⚓',title:'National Naval Aviation Museum',text:'Completely free. One of the best aviation museums in the world. Blue Angels practice here Tuesday and Wednesday mornings.'},{ico:'🎵',title:'Palafox Street',text:'Downtown Pensacola dining and nightlife. Real prices, local crowd, live music on weekends. Far better than the beach strip.'},{ico:'🌊',title:'Perdido Key',text:'30 minutes west. Less crowded than Pensacola Beach, same emerald water, lower rental prices.'},{ico:'🚗',title:'Avoid Spring Break',text:'March-April prices spike 2-3x. May and October are identical weather at 30-40% lower cost.'},{ico:'🌅',title:'Casino Beach at Sunrise',text:'Free parking before 8 AM. The most photographed beach in Florida with almost no people at dawn.'}]},
   fort_walton_beach:{name:'Fort Walton Beach',ico:'🎣',risk:'Low',alertText:'Low — Laid-back military community. Okaloosa Island tourist strip has moderate markups.',scams:[{title:'🍽️ Okaloosa Island Strip Pricing',desc:'Restaurants directly on the Okaloosa Island strip charge tourist premiums year-round.',touristPrice:'$25-$38/entree on the strip',localPrice:'$12-$20 on Miracle Mile or downtown FWB',tip:'Eat on Miracle Mile or in downtown Fort Walton Beach. Local spots with far better prices.'},{title:'🏠 Vacation Rental Fees',desc:'Short-term rentals in Okaloosa Island area pile on cleaning fees and service charges.',touristPrice:'$160/night becomes $240+ with fees',localPrice:'Book direct with owner when possible',tip:'Search for owner-direct rentals on local Facebook groups. Avoid platform fees.'},{title:'🚤 Charter Fishing Walk-Up',desc:'Walk-up charter fishing prices at the Destin/FWB harbor are premium. Online is always cheaper.',touristPrice:'$120-$150/person walk-up party boat',localPrice:'$65-$90 booked online',tip:'Book party boat fishing online at least 24 hours ahead. Same boats, same fish, 30-40% less.'},{title:'🎡 The Track Amusements',desc:'Go-karts and amusements on the strip charge premium prices with limited value.',touristPrice:'$8-$15 per ride',localPrice:'Skip it — beach is free',tip:'Skip the amusement strip. Eglin AFB recreation areas offer similar activities at military prices if you have access.'}],tips:[{ico:'🏖️',title:'Okaloosa Island Park',text:'Free beach access at the state-managed area. Same emerald water as Destin with less crowding.'},{ico:'✈️',title:'Air Force Armament Museum',text:'Free. F-117 Stealth Fighter, SR-71 Blackbird, and 30+ aircraft on display. Located at Eglin AFB entrance.'},{ico:'🦞',title:'Staff of Life',text:'Local institution for fresh gulf seafood at real prices. Not on the tourist strip.'},{ico:'🎣',title:'Party Boat Fishing',text:'$65-$90 online for a half-day trip. Fort Walton Harbor has some of the best fishing access on the Gulf.'},{ico:'🌊',title:'Go in May or September',text:'Shoulder season — identical weather, 30-40% cheaper hotels and rentals, uncrowded beaches.'},{ico:'🏊',title:'Fred Gannon Rocky Bayou',text:'$4 state park entry. Freshwater swimming, kayaking, camping. Locals go here to escape the beach crowds.'}]},
-  gulf_shores:{name:'Gulf Shores / Orange Beach',ico:'🦀',risk:'Low',alertText:'Low — Alabama beach town with honest pricing. Spring break crowds and rental fees are the main issues.',scams:[{title:'🏠 Vacation Rental Hidden Fees',desc:'Condos on Gulf Shores add cleaning fees, damage waivers, parking, and service fees that inflate listed rates 50-70%.',touristPrice:'$200/night becomes $320 all-in',localPrice:'Book direct with management companies',tip:'Call Meyer Real Estate or Brett-Robinson directly. Local companies have far fewer fees than VRBO or Airbnb.'},{title:'🍽️ Gulf Place Strip Restaurants',desc:'Restaurants in the tourist strip near the Alabama/Florida line charge beach town premiums.',touristPrice:'$28-$40/entree',localPrice:'$14-$22 in downtown Orange Beach or Foley',tip:'Drive to Foley or Orange Beach main strip for local restaurants at real prices.'},{title:'🦀 Souvenir Shops on Beach Road',desc:'Beach souvenir shops on Highway 59 charge 3-4x what you can buy in Foley outlets.',touristPrice:'$25-$40 for branded gear',localPrice:'$8-$15 at Foley Tanger Outlets',tip:'Tanger Outlets in Foley is 15 minutes north. Same brands, 40-60% less.'},{title:'🚙 Spring Break Surge',desc:'March-April hotel and rental prices triple. Traffic on Highway 59 becomes gridlock.',touristPrice:'$400+/night condos in March',localPrice:'$150-$200/night same unit in May',tip:'Visit in May, September, or October. Identical beach, dramatically lower prices, no spring break chaos.'}],tips:[{ico:'🐚',title:'Gulf State Park',text:'$10/vehicle. 6,000 acres, 2.5 miles of pristine beach, fishing pier, bike trails. Best value in Gulf Shores.'},{ico:'🦈',title:'Alabama Gulf Coast Zoo',text:'$18 adults. Small but hands-on. Feed giraffes and interact with animals closer than any major zoo.'},{ico:'🎣',title:'Fishing Pier at Gulf State Park',text:'$10 fishing fee, no rod license needed on the pier. Best shore fishing on the Alabama Gulf Coast.'},{ico:'🛍️',title:'Foley Tanger Outlets',text:'200+ stores, 15 minutes from the beach. Far better shopping than any beach souvenir shop at real prices.'},{ico:'🌊',title:'Bon Secour National Wildlife Refuge',text:'Free. Undeveloped barrier island beaches, sea turtle nesting, and hiking with zero crowds.'},{ico:'🍺',title:'LuLu’s Restaurant',text:'Jimmy Buffett’s sister owns this. Great Gulf seafood, live music, tiki bar. Book ahead — always packed.'}]}
+  gulf_shores:{name:'Gulf Shores / Orange Beach',ico:'🦀',risk:'Low',alertText:'Low — Alabama beach town with honest pricing. Spring break crowds and rental fees are the main issues.',scams:[{title:'🏠 Vacation Rental Hidden Fees',desc:'Condos on Gulf Shores add cleaning fees, damage waivers, parking, and service fees that inflate listed rates 50-70%.',touristPrice:'$200/night becomes $320 all-in',localPrice:'Book direct with management companies',tip:'Call Meyer Real Estate or Brett-Robinson directly. Local companies have far fewer fees than VRBO or Airbnb.'},{title:'🍽️ Gulf Place Strip Restaurants',desc:'Restaurants in the tourist strip near the Alabama/Florida line charge beach town premiums.',touristPrice:'$28-$40/entree',localPrice:'$14-$22 in downtown Orange Beach or Foley',tip:'Drive to Foley or Orange Beach main strip for local restaurants at real prices.'},{title:'🦀 Souvenir Shops on Beach Road',desc:'Beach souvenir shops on Highway 59 charge 3-4x what you can buy in Foley outlets.',touristPrice:'$25-$40 for branded gear',localPrice:'$8-$15 at Foley Tanger Outlets',tip:'Tanger Outlets in Foley is 15 minutes north. Same brands, 40-60% less.'},{title:'🚙 Spring Break Surge',desc:'March-April hotel and rental prices triple. Traffic on Highway 59 becomes gridlock.',touristPrice:'$400+/night condos in March',localPrice:'$150-$200/night same unit in May',tip:'Visit in May, September, or October. Identical beach, dramatically lower prices, no spring break chaos.'}],tips:[{ico:'🐚',title:'Gulf State Park',text:'$10/vehicle. 6,000 acres, 2.5 miles of pristine beach, fishing pier, bike trails. Best value in Gulf Shores.'},{ico:'🦈',title:'Alabama Gulf Coast Zoo',text:'$18 adults. Small but hands-on. Feed giraffes and interact with animals closer than any major zoo.'},{ico:'🎣',title:'Fishing Pier at Gulf State Park',text:'$10 fishing fee, no rod license needed on the pier. Best shore fishing on the Alabama Gulf Coast.'},{ico:'🛍️',title:'Foley Tanger Outlets',text:'200+ stores, 15 minutes from the beach. Far better shopping than any beach souvenir shop at real prices.'},{ico:'🌊',title:'Bon Secour National Wildlife Refuge',text:'Free. Undeveloped barrier island beaches, sea turtle nesting, and hiking with zero crowds.'},{ico:'🍺',title:'LuLu’s Restaurant',text:'Jimmy Buffett’s sister owns this. Great Gulf seafood, live music, tiki bar. Book ahead — always packed.'}]},
+  thirty_a:{name:'30A Florida',ico:'🏄',risk:'Low',alertText:'Low — Upscale beach corridor. Vacation rental fees and restaurant markups are the main traps. One of the most beautiful coastlines in America.',scams:[{title:'🏠 Vacation Rental Hidden Fees',desc:'30A vacation rentals are premium-priced and add cleaning fees, damage waivers, linen fees, and service charges that inflate the nightly rate 50-70%.',touristPrice:'$400/night becomes $650+ all-in',localPrice:'Call rental companies directly — ask for all-in rate',tip:'Use local companies like 360 Blue, Corcoran Vacations, or ResortQuest direct. Always ask for the total all-in price before booking.'},{title:'🍽️ Rosemary Beach and Seaside Restaurant Prices',desc:'Restaurants in the Rosemary Beach and Seaside town centers charge resort-level prices year-round.',touristPrice:'$35-$55/entree',localPrice:'$18-$28 in Santa Rosa Beach or Inlet Beach',tip:'Drive 10 minutes off 30A to Santa Rosa Beach or Inlet Beach. Same quality food at 40% less.'},{title:'🚲 Bike Rental Walk-Up Prices',desc:'Bike rental shops along 30A charge premium walk-up rates especially in summer.',touristPrice:'$40-$60/day per bike walk-up',localPrice:'$25-$35 booked online the night before',tip:'Book bike rentals online through local shops like Wheel Fun Rentals or 30A Bike Rentals. Online pricing is always lower.'},{title:'🌊 Summer Crowd Surge',desc:'30A in June-August is wall-to-wall traffic, overflowing beaches, and peak rental prices.',touristPrice:'$500-$900/night peak summer',localPrice:'$250-$400 same property in October',tip:'Go in May, September, or October. Identical weather, 30-50% lower prices, uncrowded beaches, and the water is still perfect.'}],tips:[{ico:'🏖️',title:'Grayton Beach State Park',text:'$5 vehicle entry. One of the top 10 beaches in America. Pristine dunes, no vendors, no crowds. Park opens at 8 AM.'},{ico:'🚲',title:'Bike the Scenic 30A Trail',text:'19-mile paved trail connecting every beach community. Rent bikes and ride from Seaside to Rosemary Beach. Best way to see 30A.'},{ico:'🌅',title:'Seaside is Worth Seeing',text:'The original New Urbanism town and filming location for The Truman Show. Walk around for free — just avoid eating there.'},{ico:'🦞',title:'Eat in Santa Rosa Beach',text:'Local restaurants on 98 and 393 serve excellent Gulf seafood at real prices. Local Catch Bar and Grill is a standout.'},{ico:'🎨',title:'Eden Gardens State Park',text:'$4 entry. Historic white-columned mansion, moss-draped oaks, freshwater swimming. Hidden gem 10 minutes from 30A.'},{ico:'🌊',title:'Go in May or October',text:'Water is 75-80F, air is perfect, no crowds, prices drop 40%. May and October are the locals secret for visiting 30A.'}]},
+  allys_beach:{name:"Alys Beach",ico:'🏛️',risk:'Low',alertText:'Low — The most exclusive community on 30A. Ultra-premium pricing on everything. Beautiful to walk through but budget accordingly.',scams:[{title:'🍽️ Restaurant Pricing',desc:'The few restaurants in Alys Beach are among the most expensive on the entire Gulf Coast.',touristPrice:'$45-$75/entree',localPrice:'$18-$28 in Inlet Beach 5 min away',tip:'Walk or bike to Inlet Beach or Rosemary Beach for comparable food at half the price.'},{title:'🏠 Rental Sticker Shock',desc:'Alys Beach vacation rentals are among the most expensive in Florida — and fees pile on top.',touristPrice:'$800-$3,000/night with fees',localPrice:'Same 30A experience in Seagrove or WaterColor for $250-$500',tip:'Stay in Seagrove Beach, WaterColor, or Waterscape for the same 30A access at a fraction of the price.'},{title:'🅿️ Parking',desc:'Parking near Alys Beach is extremely limited and monitored. Getting towed is common.',touristPrice:'$75-$150 tow fee',localPrice:'Park in Inlet Beach and bike or walk',tip:'Park at the public lot in Inlet Beach and ride the 30A bike trail over. Free parking, no towing risk.'},{title:'🛍️ Boutique Shops',desc:'Alys Beach boutiques sell curated merchandise at luxury resort prices.',touristPrice:'$80-$300 for clothing items',localPrice:'Same brands online or in Destin Commons for 40-60% less',tip:'Window shop in Alys Beach and buy elsewhere. The architecture is the attraction — not the shopping.'}],tips:[{ico:'🏛️',title:'Walk the White Buildings',text:'Alys Beach is designed after Bermudian and Caribbean architecture. Walking the streets is completely free and genuinely stunning.'},{ico:'🚲',title:'Bike From Rosemary Beach',text:'30A bike trail connects directly. Ride in, explore the courtyards and alleys, ride out. Best free experience on 30A.'},{ico:'🌊',title:'The Beach is Public',text:'All Florida beaches are public. The beach in front of Alys Beach is as accessible as any other — just walk down the public beach access.'},{ico:'🌅',title:'Sunset Views',text:'The rooftop terraces are private but the beach at sunset here rivals anywhere in the world. Bring a chair and enjoy for free.'},{ico:'📸',title:'Architecture Photography',text:'The white Bermudian-style buildings are extraordinary. Best photography early morning before the crowds and heat.'},{ico:'🍦',title:'Neat Ice Cream',text:'The one affordable indulgence in Alys Beach. Local ice cream shop with reasonable prices and a beautiful courtyard.'}]}
 };
 
 function scamGetCustom(){try{return JSON.parse(Store.get('triptrue_cities')||'{}');}catch{return {};}}
@@ -1507,7 +1738,7 @@ function scamDeleteCity(key){
 }
 
 function scamShow(){
-  const data=scamAllCities()[scSelectedDest];
+  var data=scamAllCities()[scSelectedDest];
   if(!data){showToast('Pick a city first');return;}
   document.getElementById('sc-results').style.display='block';
   document.getElementById('sc-dest-display').textContent=data.name;
